@@ -1,5 +1,3 @@
-require './_plugins/rp_logs'
-
 module RpLogs
 
   class RpLogGenerator < Jekyll::Generator
@@ -12,12 +10,23 @@ module RpLogs
 
     def generate(site)
       @site = site
+
+      # Directory of RPs
+      dir = site.config['rp_dir'] || '/rps'
+      index = site.pages.detect { |page| page.url == File.join(dir, '/')}
+      index.data['rps'] = {'canon' => [], 'noncanon' => []}
+
+      # Convert all of the posts to be pretty
       site.pages.select { |p| p.data['layout'] == 'rp' }
-        .each { |post| convertRp post }
+        .each { |page|
+        convertRp page 
+        key = if page.data['canon'] then 'canon' else 'noncanon' end
+        index.data['rps'][key].push page
+      }
     end
 
-    def convertRp(post)
-      post.content = RpLogs.compile(post.content)
+    def convertRp(page)
+      page.content = RpLogs.compile(page.content)
     end
 
   end
