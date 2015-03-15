@@ -1,0 +1,27 @@
+---
+layout: page
+title: RP Log Index
+
+---
+
+<h2>Canon</h2>
+<ul>
+{% for rp in page['rps']['canon'] %}
+  <li>
+    <h4><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
+    {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
+    </h4>
+  </li>
+{% endfor %}
+</ul>
+
+<h2>Non-Canon</h2>
+<ul>
+  {% for rp in page['rps']['noncanon'] %}
+    <li>
+      <h4><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
+      {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
+      </h4>
+    </li>
+  {% endfor %}
+</ul>
