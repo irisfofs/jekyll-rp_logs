@@ -5,15 +5,16 @@ module RpLogs
     priority :low
 
     def initialize(config)
-      config['convert_rp'] ||= true
+      config['rp_convert'] ||= true
+      config['rp_dir'] ||= '/rps'
     end
 
     def generate(site)
       @site = site
 
       # Directory of RPs
-      dir = site.config['rp_dir'] || '/rps'
-      index = site.pages.detect { |page| page.url == File.join(dir, '/')}
+      dir = site.config['rp_dir']
+      index = site.pages.detect { |page| page.data['rp_index'] }
       index.data['rps'] = {'canon' => [], 'noncanon' => []}
 
       # Convert all of the posts to be pretty
