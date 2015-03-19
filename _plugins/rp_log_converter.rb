@@ -67,7 +67,7 @@ module RpLogs
       logfile.gsub!(/^#{DATE_REGEXP}\t([^\n]*)$/, '\1 \2')
 
       # Wrap OOC in pre.ooc tags
-      logfile.gsub!(/^((?:^\d\d:\d\d[^\n]*\n?)+)\n/, "<pre class=\"ooc\">\\1</pre>\n")
+      logfile.gsub!(/^((?:^\d\d:\d\d[^\n]*\n?)+)\n/, "<p class=\"ooc\">\\1</p>\n")
       # puts logfile
 
       return logfile
