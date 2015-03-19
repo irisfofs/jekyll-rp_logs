@@ -5,6 +5,7 @@ permalink: /
 rp_index: true
 ---
 
+{% if page['rps']['canon'].size > 0 then %}
 <h2>Canon</h2>
 <ul>
 {% for rp in page['rps']['canon'] %}
@@ -15,7 +16,9 @@ rp_index: true
   </li>
 {% endfor %}
 </ul>
+{% endif %}
 
+{% if page['rps']['noncanon'].size > 0 %}
 <h2>Non-Canon</h2>
 <ul>
   {% for rp in page['rps']['noncanon'] %}
@@ -26,3 +29,4 @@ rp_index: true
     </li>
   {% endfor %}
 </ul>
+{% endif %}
