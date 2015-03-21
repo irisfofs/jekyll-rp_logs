@@ -11,5 +11,19 @@ url: "http://yourdomain.com" # the base hostname & protocol for your site
 # Build settings
 markdown: kramdown
 
+permalink: pretty
+
 rp_convert: true
-rp-dir: /
+rp_dir: &rp_dir
+  ""
+rp_output_root: true
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: pages # this still includes main.scss for some reason
+    values:
+      layout: rp
+      complete: false
+      canon: false

@@ -6,24 +6,24 @@ module RpLogs
 
     def initialize(config)
       config['rp_convert'] ||= true
-      config['rp_dir'] ||= '/rps'
     end
 
     def generate(site)
+      return unless site.config['rp_convert']
       @site = site
 
       # Directory of RPs
-      dir = site.config['rp_dir']
       index = site.pages.detect { |page| page.data['rp_index'] }
       index.data['rps'] = {'canon' => [], 'noncanon' => []}
 
       # Convert all of the posts to be pretty
       site.pages.select { |p| p.data['layout'] == 'rp' }
         .each { |page|
-        convertRp page 
-        key = if page.data['canon'] then 'canon' else 'noncanon' end
-        index.data['rps'][key].push page
-      }
+          puts page.inspect
+          convertRp page
+          key = if page.data['canon'] then 'canon' else 'noncanon' end
+          index.data['rps'][key].push page
+        }
     end
 
     def convertRp(page)
