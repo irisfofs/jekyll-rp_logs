@@ -27,14 +27,17 @@
 #ooc_label {
     background: #222;
     display: block;
-    opacity: 0;
-    @include transition(all, 0.5s, ease-in-out);
-    padding: 0.5em;
+    @include transition(all, 0.25s, ease-in-out);
     left: 0;
     right: 0;
-    top: 0;
+    top: -2.5em;
+    line-height: 2.5em;
     position: fixed;
     text-align: center;
+
+    &.shown {
+        top: 0;
+    }
 }
 
 #ooc_toggle {

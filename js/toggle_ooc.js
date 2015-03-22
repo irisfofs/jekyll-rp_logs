@@ -21,40 +21,48 @@ function toggleOOC() {
     // use vars to short circuit doing work again
     var shown = false;
     var timeout;
-    var lastOffset = 0;
+    var lastScroll = 0;
+    var minScroll = 200; // how far down in order to show it
 
     var resetHideTimer = function() {
         clearTimeout(timeout);
         timeout = setTimeout(function() {
-            oocButton.css('opacity', 0);
+            oocButton.removeClass('shown');
             shown = false;
         }, 2000);
     }
 
-    $(window).on("scroll", function() {
-        var curOffset = oocButton.offset().top;
-        if (!shown && curOffset > 200 && curOffset < lastOffset) {
-            oocButton.css('opacity', 1);
+    var clearHideTimer = function() {
+        clearTimeout(timeout);
+    }
+
+    var win = $(window);
+
+    win.on("scroll", function() {
+        var curScroll = win.scrollTop();
+        if (!shown && curScroll > minScroll && curScroll < lastScroll) {
             shown = true;
-        } else if (shown && curOffset > lastOffset) {
-            oocButton.css('opacity', 0);
+            oocButton.addClass('shown');
+            resetHideTimer();
+        } else if (shown && (curScroll > lastScroll || curScroll < minScroll)) {
             shown = false;
+            oocButton.removeClass('shown');
+            clearTimeout();
         }
 
-        lastOffset = curOffset;
-        resetHideTimer();
+        lastScroll = curScroll;
     });
 
-    $(window).on("click", function() {
+    win.on("click", function() {
         if (!shown) {
-            oocButton.css('opacity', 1);
             shown = true;
+            oocButton.addClass('shown');
+            resetHideTimer();
         } else if (shown) {
-            oocButton.css('opacity', 0);
             shown = false;
+            oocButton.removeClass('shown');
+            clearHideTimer();
         }
-
-        resetHideTimer();
     })
 })();
 
