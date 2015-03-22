@@ -1,3 +1,10 @@
+@mixin transition($transition-property, $transition-time, $method) {
+    -webkit-transition: $transition-property $transition-time $method;
+    -moz-transition: $transition-property $transition-time $method;
+    -ms-transition: $transition-property $transition-time $method;
+    -o-transition: $transition-property $transition-time $method;
+    transition: $transition-property $transition-time $method;
+}
 
 /* Undo normal pre styles */
 #log {
@@ -9,21 +16,29 @@
 
     .rp { color: #DCDCCC; }
     .ooc { 
-        color: #777;
+        color: #A0A090;
         white-space: pre-wrap;
         font-family: monospace;
         font-size: 80%;
     }
 }
 
+/* OOC toggling menu */
 #ooc_label {
     background: #222;
     display: block;
-    margin-left: -80px;
-    padding: 5px 10px 5px 5px;
+    opacity: 0;
+    @include transition(all, 0.5s, ease-in-out);
+    padding: 0.5em;
+    left: 0;
+    right: 0;
+    top: 0;
     position: fixed;
+    text-align: center;
 }
 
 #ooc_toggle {
     vertical-align: middle;
 }
+
+
