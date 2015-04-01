@@ -53,7 +53,10 @@
         lastScroll = curScroll;
     });
 
-    win.on("click", function() {
+    win.on("click", function(e) {
+        // Don't hide the button if user clicked a real link or the label
+        if (e.target.tagName === "A" || e.target.id === "ooc_label") return;
+
         if (!shown) {
             showButton();
         } else if (shown) {
@@ -62,8 +65,6 @@
     });
 
     $("#ooc_label").click(function(e) {
-        // Keep it from getting to the main window and hiding the label.
-        e.stopPropagation();
         resetHideTimer();
     });
 

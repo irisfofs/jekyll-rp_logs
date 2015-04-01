@@ -33,3 +33,4 @@ defaults:
       layout: rp
       complete: false
       canon: false
+      format: weechat

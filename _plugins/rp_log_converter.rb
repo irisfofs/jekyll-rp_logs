@@ -4,6 +4,12 @@ module RpLogs
     safe true
     priority :low
 
+    @@parsers = {}
+
+    def RpLogGenerator.add(parser) 
+      @@parsers[parser::FORMAT_STR] = parser
+    end
+
     def initialize(config)
       config['rp_convert'] ||= true
     end
@@ -19,7 +25,8 @@ module RpLogs
       # Convert all of the posts to be pretty
       site.pages.select { |p| p.data['layout'] == 'rp' }
         .each { |page|
-          puts page.inspect
+          # puts page.inspect
+          # puts page['tags']
           convertRp page
           key = if page.data['canon'] then 'canon' else 'noncanon' end
           index.data['rps'][key].push page
@@ -27,50 +34,81 @@ module RpLogs
     end
 
     def convertRp(page)
-      page.content = RpLogs.compile(page.content)
+      page.content = @@parsers[page.data['format']].compile page.content
     end
 
   end
 
-  class << self
+  class Parser
+    FORMAT_STR = nil
 
-    MODE = /[+%@&~!]/
-    NICK = /([\w\-\\\[\]\{\}\^\`\|]+)/
-    DATE_REGEXP = /[\d\-]{10} (\d\d:\d\d):\d\d/
+    class LogLine
+      MAX_SECONDS_BETWEEN_POSTS = 3
+      RP_FLAG = '!RP'
+      OOC_FLAG = '!OOC'
 
-    def compile(logfile)
-      # Strip joins, parts, quits, and other meta stuff
-      logfile.gsub!(/^#{DATE_REGEXP}\t<?-->?\t.*$\n/, '')
+      attr :timestamp, :sender, :contents
+      attr :flags
+      # Some things depend on the original type of the line (nick format)
+      attr :base_type
+      attr :output_type
 
-      # Wrap RP in p.rp tags
-      logfile.gsub!(/^#{DATE_REGEXP}\t \*\t#{NICK}(\s+[^(][^\n]*)$/, '<p class="rp">\1  * \2\3</p>')
+      def initialize(timestamp, sender, contents, flags, type) 
+        @timestamp = timestamp
+        @sender = sender
+        @contents = contents
+        @flags = flags.split(' ')
 
-      # Wrap all nicks in <>s, convert to spaces
-      logfile.gsub!(/^(!RP )?(#{DATE_REGEXP})\t(#{MODE}?)#{NICK}\t([^\n]*)$/, '\1\2 <\4\5> \6')
-      # Add a space to all nicks without modes
-      logfile.gsub!(/^(!RP )?(#{DATE_REGEXP} <)#{NICK}(> [^\n]*)$/, '\1\2 \4\5')
+        @base_type =  type
+        if flags.include? RP_FLAG then
+          @output_type = :rp
+        elsif flags.include? OOC_FLAG then
+          @output_type = :ooc
+        else
+          @output_type = type
+        end
+      end
 
-      logfile.gsub!(/^(?:!RP )#{DATE_REGEXP}( <.#{NICK}>[^\n]*)$/, '<p class="rp">\1\2</p>')
+      def output
+        anchor = @timestamp.strftime('%Y-%m-%d_%H:%M:%S')
+        ts_out = "<a name=\"#{anchor}\" href=\"##{anchor}\">#{@timestamp.strftime('%H:%M')}</a>"
 
-      # Merge split posts
-      loop do
-        x = logfile.gsub!(/^(<p class="rp">\d\d:\d\d  \* #{NICK})([^\n]*?)<\/p>\n\1([^\n]*?)$/, '\1\3\4')
-        break if x == nil
-      end 
+        sender_out = nil
+        case @base_type
+        when :rp
+          sender_out = "  * #{@sender}"
+        when :ooc
+          sender_out = " <#{@sender}>" 
+        else
+          # Explode.
+          throw "No known type: #{@base_type}"
+        end
 
-      # Remove the non-ooc meta-mark
-      logfile.gsub!(/^!OOC /, '')
-      # Redo this stuff because it's gross
-      logfile.gsub!(/^#{DATE_REGEXP}([^\n]*)$/, '\1\2')
+        tag_open = nil
+        tag_close = "</p>"
+        case @output_type
+        when :rp 
+          tag_open = "<p class=\"rp\">"
+        when :ooc
+          tag_open = "<p class=\"ooc\">"
+        else
+          # Explode.
+          throw "No known type: #{@output_type}"
+        end
 
-      # Format the rest of the dates for whatever is left so they get caught by the OOC filter
-      logfile.gsub!(/^#{DATE_REGEXP}\t([^\n]*)$/, '\1 \2')
+        return "#{tag_open}#{ts_out}#{sender_out} #{@contents}#{tag_close}"
+      end
 
-      # Wrap OOC in pre.ooc tags
-      logfile.gsub!(/^((?:^\d\d:\d\d[^\n]*\n?)+)\n/, "<p class=\"ooc\">\\1</p>\n")
-      # puts logfile
+      def mergeable_with?(next_line)
+        return @output_type == :rp && next_line.output_type == :rp && \
+          @sender == next_line.sender && next_line.timestamp - @timestamp <= MAX_SECONDS_BETWEEN_POSTS
+      end
 
-      return logfile
+      def merge!(next_line)
+        # How to handle content..
+        @contents += ' ' + next_line.contents
+      end
     end
   end
+
 end

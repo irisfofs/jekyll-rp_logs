@@ -21,6 +21,15 @@
         font-family: monospace;
         font-size: 80%;
     }
+
+    /* timestamps */
+    a {
+        color: inherit;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 /* OOC toggling menu */
