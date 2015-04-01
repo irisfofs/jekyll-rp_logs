@@ -15,6 +15,7 @@ module RpLogs
       DATE_REGEXP = /(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
 
       FLAGS = /((?:![A-Z]+ )*)/
+      JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/
       EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+([^\n]*)$/
       TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t([^\n]*)$/
 
@@ -23,6 +24,8 @@ module RpLogs
 
         logfile.each_line { |line| 
           case line
+          when JUNK
+            next
           when EMOTE
             date = DateTime.strptime($2, '%Y-%m-%d %H:%M:%S')
             compiled_lines << Parser::LogLine.new(date, $3, $4, $1, :rp)
