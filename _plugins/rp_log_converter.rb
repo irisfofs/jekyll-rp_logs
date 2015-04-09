@@ -78,23 +78,24 @@ module RpLogs
         when :rp
           sender_out = "  * #{@sender}"
         when :ooc
-          sender_out = " <#{@sender}>" 
+          sender_out = " &lt;#{@sender}&gt;" 
         else
           # Explode.
           throw "No known type: #{@base_type}"
         end
 
-        tag_open = nil
+        tag_class = nil
         tag_close = "</p>"
         case @output_type
         when :rp 
-          tag_open = "<p class=\"rp\">"
+          tag_class = "rp"
         when :ooc
-          tag_open = "<p class=\"ooc\">"
+          tag_class = "ooc"
         else
           # Explode.
           throw "No known type: #{@output_type}"
         end
+        tag_open = "<p class=\"#{tag_class}\">"
 
         return "#{tag_open}#{ts_out}#{sender_out} #{@contents}#{tag_close}"
       end

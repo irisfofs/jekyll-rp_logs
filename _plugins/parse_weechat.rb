@@ -19,6 +19,8 @@ module RpLogs
       EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+([^\n]*)$/
       TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t([^\n]*)$/
 
+      TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
+
       def compile(logfile) 
         compiled_lines = []
 
@@ -27,10 +29,10 @@ module RpLogs
           when JUNK
             next
           when EMOTE
-            date = DateTime.strptime($2, '%Y-%m-%d %H:%M:%S')
+            date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             compiled_lines << Parser::LogLine.new(date, $3, $4, $1, :rp)
           when TEXT
-            date = DateTime.strptime($2, '%Y-%m-%d %H:%M:%S')
+            date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             mode = if $3 != '' then $3 else ' ' end
             compiled_lines << Parser::LogLine.new(date, mode+$4, $5, $1, :ooc)
           else
