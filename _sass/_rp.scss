@@ -41,7 +41,7 @@
 }
 
 /* OOC toggling menu */
-#ooc_label {
+.scroll-nav {
     background: #222;
     display: block;
     @include transition(all, 0.25s, ease-in-out);
@@ -54,6 +54,11 @@
 
     &.shown {
         top: 0;
+    }
+
+    a,
+    #ooc_label {
+        padding: 0.5em;
     }
 }
 

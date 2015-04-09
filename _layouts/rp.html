@@ -13,7 +13,12 @@ layout: default
   <article class="post-content">
     {% if page.start_date %}<p>Started {{ page.start_date }}</p>{% endif %}
 
-    <label id="ooc_label"><input type="checkbox" id="ooc_toggle" checked>Show OOC</input></label>
+
+    <nav id="fixed_menu" class="scroll-nav">
+      <label id="ooc_label"><input type="checkbox" id="ooc_toggle" checked>Show OOC</input></label>
+      <a href="#bottom">Bottom</a>
+      <a href="#">Top</a>
+    </nav>
 
     <div id="log">
       {{ content }}
@@ -21,5 +26,7 @@ layout: default
   </article>
 
 </div>
+
+<a name="bottom"></a>
 
 <script type="text/javascript" src="{{site.baseurl}}/js/toggle_ooc.js"></script>

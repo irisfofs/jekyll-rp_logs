@@ -1,4 +1,5 @@
 (function() {
+    var fixedMenu = $("#fixed_menu");
     var oocButton = $("#ooc_label");
     // get window
     var win = $(window);
@@ -12,19 +13,19 @@
     var timeout;
     var closeableTimeout;
 
-    var hideButton = function() {
+    var hideMenu = function() {
         shown = false;
-        oocButton.removeClass('shown');
+        fixedMenu.removeClass('shown');
         clearHideTimer();
     }
 
-    var showButton = function() {
+    var showMenu = function() {
         shown = true;
-        oocButton.addClass('shown');
+        fixedMenu.addClass('shown');
         resetHideTimer();
     }
 
-    var allowButtonClose = function() {
+    var allowMenuClose = function() {
         canClose = true;
     }
 
@@ -32,8 +33,8 @@
         clearTimeout(timeout);
         clearTimeout(closeableTimeout);
         canClose = false;
-        timeout = setTimeout(hideButton, 2000);
-        closeableTimeout = setTimeout(allowButtonClose, 500);
+        timeout = setTimeout(hideMenu, 2000);
+        closeableTimeout = setTimeout(allowMenuClose, 500);
     }
 
     var clearHideTimer = function() {
@@ -43,11 +44,11 @@
     win.on("scroll", function() {
         var curScroll = win.scrollTop();
         if (!shown && curScroll > minScroll && curScroll < lastScroll) {
-            showButton();
+            showMenu();
         } else if (shown && canClose && (curScroll > lastScroll || curScroll < minScroll)) {
             // keep it from closing early
             // have some min time before closing
-            hideButton();
+            hideMenu();
         }
 
         lastScroll = curScroll;
@@ -55,17 +56,18 @@
 
     win.on("click", function(e) {
         // Don't hide the button if user clicked a real link or the label
-        if (e.target.tagName === "A" || e.target.id === "ooc_label") return;
+        if (e.target.tagName === "A" || e.originalEvent.passedThroughFixedMenu) return;
 
         if (!shown) {
-            showButton();
+            showMenu();
         } else if (shown) {
-            hideButton();
+            hideMenu();
         }
     });
 
-    $("#ooc_label").click(function(e) {
+    fixedMenu.click(function(e) {
         resetHideTimer();
+        e.originalEvent.passedThroughFixedMenu = true;
     });
 
     var toggleOOC = function(e) {
