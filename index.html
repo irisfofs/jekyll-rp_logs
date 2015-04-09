@@ -13,7 +13,7 @@ rp_index: true
       {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
     </h4>
   {% for t in rp.rp_tags %}
-    <span class="rp-tag">[{{ t }}]</span>
+    <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
   {% endfor %}
   </li>
 {% endfor %}
@@ -29,7 +29,7 @@ rp_index: true
       {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
       </h4>
     {% for t in rp.rp_tags %}
-      <span class="rp-tag">[{{ t }}]</span>
+      <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
     {% endfor %}
     </li>
   {% endfor %}

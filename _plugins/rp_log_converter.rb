@@ -1,8 +1,10 @@
+require_relative "rp_tags"
+
 module RpLogs
 
   class RpLogGenerator < Jekyll::Generator
     safe true
-    priority :low
+    priority :normal
 
     @@parsers = {}
 
@@ -23,11 +25,14 @@ module RpLogs
       index.data['rps'] = {'canon' => [], 'noncanon' => []}
 
       # Convert all of the posts to be pretty
+      # Also build up our hash of tags
       site.pages.select { |p| p.data['layout'] == 'rp' }
         .each { |page|
           # puts page.inspect
-          page.data['rp_tags'].sort!
+          page.data['rp_tags'] = page.data['rp_tags'].split(',').map { |t| Tag.new t }.sort
+          
           convertRp page
+
           key = if page.data['canon'] then 'canon' else 'noncanon' end
           index.data['rps'][key].push page
         }
@@ -96,7 +101,7 @@ module RpLogs
         when :rp
           sender_out = "  * #{@sender}"
         when :ooc
-          sender_out = " &lt;#{@sender}&gt;" 
+          sender_out = " &lt;#{@sender}&gt;"
         else
           # Explode.
           throw "No known type: #{@base_type}"

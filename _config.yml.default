@@ -24,6 +24,11 @@ rp_convert: true
 rp_dir: &rp_dir
   ""
 
+rp_tag_index: true
+rp_tag_dir: /tags
+rp_tag_index_layout: tag_index
+rp_tag_title_prefix: "RPs tagged "
+
 defaults:
   -
     scope:
@@ -34,4 +39,4 @@ defaults:
       complete: false
       canon: false
       format: weechat
-      rp_tags: []
+      rp_tags: ""

@@ -1,0 +1,16 @@
+---
+layout: page
+---
+
+<ul class="rp-list">
+{% for rp in page.pages %}
+  <li>
+    <h4 class="rp-title"><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
+      {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
+    </h4>
+  {% for t in rp.rp_tags %}
+    <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+  {% endfor %}
+  </li>
+{% endfor %}
+</ul>
