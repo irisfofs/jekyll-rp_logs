@@ -31,6 +31,22 @@ module RpLogs
           key = if page.data['canon'] then 'canon' else 'noncanon' end
           index.data['rps'][key].push page
         }
+
+      start_time_compare = lambda { |a, b| 
+        a_date = a.data['start_date']
+        b_date = b.data['start_date']
+        # puts "#{a_date.class}: #{a_date} <=> #{b_date.class}: #{b_date}"
+        if a_date.is_a?(Date) && b_date.is_a?(Date) then 
+          a_date <=> b_date 
+        # Sort dated RPs before undated ones
+        elsif a_date.is_a?(Date) then
+          -1
+        elsif b_date.is_a?(Date) then
+          1
+        end
+      }
+      index.data['rps']['canon'].sort! { |a, b| start_time_compare.call(a, b) }.reverse!
+      index.data['rps']['noncanon'].sort! { |a, b| start_time_compare.call(a, b) }.reverse!
     end
 
     def convertRp(page)
