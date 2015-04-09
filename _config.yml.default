@@ -34,3 +34,4 @@ defaults:
       complete: false
       canon: false
       format: weechat
+      rp_tags: []

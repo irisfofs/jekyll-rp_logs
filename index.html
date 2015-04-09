@@ -6,12 +6,15 @@ rp_index: true
 
 {% if page['rps']['canon'].size > 0 then %}
 <h2>Canon</h2>
-<ul>
+<ul class="rp-list">
 {% for rp in page['rps']['canon'] %}
   <li>
-    <h4><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
-    {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
+    <h4 class="rp-title"><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
+      {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
     </h4>
+  {% for t in rp.rp_tags %}
+    <span class="rp-tag">[{{ t }}]</span>
+  {% endfor %}
   </li>
 {% endfor %}
 </ul>
@@ -19,12 +22,15 @@ rp_index: true
 
 {% if page['rps']['noncanon'].size > 0 %}
 <h2>Non-Canon</h2>
-<ul>
+<ul class="rp-list">
   {% for rp in page['rps']['noncanon'] %}
     <li>
-      <h4><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
+      <h4 class="rp-title"><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
       {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
       </h4>
+    {% for t in rp.rp_tags %}
+      <span class="rp-tag">[{{ t }}]</span>
+    {% endfor %}
     </li>
   {% endfor %}
 </ul>

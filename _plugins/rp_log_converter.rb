@@ -26,7 +26,7 @@ module RpLogs
       site.pages.select { |p| p.data['layout'] == 'rp' }
         .each { |page|
           # puts page.inspect
-          # puts page['tags']
+          page.data['rp_tags'].sort!
           convertRp page
           key = if page.data['canon'] then 'canon' else 'noncanon' end
           index.data['rps'][key].push page

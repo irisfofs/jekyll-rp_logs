@@ -6,6 +6,14 @@
     transition: $transition-property $transition-time $method;
 }
 
+.rp-list li {
+    margin-bottom: 15px;
+
+    .rp-title {
+        margin-bottom: 0px;
+    }
+}
+
 /* Undo normal pre styles */
 #log {
 
