@@ -40,9 +40,11 @@ module RpLogs
           a_date <=> b_date 
         # Sort dated RPs before undated ones
         elsif a_date.is_a?(Date) then
-          -1
-        elsif b_date.is_a?(Date) then
           1
+        elsif b_date.is_a?(Date) then
+          -1
+        else
+          0
         end
       }
       index.data['rps']['canon'].sort! { |a, b| start_time_compare.call(a, b) }.reverse!
