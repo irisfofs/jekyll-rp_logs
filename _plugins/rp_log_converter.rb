@@ -1,4 +1,5 @@
 require_relative "rp_tags"
+require_relative "rp_parser"
 
 module RpLogs
 
@@ -60,5 +61,5 @@ module RpLogs
       page.content = @@parsers[page.data['format']].compile page.content
     end
   end
-  
+
 end

@@ -58,11 +58,11 @@ module RpLogs
         end
         tag_open = "<p class=\"#{tag_class}\">"
 
-        return "#{tag_open}#{ts_out}#{sender_out} #{@contents}#{tag_close}"
+        "#{tag_open}#{ts_out}#{sender_out} #{@contents}#{tag_close}"
       end
 
       def mergeable_with?(next_line)
-        return @output_type == :rp && next_line.output_type == :rp && \
+        @output_type == :rp && next_line.output_type == :rp && \
           @sender == next_line.sender && next_line.timestamp - @timestamp <= MAX_SECONDS_BETWEEN_POSTS
       end
 

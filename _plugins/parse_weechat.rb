@@ -60,7 +60,7 @@ module RpLogs
 
         split_output = compiled_lines.map { |line| line.output }
 
-        return split_output.join("\n")
+        split_output.join("\n")
       end
     end
 
