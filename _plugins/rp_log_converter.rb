@@ -47,7 +47,6 @@ module RpLogs
       # Turn the nicks into characters
       nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
-      puts page.data['rp_tags'].join ', '
     end
   end
 

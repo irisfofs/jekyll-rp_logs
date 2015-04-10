@@ -69,20 +69,23 @@
 
 a.rp-tag {
     background-color: #222;
-    color: inherit;
     border: 1px solid $text-color;
-    padding: 0.125em 0.5em;
+    color: inherit;
+    display: inline-block;
+    margin-bottom: 0.25em;
+    padding: 0 0.25em;
+    white-space: nowrap;
 
     &.rp-tag-character {
         background-color: #313C36;
-        color: #80d4aa;
         border: 1px solid #80d4aa;
+        color: #80d4aa;
     }
 
     &.rp-tag-meta {
         background-color: #41363c;
-        color: #ecbcbc;
         border: 1px solid #ecbcbc;
+        color: #ecbcbc;
     }
 
     &:hover {
