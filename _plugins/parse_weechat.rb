@@ -31,11 +31,11 @@ module RpLogs
             next
           when EMOTE
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-            compiled_lines << Parser::LogLine.new(date, $3, $4, $1, :rp)
+            compiled_lines << Parser::LogLine.new(date, '', $3, $4, $1, :rp)
           when TEXT
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             mode = if $3 != '' then $3 else ' ' end
-            compiled_lines << Parser::LogLine.new(date, mode+$4, $5, $1, :ooc)
+            compiled_lines << Parser::LogLine.new(date, mode, $4, $5, $1, :ooc)
           else
             # Only put text and emotes in the log
             next
@@ -60,7 +60,14 @@ module RpLogs
 
         split_output = compiled_lines.map { |line| line.output }
 
-        split_output.join("\n")
+        nicks = Set.new
+        compiled_lines.each { |line| 
+          nicks << line.sender if line.output_type == :rp
+        }
+
+        stats = { :nicks => nicks }
+
+        [split_output.join("\n"), stats]
       end
     end
 

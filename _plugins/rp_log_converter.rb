@@ -38,27 +38,16 @@ module RpLogs
           index.data['rps'][key].push page
         }
 
-      start_time_compare = lambda { |a, b| 
-        a_date = a.data['start_date']
-        b_date = b.data['start_date']
-        # puts "#{a_date.class}: #{a_date} <=> #{b_date.class}: #{b_date}"
-        if a_date.is_a?(Date) && b_date.is_a?(Date) then 
-          a_date <=> b_date 
-        # Sort dated RPs before undated ones
-        elsif a_date.is_a?(Date) then
-          1
-        elsif b_date.is_a?(Date) then
-          -1
-        else
-          0
-        end
-      }
-      index.data['rps']['canon'].sort! { |a, b| start_time_compare.call(a, b) }.reverse!
-      index.data['rps']['noncanon'].sort! { |a, b| start_time_compare.call(a, b) }.reverse!
+      index.data['rps']['canon'].sort_by! { |p| p.data['start_date'] }.reverse!
+      index.data['rps']['noncanon'].sort_by! { |p| p.data['start_date'] }.reverse!
     end
 
     def convertRp(page)
-      page.content = @@parsers[page.data['format']].compile page.content
+      page.content, stats = @@parsers[page.data['format']].compile page.content
+      # Turn the nicks into characters
+      nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
+      page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
+      puts page.data['rp_tags'].join ', '
     end
   end
 

@@ -8,14 +8,15 @@ module RpLogs
       RP_FLAG = '!RP'
       OOC_FLAG = '!OOC'
 
-      attr :timestamp, :sender, :contents
+      attr :timestamp, :mode, :sender, :contents
       attr :flags
       # Some things depend on the original type of the line (nick format)
       attr :base_type
       attr :output_type
 
-      def initialize(timestamp, sender, contents, flags, type) 
+      def initialize(timestamp, mode, sender, contents, flags, type) 
         @timestamp = timestamp
+        @mode = mode
         @sender = sender
         @contents = contents
         @flags = flags.split(' ')
@@ -39,7 +40,7 @@ module RpLogs
         when :rp
           sender_out = "  * #{@sender}"
         when :ooc
-          sender_out = " &lt;#{@sender}&gt;"
+          sender_out = " &lt;#{@mode}#{@sender}&gt;"
         else
           # Explode.
           throw "No known type: #{@base_type}"
