@@ -21,13 +21,17 @@ module RpLogs
         @contents = contents
         @flags = flags.split(' ')
 
-        @base_type =  type
+        @base_type = type
+        @output_type = type
+
+        # Check the contents for (
+        @output_type = :ooc if contents.strip[0] == '('
+        
+        # Flags override our assumptions, always
         if flags.include? RP_FLAG then
           @output_type = :rp
         elsif flags.include? OOC_FLAG then
           @output_type = :ooc
-        else
-          @output_type = type
         end
       end
 
