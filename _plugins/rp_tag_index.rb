@@ -29,7 +29,7 @@ module RpLogs
 
     def initialize(config) 
       config['rp_tag_index'] ||= true
-      config['rp_tag_dir'] ||= 'tags'
+      config['rp_tag_dir'] ||= '/tags'
     end
 
     def generate(site)

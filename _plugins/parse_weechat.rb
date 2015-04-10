@@ -1,4 +1,5 @@
 require_relative "rp_log_converter"
+require_relative "rp_parser"
 
 module RpLogs
 
