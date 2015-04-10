@@ -14,7 +14,7 @@ module RpLogs
       attr :base_type
       attr :output_type
 
-      def initialize(timestamp, mode, sender, contents, flags, type) 
+      def initialize(timestamp, mode, sender, contents, flags, type, options = {}) 
         @timestamp = timestamp
         @mode = mode
         @sender = sender
@@ -23,6 +23,9 @@ module RpLogs
 
         @base_type = type
         @output_type = type
+
+        # This makes it RP by default
+        @output_type = :rp if options[:strict_ooc]
 
         # Check the contents for (
         @output_type = :ooc if contents.strip[0] == '('

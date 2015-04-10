@@ -43,10 +43,15 @@ module RpLogs
     end
 
     def convertRp(page)
-      page.content, stats = @@parsers[page.data['format']].compile page.content
+      options = get_options page
+      page.content, stats = @@parsers[page.data['format']].compile(page.content, options)
       # Turn the nicks into characters
       nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
+    end
+
+    def get_options(page)
+      { :strict_ooc => page.data['strict_ooc'] }
     end
   end
 

@@ -48,7 +48,9 @@ These are all optional:
 * `format` - What format the logs are in, e.g., `weechat`
 * `rp_tags` - YAML list - A list of tags that describe the contents, such as characters involved or events that occur.
 
-You can pretty easily specify more and customize the plugin to your needs.
+There are also some more options (presently one) you can toggle:
+
+* `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
 
 ### As a plugin in an existing Jekyll site
 TBD. 

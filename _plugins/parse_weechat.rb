@@ -22,7 +22,7 @@ module RpLogs
 
       TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-      def compile(logfile) 
+      def compile(logfile, options = {}) 
         compiled_lines = []
 
         logfile.each_line { |line| 
@@ -31,11 +31,11 @@ module RpLogs
             next
           when EMOTE
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-            compiled_lines << Parser::LogLine.new(date, '', $3, $4, $1, :rp)
+            compiled_lines << Parser::LogLine.new(date, '', $3, $4, $1, :rp, options)
           when TEXT
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             mode = if $3 != '' then $3 else ' ' end
-            compiled_lines << Parser::LogLine.new(date, mode, $4, $5, $1, :ooc)
+            compiled_lines << Parser::LogLine.new(date, mode, $4, $5, $1, :ooc, options)
           else
             # Only put text and emotes in the log
             next
