@@ -51,7 +51,8 @@ module RpLogs
     end
 
     def get_options(page)
-      { :strict_ooc => page.data['strict_ooc'] }
+      { :strict_ooc => page.data['strict_ooc'],
+        :merge_text_into_rp => page.data['merge_text_into_rp'] }
     end
   end
 

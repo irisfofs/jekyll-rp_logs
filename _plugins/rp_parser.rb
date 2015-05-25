@@ -13,6 +13,7 @@ module RpLogs
       # Some things depend on the original type of the line (nick format)
       attr :base_type
       attr :output_type
+      attr :options
 
       def initialize(timestamp, mode, sender, contents, flags, type, options = {}) 
         @timestamp = timestamp
@@ -23,6 +24,8 @@ module RpLogs
 
         @base_type = type
         @output_type = type
+
+        @options = options
 
         # This makes it RP by default
         @output_type = :rp if options[:strict_ooc]
@@ -70,8 +73,19 @@ module RpLogs
       end
 
       def mergeable_with?(next_line)
-        @output_type == :rp && next_line.output_type == :rp && \
-          @sender == next_line.sender && next_line.timestamp - @timestamp <= MAX_SECONDS_BETWEEN_POSTS
+        # Only merge posts close enough in time
+        close_enough_time = next_line.timestamp - @timestamp <= MAX_SECONDS_BETWEEN_POSTS
+        # Only merge posts with same sender
+        same_sender = @sender == next_line.sender
+        # Only merge rp lines
+        is_rp = @output_type == :rp
+        # Merge if next post is rp, or sender has split_to_normal_text property
+        # Only merge if the base type was OOC... otherwise you couldn't force not merging
+        # Maybe a job for !NOTMERGE flag, or similar
+        next_line_is_rp = next_line.output_type == :rp || \
+          (@options[:merge_text_into_rp].include?(@sender) && next_line.base_type == :ooc)
+
+        close_enough_time && same_sender && is_rp && next_line_is_rp
       end
 
       def merge!(next_line)

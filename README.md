@@ -48,9 +48,10 @@ These are all optional:
 * `format` - What format the logs are in, e.g., `weechat`
 * `rp_tags` - YAML list - A list of tags that describe the contents, such as characters involved or events that occur.
 
-There are also some more options (presently one) you can toggle:
+There are also some more options you can toggle:
 
 * `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
+* `merge_text_into_rp` - YAML list - A list of nicks whose clients split actions into normal text, like [IRCCloud did for a while](https://twitter.com/XiaguZ/status/590773722593763328).
 
 ### As a plugin in an existing Jekyll site
 TBD. 
