@@ -65,7 +65,8 @@ module RpLogs
           nicks << line.sender if line.output_type == :rp
         }
 
-        stats = { :nicks => nicks }
+        stats = { :nicks => nicks,
+          :last_post_time => compiled_lines[-1].timestamp }
 
         [split_output.join("\n"), stats]
       end
