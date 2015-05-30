@@ -92,6 +92,10 @@ module RpLogs
         # How to handle content..
         @contents += ' ' + next_line.contents
       end
+
+      def inspect()
+        "<#{@mode}#{@sender}> (#{@base_type} -> #{@output_type}) #{@content}"
+      end
     end
   end
 
