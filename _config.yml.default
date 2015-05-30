@@ -37,7 +37,7 @@ defaults:
     values:
       canon: false
       complete: false
-      format: weechat
+      format: [weechat]
       layout: rp
       rp_tags: ""
       strict_ooc: false

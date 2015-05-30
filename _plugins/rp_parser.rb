@@ -15,7 +15,7 @@ module RpLogs
       attr :output_type
       attr :options
 
-      def initialize(timestamp, mode, sender, contents, flags, type, options = {}) 
+      def initialize(timestamp, options = {}, sender:, contents:, flags:, type:, mode: ' ') 
         @timestamp = timestamp
         @mode = mode
         @sender = sender

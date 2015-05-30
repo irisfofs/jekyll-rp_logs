@@ -44,7 +44,25 @@ module RpLogs
 
     def convertRp(page)
       options = get_options page
-      page.content, stats = @@parsers[page.data['format']].compile(page.content, options)
+
+      compiled_lines = []
+      page.content.each_line { |raw_line| 
+        page.data['format'].each { |format| 
+          log_line = @@parsers[format].parse_line(raw_line, options)
+          if log_line then
+            compiled_lines << log_line 
+            break
+          end
+        }
+      }
+
+      merge_lines! compiled_lines
+      stats = extract_stats compiled_lines
+
+      split_output = compiled_lines.map { |line| line.output }
+
+      page.content = split_output.join("\n")
+
       # Turn the nicks into characters
       nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
@@ -55,6 +73,35 @@ module RpLogs
     def get_options(page)
       { :strict_ooc => page.data['strict_ooc'],
         :merge_text_into_rp => page.data['merge_text_into_rp'] }
+    end
+
+    def merge_lines!(compiled_lines)
+      last_line = nil
+      compiled_lines.reject! { |line| 
+        if last_line == nil then
+          last_line = line
+          false
+        elsif last_line.mergeable_with? line then
+          last_line.merge! line
+          # Delete the current line from output and maintain last_line 
+          # in case we need to merge multiple times.
+          true 
+        else
+          last_line = line
+          false
+        end
+      }
+    end
+
+    def extract_stats(compiled_lines) 
+      nicks = Set.new
+      compiled_lines.each { |line| 
+        nicks << line.sender if line.output_type == :rp
+      }
+
+      { :nicks => nicks,
+        :last_post_time => compiled_lines[-1].timestamp,
+        :first_post_time => compiled_lines[0].timestamp }
     end
   end
 
