@@ -11,7 +11,7 @@ layout: default
   </header>
 
   <article class="post-content">
-    {% if page.start_date %}<p>Started {{ page.start_date }}</p>{% endif %}
+    {% if page.start_date %}<p>Started {{ page.start_date | date: "%-d %B %Y" }}</p>{% endif %}
 
 
     <nav id="fixed_menu" class="scroll-nav">

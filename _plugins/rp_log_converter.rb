@@ -49,6 +49,7 @@ module RpLogs
       nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
       page.data['last_post_time'] = stats[:last_post_time].strftime("%Y-%m-%d")
+      page.data['start_date'] ||= stats[:first_post_time]
     end
 
     def get_options(page)

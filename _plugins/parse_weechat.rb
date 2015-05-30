@@ -66,7 +66,8 @@ module RpLogs
         }
 
         stats = { :nicks => nicks,
-          :last_post_time => compiled_lines[-1].timestamp }
+          :last_post_time => compiled_lines[-1].timestamp,
+          :first_post_time => compiled_lines[0].timestamp }
 
         [split_output.join("\n"), stats]
       end
