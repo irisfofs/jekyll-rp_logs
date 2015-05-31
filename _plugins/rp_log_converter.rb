@@ -30,12 +30,16 @@ module RpLogs
       site.pages.select { |p| p.data['layout'] == 'rp' }
         .each { |page|
           # puts page.inspect
-          page.data['rp_tags'] = page.data['rp_tags'].split(',').map { |t| Tag.new t }.sort
-          
+          page.data['rp_tags'] = page.data['rp_tags'].split(',').map { |t| Tag.new t }
+
           convertRp page
 
           key = if page.data['canon'] then 'canon' else 'noncanon' end
+          # Add key for canon/noncanon
           index.data['rps'][key].push page
+          # Add tag for canon/noncanon
+          page.data['rp_tags'] << (Tag.new key)
+          page.data['rp_tags'].sort!
         }
 
       index.data['rps']['canon'].sort_by! { |p| p.data['start_date'] }.reverse!
