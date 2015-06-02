@@ -25,6 +25,12 @@ module RpLogs
       index = site.pages.detect { |page| page.data['rp_index'] }
       index.data['rps'] = {'canon' => [], 'noncanon' => []}
 
+      # Arc-style directory
+      arc_page = site.pages.detect { |page| page.data['rp_arcs'] }
+
+      arcs = Hash.new { |hash, key| hash[key] = Arc.new(key) }
+      no_arc_rps = []
+
       # Convert all of the posts to be pretty
       # Also build up our hash of tags
       site.pages.select { |p| p.data['layout'] == 'rp' }
@@ -36,14 +42,37 @@ module RpLogs
 
           key = if page.data['canon'] then 'canon' else 'noncanon' end
           # Add key for canon/noncanon
-          index.data['rps'][key].push page
+          index.data['rps'][key] << page
           # Add tag for canon/noncanon
           page.data['rp_tags'] << (Tag.new key)
           page.data['rp_tags'].sort!
+
+          arc_name = page.data['arc_name']
+          if arc_name then
+            arc_name.each { |n| arcs[n] << page }
+          else
+            no_arc_rps << page
+          end
         }
 
-      index.data['rps']['canon'].sort_by! { |p| p.data['start_date'] }.reverse!
-      index.data['rps']['noncanon'].sort_by! { |p| p.data['start_date'] }.reverse!
+      arcs.each_key { |key| sort_chronologically! arcs[key].rps } 
+      combined_rps = no_arc_rps.map { |x| ['rp', x] } + arcs.values.map { |x| ['arc', x] }
+      combined_rps.sort_by! { |type,x|
+        case type
+        when 'rp'
+          x.data['start_date']
+        when 'arc'
+          x.start_date 
+        end
+      }.reverse!
+      arc_page.data['rps'] = combined_rps 
+
+      sort_chronologically! index.data['rps']['canon']
+      sort_chronologically! index.data['rps']['noncanon']
+    end
+
+    def sort_chronologically!(pages) 
+      pages.sort_by! { |p| p.data['start_date'] }.reverse!
     end
 
     def convertRp(page)
@@ -69,9 +98,10 @@ module RpLogs
 
       # Turn the nicks into characters
       nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
+
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
-      page.data['last_post_time'] = stats[:last_post_time].strftime("%Y-%m-%d")
-      page.data['start_date'] ||= stats[:first_post_time]
+      page.data['end_date'] = stats[:end_date].strftime("%Y-%m-%d")
+      page.data['start_date'] ||= stats[:start_date]
     end
 
     def get_options(page)
@@ -104,8 +134,8 @@ module RpLogs
       }
 
       { :nicks => nicks,
-        :last_post_time => compiled_lines[-1].timestamp,
-        :first_post_time => compiled_lines[0].timestamp }
+        :end_date => compiled_lines[-1].timestamp,
+        :start_date => compiled_lines[0].timestamp }
     end
   end
 

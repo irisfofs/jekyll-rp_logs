@@ -1,0 +1,38 @@
+---
+layout: page
+title: RP Log Index -- Arc View
+rp_arcs: true
+---
+
+<ul class="rp-list">
+{% for x in page['rps'] %}
+  {% assign type = x[0] %}
+  {% assign rp = x[1] %}
+  <li>
+  {% if type == 'arc' %}
+    <h3 class="arc-title" name="{{ rp.name }}">{{ rp.name }}</h3>
+    <ul class="arc-rp-list">
+    {% for arc_rp in rp.rps %}
+      <li>
+        <h4 class="rp-title"><a href="{{ site.baseurl }}{{ arc_rp.url }}">{{ arc_rp.title }}</a>
+          {% unless arc_rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
+          <small>Last post: {{ arc_rp.end_date }}</small>
+        </h4>
+        {% for t in arc_rp.rp_tags %}
+          <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+        {% endfor %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <h4 class="rp-title"><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
+      {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
+      <small>Last post: {{ rp.end_date }}</small>
+    </h4>
+    {% for t in rp.rp_tags %}
+      <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+    {% endfor %}
+  {% endif %}
+  </li>
+{% endfor %}
+</ul>
