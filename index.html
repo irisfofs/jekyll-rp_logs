@@ -5,7 +5,7 @@ rp_index: true
 ---
 
 {% if page['rps']['canon'].size > 0 then %}
-<h2>Canon</h2>
+<h2 name="canon">Canon</h2>
 <ul class="rp-list">
 {% for rp in page['rps']['canon'] %}
   <li>
@@ -22,7 +22,7 @@ rp_index: true
 {% endif %}
 
 {% if page['rps']['noncanon'].size > 0 %}
-<h2>Non-Canon</h2>
+<h2 name="non-canon">Non-Canon</h2>
 <ul class="rp-list">
   {% for rp in page['rps']['noncanon'] %}
     <li>
