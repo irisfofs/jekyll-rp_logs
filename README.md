@@ -42,11 +42,12 @@ In order to be picked up and parsed by Jekyll, each file needs a [YAML front mat
 These are all optional:
 
 * `description` - A short summary that (will eventually be) displayed on the RP page.
-* `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index.
+* `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
 * `canon` - true/false - Whether the RP is considered canonical (whatever that means to you). Sorts RPs into one of two categories in the index.
 * `complete` - true/false - Whether the RP is finished, or is still incomplete. Incomplete RPs are flagged as such on the index.
-* `format` - What format the logs are in, e.g., `weechat`
-* `rp_tags` - YAML list - A list of tags that describe the contents, such as characters involved or events that occur.
+* `format` - YAML list - What format(s) the logs are in, e.g., `[weechat]`
+* `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
+* `arc_name` - YAML list - names of story arcs that the RP belongs to
 
 There are also some more options you can toggle:
 
