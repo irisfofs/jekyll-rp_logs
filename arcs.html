@@ -10,7 +10,7 @@ rp_arcs: true
   {% assign rp = x[1] %}
   <li>
   {% if type == 'arc' %}
-    <h3 class="arc-title" name="{{ rp.name }}">{{ rp.name }}</h3>
+    <h3 class="arc-title"><a name="{{ rp.name }}" href="#{{ rp.name }}">{{ rp.name }}</a></h3>
     <ul class="arc-rp-list">
     {% for arc_rp in rp.rps %}
       <li>

@@ -92,3 +92,8 @@ a.rp-tag {
         
     }
 }
+
+// Undo a styling for RP and arc titles
+.arc-title>a {
+    color: inherit;
+}
