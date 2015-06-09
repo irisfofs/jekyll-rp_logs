@@ -100,7 +100,7 @@ module RpLogs
       nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
 
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
-      page.data['end_date'] = stats[:end_date].strftime("%Y-%m-%d")
+      page.data['end_date'] = stats[:end_date]
       page.data['start_date'] ||= stats[:start_date]
     end
 

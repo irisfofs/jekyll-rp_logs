@@ -8,15 +8,7 @@ rp_index: true
 <h2 class="arc-title"><a name="canon" href="#canon">Canon</a></h2>
 <ul class="rp-list">
 {% for rp in page['rps']['canon'] %}
-  <li>
-    <h4 class="rp-title"><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
-      {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
-      <small>Last post: {{ rp.end_date }}</small>
-    </h4>
-  {% for t in rp.rp_tags %}
-    <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
-  {% endfor %}
-  </li>
+  {% include rp.html rp=rp %}
 {% endfor %}
 </ul>
 {% endif %}
@@ -25,15 +17,7 @@ rp_index: true
 <h2 class="arc-title"><a name="non-canon" href="#non-canon">Non-Canon</a></h2>
 <ul class="rp-list">
   {% for rp in page['rps']['noncanon'] %}
-    <li>
-      <h4 class="rp-title"><a href="{{ site.baseurl }}{{ rp.url }}">{{ rp.title }}</a>
-      {% unless rp.complete %}<small>[INCOMPLETE]</small>{% endunless %}
-      <small>Last post: {{ rp.end_date }}</small>
-      </h4>
-    {% for t in rp.rp_tags %}
-      <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
-    {% endfor %}
-    </li>
+    {% include rp.html rp=rp %}
   {% endfor %}
 </ul>
 {% endif %}
