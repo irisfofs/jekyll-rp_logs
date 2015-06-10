@@ -6,6 +6,11 @@
     transition: $transition-property $transition-time $method;
 }
 
+// Temporary fix until baseline is back to normal
+li { 
+  list-style: none;
+}
+
 .rp-list li {
     margin-bottom: 15px;
 }
