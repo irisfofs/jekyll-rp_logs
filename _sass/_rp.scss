@@ -14,23 +14,21 @@
   align-items: baseline;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: .25em;
+  margin-bottom: .2em;
   vertical-align: middle;
   width: 100%;
 }
 
 .rp-entry {
+  flex: 1 1 auto;
   margin-bottom: 0px;
+  max-width: 450px;
+}
+
+.rp-metadata-container {
   // Basis so that content wraps afterwards
-  flex: 1 1 $on-palm / 2;
-}
-
-.rp-end-date {
-  flex: 0 0 auto;
-}
-
-.rp-title {
-  
+  flex: 1 0 auto;
+  text-align: right
 }
 
 .rp-completion {
@@ -40,11 +38,11 @@
 }
 
 // Styling for when the screen is too small
-@include media-query($on-palm) {
-    .rp-entry {
-        flex-basis: $on-palm;
-    }
-}
+// @include media-query($on-palm) {
+//     .rp-entry {
+//         flex-basis: $on-palm;
+//     }
+// }
 
 /* Undo normal pre styles */
 #log {

@@ -3,13 +3,15 @@
     <h4 class="rp-entry">
       <a class="rp-title" href="{{ site.baseurl }}{{ include.rp.url }}">{{ include.rp.title }}</a>
     </h4>
-    {% if include.rp.complete %}
-      <span class="rp-completion fa"></span>
-    {% else %} 
-      <span class="rp-completion fa fa-times" title="Incomplete"></span>
-    {% endif %}
-    <span class="rp-start-date">{{ include.rp.start_date | date: "%F" }} &mdash;&nbsp;</span>
-    <span class="rp-end-date">{{ include.rp.end_date | date: "%F" }}</span>
+    <div class="rp-metadata-container">
+      {% if include.rp.complete %}
+        <span class="rp-completion fa"></span>
+      {% else %} 
+        <span class="rp-completion fa fa-times" title="Incomplete"></span>
+      {% endif %}
+      <span class="rp-start-date">{{ include.rp.start_date | date: "%F" }} &mdash;</span>
+      <span class="rp-end-date">{{ include.rp.end_date | date: "%F" }}</span>
+    </div>
   </div>
   {% for t in include.rp.rp_tags %}
     <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
