@@ -5,9 +5,9 @@
     </h4>
     <div class="rp-metadata-container">
       {% if include.rp.complete %}
-        <span class="rp-completion fa"></span>
+        <span class="rp-completion rp-complete fa fa-check" title="Complete"></span>
       {% else %} 
-        <span class="rp-completion fa fa-times" title="Incomplete"></span>
+        <span class="rp-completion rp-incomplete fa fa-times" title="Incomplete"></span>
       {% endif %}
       <span class="rp-start-date">{{ include.rp.start_date | date: "%F" }} &mdash;</span>
       <span class="rp-end-date">{{ include.rp.end_date | date: "%F" }}</span>

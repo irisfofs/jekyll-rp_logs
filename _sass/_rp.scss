@@ -42,6 +42,9 @@ li {
   width: 1.5em;
 }
 
+.rp-complete { color: $light-green; }
+.rp-incomplete { color: $light-red; }
+
 // Styling for when the screen is too small
 // @include media-query($on-palm) {
 //     .rp-entry {
@@ -113,17 +116,17 @@ a.rp-tag {
     white-space: nowrap;
 
     &.rp-tag-character {
-        background-color: #313C36;
-        // border: 1px solid #80d4aa;
-        box-shadow: 0 0 2px 0px darken(#80d4aa, 25%);
-        color: #80d4aa;
+        background-color: $dark-green;
+        // border: 1px solid $light-green;
+        box-shadow: 0 0 2px 0px darken($light-green, 25%);
+        color: $light-green;
     }
 
     &.rp-tag-meta {
-        background-color: #41363c;
-        // border: 1px solid #ecbcbc;
-        box-shadow: 0 0 2px 0px darken(#ecbcbc, 25%);
-        color: #ecbcbc;
+        background-color: $dark-red;
+        // border: 1px solid $light-red;
+        box-shadow: 0 0 2px 0px darken($light-red, 25%);
+        color: $light-red;
     }
 
     &:hover {
