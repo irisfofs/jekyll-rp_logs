@@ -28,6 +28,8 @@ module RpLogs
       # Arc-style directory
       arc_page = site.pages.detect { |page| page.data['rp_arcs'] }
 
+      site.data['menu_pages'] = [index, arc_page]
+
       arcs = Hash.new { |hash, key| hash[key] = Arc.new(key) }
       no_arc_rps = []
 
