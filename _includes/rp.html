@@ -1,8 +1,8 @@
 <li>
   <div class="rp-entry-container">
-    <h4 class="rp-entry">
-      <a class="rp-title" href="{{ site.baseurl }}{{ include.rp.url }}">{{ include.rp.title }}</a>
-    </h4>
+    <a class="rp-entry" href="{{ site.baseurl }}{{ include.rp.url }}">
+      <h4 class="rp-title">{{ include.rp.title }}</h4>
+    </a>
     <div class="rp-metadata-container">
       {% if include.rp.complete %}
         <span class="rp-completion rp-complete fa fa-check" title="Complete"></span>

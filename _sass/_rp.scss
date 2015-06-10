@@ -20,26 +20,28 @@ li {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: .2em;
-  vertical-align: middle;
   width: 100%;
 }
 
 .rp-entry {
   flex: 1 1 auto;
-  margin-bottom: 0px;
   max-width: 450px;
+}
+
+.rp-title {
+    margin-bottom: 0px;
 }
 
 .rp-metadata-container {
   // Basis so that content wraps afterwards
   flex: 1 0 auto;
-  text-align: right
-}
+  text-align: right;
 
-.rp-completion {
-  align-self: center;
-  text-align: center;
-  width: 1.5em;
+  .rp-completion {
+    font-size: 1.125em;
+    text-align: center;
+    width: 1.5em;
+  }
 }
 
 .rp-complete { color: $light-green; }
