@@ -1,4 +1,5 @@
 (function() {
+    "use strict";
     var fixedMenu = $("#fixed_menu");
     var oocButton = $("#ooc_label");
     // get window
@@ -90,4 +91,3 @@
 
     $("#ooc_toggle").change(toggleOOC)
 })();
-
