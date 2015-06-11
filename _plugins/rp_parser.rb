@@ -74,7 +74,7 @@ module RpLogs
 
       def mergeable_with?(next_line)
         # Only merge posts close enough in time
-        close_enough_time = next_line.timestamp - @timestamp <= MAX_SECONDS_BETWEEN_POSTS
+        close_enough_time = (next_line.timestamp - @timestamp) * 24 * 60 * 60 <= MAX_SECONDS_BETWEEN_POSTS
         # Only merge posts with same sender
         same_sender = @sender == next_line.sender
         # Only merge rp lines
