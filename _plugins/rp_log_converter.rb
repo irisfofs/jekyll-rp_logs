@@ -17,6 +17,39 @@ module RpLogs
       config['rp_convert'] ||= true
     end
 
+    def skip_page(page, message)
+      @site.pages.delete page
+      print "\nSkipping #{page.path}: #{message}"
+    end
+
+    def has_errors?(page)
+      # Verify that formats are specified
+      if page.data['format'].nil? || page.data['format'].length == 0 then 
+        skip_page(page, "No formats specified")
+        return true
+      else
+        # Verify that the parser for each format exists
+        page.data['format'].each { |format| 
+          if @@parsers[format].nil? then
+            skip_page(page, "Format #{format} does not exist.")
+            return true
+          end
+        }
+      end
+
+      # Verify that tags exist 
+      if page.data['rp_tags'].nil? then
+        skip_page(page, "No tags specified")
+        return true
+      # Verify that arc names are in the proper format
+      elsif not (page.data['arc_name'].nil? || page.data['arc_name'].respond_to?('each')) then
+        skip_page(page, "arc_name must be blank or a YAML list")
+        return true
+      end
+
+      false
+    end
+
     def generate(site)
       return unless site.config['rp_convert']
       @site = site
@@ -37,23 +70,30 @@ module RpLogs
       # Also build up our hash of tags
       site.pages.select { |p| p.data['layout'] == 'rp' }
         .each { |page|
-          # puts page.inspect
-          page.data['rp_tags'] = page.data['rp_tags'].split(',').map { |t| Tag.new t }
+          # because we're iterating over a selected array, we can delete from the original
+          begin
+            next if has_errors? page
 
-          convertRp page
+            page.data['rp_tags'] = page.data['rp_tags'].split(',').map { |t| Tag.new t }
 
-          key = if page.data['canon'] then 'canon' else 'noncanon' end
-          # Add key for canon/noncanon
-          index.data['rps'][key] << page
-          # Add tag for canon/noncanon
-          page.data['rp_tags'] << (Tag.new key)
-          page.data['rp_tags'].sort!
+            # Skip if something goes wrong
+            next unless convertRp page
 
-          arc_name = page.data['arc_name']
-          if arc_name then
-            arc_name.each { |n| arcs[n] << page }
-          else
-            no_arc_rps << page
+            key = if page.data['canon'] then 'canon' else 'noncanon' end
+            # Add key for canon/noncanon
+            index.data['rps'][key] << page
+            # Add tag for canon/noncanon
+            page.data['rp_tags'] << (Tag.new key)
+            page.data['rp_tags'].sort!
+
+            arc_name = page.data['arc_name']
+            if arc_name then
+              arc_name.each { |n| arcs[n] << page }
+            else
+              no_arc_rps << page
+            end
+          rescue 
+            skip_page(page, "Error parsing #{page.path}: " + $!.inspect)
           end
         }
 
@@ -91,6 +131,11 @@ module RpLogs
         }
       }
 
+      if compiled_lines.length == 0 then 
+        skip_page(page, "No lines were matched by any format.")
+        return false
+      end
+
       merge_lines! compiled_lines
       stats = extract_stats compiled_lines
 
@@ -104,6 +149,8 @@ module RpLogs
       page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
       page.data['end_date'] = stats[:end_date]
       page.data['start_date'] ||= stats[:start_date]
+
+      true
     end
 
     def get_options(page)
