@@ -38,7 +38,8 @@ defaults:
       canon: false
       complete: false
       format: [weechat]
+      infer_char_tags: true
       layout: rp
+      merge_text_into_rp: []
       rp_tags: ""
       strict_ooc: false
-      merge_text_into_rp: []

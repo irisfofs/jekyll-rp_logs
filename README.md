@@ -53,6 +53,7 @@ There are also some more options you can toggle:
 
 * `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
 * `merge_text_into_rp` - YAML list - A list of nicks whose clients split actions into normal text, like [IRCCloud did for a while](https://twitter.com/XiaguZ/status/590773722593763328).
+* `infer_char_tags` - true/false - If false, don't infer the characters in the RP by the nicks who do emotes.
 
 ### As a plugin in an existing Jekyll site
 TBD. 

@@ -143,10 +143,12 @@ module RpLogs
 
       page.content = split_output.join("\n")
 
-      # Turn the nicks into characters
-      nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
+      if page.data['infer_char_tags'] then
+        # Turn the nicks into characters
+        nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
+        page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
+      end
 
-      page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
       page.data['end_date'] = stats[:end_date]
       page.data['start_date'] ||= stats[:start_date]
 
