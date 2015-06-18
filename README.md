@@ -26,7 +26,7 @@ Optionally, add the `--watch` flag to automatically rebuild if you add more logs
 **Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
 
 #### Adding RPs
-Dump all of them into the root directory of the site (`jekyll-rp-logs`). Right now, only default-format Weechat logs are supported. 
+Dump all of them into the _rps/ directory of the site (`jekyll-rp-logs`). Right now, only default-format Weechat logs are supported. 
 
 All joins, parts, and quits are stripped, so you don't have to bother pulling those out. All lines that are emotes (`/me`) are RP, and all other lines are OOC by default. Consecutive posts from the same person with timestamps less than a few seconds apart are merged together.
 
