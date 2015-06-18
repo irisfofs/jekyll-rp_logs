@@ -42,8 +42,13 @@ module RpLogs
       end
 
       def output
+        # String used for the timestamp anchors
         anchor = @timestamp.strftime('%Y-%m-%d_%H:%M:%S')
-        ts_out = "<a name=\"#{anchor}\" href=\"##{anchor}\">#{@timestamp.strftime('%H:%M')}</a>"
+        # String used when hovering over timestamps (friendly long-form)
+        title = @timestamp.strftime('%H:%M:%S %B %-d, %Y')
+        # String actually displayed on page
+        display = @timestamp.strftime('%H:%M')
+        ts_out = "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display}</a>"
 
         sender_out = nil
         case @base_type
