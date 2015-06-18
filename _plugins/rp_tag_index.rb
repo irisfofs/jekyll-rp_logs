@@ -45,8 +45,7 @@ module RpLogs
     # Returns a hash of tags => [pages with tag]
     def rps_by_tag(site) 
       tag_ref = Hash.new { |hash, key| hash[key] = Set.new }
-      site.pages.select { |p| p.data['layout'] == 'rp' }
-        .each { |page| 
+      site.collections[RpLogGenerator::RP_KEY].docs.each { |page| 
           page.data['rp_tags'].each { |tag| tag_ref[tag] << page }
         }
       return tag_ref

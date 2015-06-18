@@ -7,6 +7,8 @@ module RpLogs
     safe true
     priority :normal
 
+    RP_KEY = "rps"
+
     @@parsers = {}
 
     def RpLogGenerator.add(parser) 
@@ -18,7 +20,7 @@ module RpLogs
     end
 
     def skip_page(page, message)
-      @site.pages.delete page
+      @site.collections[RP_KEY].docs.delete page
       print "\nSkipping #{page.path}: #{message}"
     end
 
@@ -68,7 +70,7 @@ module RpLogs
 
       # Convert all of the posts to be pretty
       # Also build up our hash of tags
-      site.pages.select { |p| p.data['layout'] == 'rp' }
+      site.collections[RP_KEY].docs.select { true }
         .each { |page|
           # because we're iterating over a selected array, we can delete from the original
           begin

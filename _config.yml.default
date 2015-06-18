@@ -21,19 +21,24 @@ exclude:
 permalink: pretty
 
 rp_convert: true
-rp_dir: &rp_dir
-  ""
 
 rp_tag_index: true
 rp_tag_dir: /tags
 rp_tag_index_layout: tag_index
 rp_tag_title_prefix: "RPs tagged "
 
+collections:
+  # The RPs must be in a directory named exactly this, prefixed by an underscore.
+  # So by default: _rps/ 
+  # If you change this, you also need to change the collection key name in rp_log_converter.rb
+  rps:
+    output: true
+
 defaults:
   -
     scope:
       path: ""
-      type: pages # this still includes main.scss for some reason
+      type: rps # Needs to have the same name as the collection above
     values:
       canon: false
       complete: false
@@ -41,5 +46,6 @@ defaults:
       infer_char_tags: true
       layout: rp
       merge_text_into_rp: []
+      permalink: /:path/
       rp_tags: ""
       strict_ooc: false
