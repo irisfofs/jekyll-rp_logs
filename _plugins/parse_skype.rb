@@ -3,10 +3,10 @@ require_relative "rp_parser"
 
 module RpLogs
 
-  class ZskypeParser < RpLogs::Parser
+  class SkypeParser < RpLogs::Parser #This has been tested on Skype 6.2
 
     # Add this class to the parsing dictionary
-    FORMAT_STR = 'Zskype'
+    FORMAT_STR = 'Skype'
     RpLogGenerator.add self
 
     # Stuff
