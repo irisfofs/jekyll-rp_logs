@@ -5,3 +5,5 @@ module Jekyll
     # Your code goes here...
   end
 end
+
+require "jekyll/rp_logs/rp_log_converter"
