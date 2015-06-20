@@ -95,9 +95,10 @@ module RpLogs
               no_arc_rps << page
             end
           rescue 
+            # Catch all for any other exception encountered when parsing a page
             skip_page(page, "Error parsing #{page.path}: " + $!.inspect)
-            puts 
-            puts $!.backtrace[0..5]
+            # Raise exception, so Jekyll prints backtrace if run with --trace
+            raise $!
           end
         }
 
