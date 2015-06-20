@@ -26,19 +26,19 @@ module RpLogs
       def parse_line(line, options = {}) 
         case line
         when JUNK
-          nil
+          return nil
         when EMOTE
           date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-          Parser::LogLine.new(date, options, sender: $3, contents: $4, \
+          return Parser::LogLine.new(date, options, sender: $3, contents: $4, \
             flags: $1, type: :rp)
         when TEXT
           date = DateTime.strptime($2, TIMESTAMP_FORMAT)
           mode = if $3 != '' then $3 else ' ' end
-          Parser::LogLine.new(date, options, sender: $4, contents: $5, \
+          return Parser::LogLine.new(date, options, sender: $4, contents: $5, \
             flags: $1, type: :ooc, mode: mode)
         else
           # Only put text and emotes in the log
-          nil
+          return nil
         end
       end
     end
