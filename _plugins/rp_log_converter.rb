@@ -96,6 +96,8 @@ module RpLogs
             end
           rescue 
             skip_page(page, "Error parsing #{page.path}: " + $!.inspect)
+            puts 
+            puts $!.backtrace[0..5]
           end
         }
 

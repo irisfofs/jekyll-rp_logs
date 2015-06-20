@@ -18,17 +18,17 @@
         shown = false;
         fixedMenu.removeClass('shown');
         clearHideTimer();
-    }
+    };
 
     var showMenu = function() {
         shown = true;
         fixedMenu.addClass('shown');
         resetHideTimer();
-    }
+    };
 
     var allowMenuClose = function() {
         canClose = true;
-    }
+    };
 
     var resetHideTimer = function() {
         clearTimeout(timeout);
@@ -36,11 +36,11 @@
         canClose = false;
         timeout = setTimeout(hideMenu, 2000);
         closeableTimeout = setTimeout(allowMenuClose, 500);
-    }
+    };
 
     var clearHideTimer = function() {
         clearTimeout(timeout);
-    }
+    };
 
     win.on("scroll", function() {
         var curScroll = win.scrollTop();
@@ -86,8 +86,8 @@
         $(".ooc").toggle(visible);
 
         $(window).scrollTop(originalScroll + (topPost.offset().top - originalOffset.top));
-    }
+    };
     toggleOOC();
 
-    $("#ooc_toggle").change(toggleOOC)
+    $("#ooc_toggle").change(toggleOOC);
 })();

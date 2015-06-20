@@ -3,10 +3,10 @@ require_relative "rp_parser"
 
 module RpLogs
 
-  class SkypeParser < RpLogs::Parser #This has been tested on Skype 6.2
+  class Skype24Parser < RpLogs::Parser #This is for the date format [05.06.15 10:58:47]
 
     # Add this class to the parsing dictionary
-    FORMAT_STR = 'Skype'
+    FORMAT_STR = 'Skype24'
     RpLogGenerator.add self
 
     # Stuff
