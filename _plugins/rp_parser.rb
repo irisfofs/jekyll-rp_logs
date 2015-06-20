@@ -15,8 +15,12 @@ module RpLogs
       attr :output_type
       attr :options
 
+      attr :last_merged_timestamp
+
       def initialize(timestamp, options = {}, sender:, contents:, flags:, type:, mode: ' ') 
         @timestamp = timestamp
+        # Initialize to be the same as @timestamp
+        @last_merged_timestamp = timestamp
         @mode = mode
         @sender = sender
         @contents = contents
@@ -79,7 +83,8 @@ module RpLogs
 
       def mergeable_with?(next_line)
         # Only merge posts close enough in time
-        close_enough_time = (next_line.timestamp - @timestamp) * 24 * 60 * 60 <= MAX_SECONDS_BETWEEN_POSTS
+        # The difference in time between the post merged into this one, and the next post, must be less than the limit
+        close_enough_time = (next_line.timestamp - @last_merged_timestamp) * 24 * 60 * 60 <= MAX_SECONDS_BETWEEN_POSTS
         # Only merge posts with same sender
         same_sender = @sender == next_line.sender
         # Only merge rp lines
@@ -94,8 +99,8 @@ module RpLogs
       end
 
       def merge!(next_line)
-        # How to handle content..
         @contents += ' ' + next_line.contents
+        @last_merged_timestamp = next_line.timestamp
       end
 
       def inspect()
