@@ -15,7 +15,12 @@ module RpLogs
       NICK = /([\w\-\\\[\]\{\}\^\`\|]+)/
       DATE_REGEXP = /(\d\d \d\d \d\d\[\d\d:\d\d\])/ #Remember to change this for your date format
 	  #For example, this regex is for, mm dd yy[HH:nn] or 06 14 15[18:48]
+	  #The default mirc date format is HH:nn
 
+	  #Also make sure to change this - http://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html
+	  TIMESTAMP_FORMAT = '%m %d %y[%H:%M]'
+	  #If you are using the default mirc format, this should be '[%H:%M]'
+	  
       FLAGS = /((?:![A-Z]+ )*)/
 	  # Crappy but works
 	  # The ()?((?=\d{4})(\d\d))? bit of code is to remove the  and two random numbers in front of lines. 
@@ -24,8 +29,6 @@ module RpLogs
 	  JUNK = /()?((?=\d{4})(\d\d))?#{DATE_REGEXP} \* #{MODE}#{NICK} (sets mode:|is now known as|(#{USER_AT_HOST} (has joined|Quit|has left))).*$/
       EMOTE = /^#{FLAGS}()?((?=\d{4})(\d\d))?#{DATE_REGEXP}\s\*\s#{MODE}#{NICK}\s+([^\n]*)$/
       TEXT  = /^#{FLAGS}()?((?=\d{4})(\d\d))?#{DATE_REGEXP}\s<#{MODE}#{NICK}>\s([^\n]*)$/
-
-      TIMESTAMP_FORMAT = '%m %d %y[%H:%M]'
 
       def parse_line(line, options = {}) 
         case line
