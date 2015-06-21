@@ -3,13 +3,18 @@
 ## Installation
 
 ### Bundler
-Add these lines to your application's Gemfile:
+Create a file named Gemfile with the following contents:
 
 ```ruby
+source 'https://rubygems.org'
+ 
 group :jekyll_plugins do
-  gem 'jekyll-rp_logs'
+  gem "jekyll-rp_logs"
 end
 ```
+
+(If you already have a Gemfile, just add the three group lines instead.)
+
 And then execute:
 
     $ bundle
