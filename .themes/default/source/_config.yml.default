@@ -17,6 +17,9 @@ markdown: kramdown
 exclude: 
   - LICENSE
   - README.md
+  - Gemfile
+  - Rakefile
+  - Gemfile.lock
 
 permalink: pretty
 
