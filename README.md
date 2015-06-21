@@ -1,6 +1,8 @@
 # Jekyll::RpLogs
 
 ## Installation
+
+### Bundler
 Add these lines to your application's Gemfile:
 
 ```ruby
@@ -8,14 +10,18 @@ group :jekyll_plugins do
   gem 'jekyll-rp_logs'
 end
 ```
-
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+The Gemfile group will tell Jekyll to load the gem, and let you keep it up to date easily with Bundler.
+
+### Manually
+Alternatively, install it yourself as:
 
     $ gem install jekyll-rp_logs
+
+In this case you'll need to tell Jekyll to load the gem somehow, such as option 2 on the [Installing a plugin](http://jekyllrb.com/docs/plugins/#installing-a-plugin) instructions.
 
 ## Usage
 
