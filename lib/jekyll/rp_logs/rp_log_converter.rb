@@ -1,6 +1,3 @@
-require_relative "rp_tags"
-require_relative "rp_parser"
-
 module RpLogs
 
   class RpLogGenerator < Jekyll::Generator

@@ -1,4 +1,5 @@
 require "jekyll/rp_logs/version"
+require 'jekyll'
 
 module Jekyll
   module RpLogs
@@ -6,4 +7,4 @@ module Jekyll
   end
 end
 
-require "jekyll/rp_logs/rp_log_converter"
+Gem.find_files("jekyll/rp_logs/*.rb").each { |path| require path }
