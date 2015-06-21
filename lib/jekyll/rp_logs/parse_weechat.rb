@@ -5,7 +5,7 @@ module Jekyll
 
       # Add this class to the parsing dictionary
       FORMAT_STR = 'weechat'
-      RpLogs::RpLogGenerator.add self
+      RpLogGenerator.add self
 
       # Stuff
       class << self
