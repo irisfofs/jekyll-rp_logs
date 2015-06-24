@@ -17,14 +17,14 @@ end
 
 And then execute:
 
-    $ bundle
+    bundle
 
 The Gemfile group will tell Jekyll to load the gem, and let you keep it up to date easily with Bundler.
 
 ### Manually
 Alternatively, install it yourself as:
 
-    $ gem install jekyll-rp_logs
+    gem install jekyll-rp_logs
 
 In this case you'll need to tell Jekyll to load the gem somehow, such as option 2 on the [Installing a plugin](http://jekyllrb.com/docs/plugins/#installing-a-plugin) instructions.
 
@@ -35,13 +35,17 @@ Require the gem in your Rakefile to get access to its exposed tasks:
 
 	echo "require 'jekyll/rp_logs'" >> Rakefile
 
-To set up a new site in the current directory, execute:
+To set up a Jekyll site skeleton in the current directory, execute:
 
 	rake rp_logs:new
 
-Then edit `_config.yml` and fill in the needed info for your setup.
+This will pull in all the necessary files (SASS, `_includes`, default config, etc) for Jekyll to build the site. 
+
+Edit `_config.yml` and fill in the needed info for your setup.
 
 **Warning:** Don't tell Jekyll to output to a directory that has anything useful in it -- it deletes anything in the `destination` directory whenever you build the site.
+
+Now you should be ready to build!
 
 ### Building the site
 Run this command: 
@@ -84,9 +88,17 @@ There are also some more options you can toggle:
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `rake install`.
+
+To install the gem and create, then serve a development site to test your changes, run `rake deploy`. This will do a bunch of things:
+
+* Create the `dev_site` directory
+* Populate it with a `Gemfile` and `Rakefile` as mentioned in the installation instructions
+* Run `bundle` and `rake rp_logs:new`
+* Copy test logs from `test/` into the site's `_rps/` directory
+* Run `jekyll serve` to build and host the site at `localhost:4000` so you can see it!
 
 ## Contributing
 
