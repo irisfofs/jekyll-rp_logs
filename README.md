@@ -2,8 +2,13 @@
 
 ## Installation
 
-### Bundler
-Create a file named Gemfile with the following contents:
+### Bundler (Recommended)
+
+Install the bundle gem with 
+    
+    gem install bundle
+
+Create a file named `Gemfile` with the following contents:
 
 ```ruby
 source 'https://rubygems.org'
@@ -31,9 +36,12 @@ In this case you'll need to tell Jekyll to load the gem somehow, such as option 
 ## Usage
 
 ### Making a new site
-Require the gem in your Rakefile to get access to its exposed tasks:
 
-	echo "require 'jekyll/rp_logs'" >> Rakefile
+To get started with a new site, create a fresh build directory that will be used to hold the jekyll input files. Here, all of your raw logs, styling, and templates will be stored.
+
+In this directory, create a file named `Rakefile` and require the gem to get access to its exposed tasks like so:
+
+	echo "require 'jekyll/rp_logs'" > Rakefile
 
 To set up a Jekyll site skeleton in the current directory, execute:
 
@@ -41,23 +49,16 @@ To set up a Jekyll site skeleton in the current directory, execute:
 
 This will pull in all the necessary files (SASS, `_includes`, default config, etc) for Jekyll to build the site. 
 
+*Important:* To allow jekyll to actually use the plugin, create a Gemfile as specified above in the *Bundler* section and place it into the build directory.
+
 Edit `_config.yml` and fill in the needed info for your setup.
 
 **Warning:** Don't tell Jekyll to output to a directory that has anything useful in it -- it deletes anything in the `destination` directory whenever you build the site.
 
 Now you should be ready to build!
 
-### Building the site
-Run this command: 
-	
-	jekyll build
-
-Optionally, add the `--watch` flag to automatically rebuild if you add more logs. Then get the output to somewhere that's served by a webserver, either by setting your `destination` to something there or by copying it manually.
-
-**Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
-
 ### Adding RPs
-Dump all of them into the `_rps/` directory of the site.
+Dump all of the raw logs into the `_rps/` directory of the site.
 
 All joins, parts, and quits are stripped, so you don't have to bother pulling those out. All lines that are emotes (`/me`) are RP, and all other lines are OOC by default. Consecutive posts from the same person with timestamps less than a few seconds apart are merged together.
 
@@ -85,6 +86,15 @@ There are also some more options you can toggle:
 * `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
 * `merge_text_into_rp` - YAML list - A list of nicks whose clients split actions into normal text, like [IRCCloud did for a while](https://twitter.com/XiaguZ/status/590773722593763328).
 * `infer_char_tags` - true/false - If false, don't infer the characters in the RP by the nicks who do emotes.
+
+### Building the site
+Run this command: 
+	
+	jekyll build
+
+Optionally, add the `--watch` flag to automatically rebuild if you add more logs. Then get the output to somewhere that's served by a webserver, either by setting your `destination` to something there or by copying it manually.
+
+**Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
 
 ## Development
 
