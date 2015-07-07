@@ -37,7 +37,7 @@ In this case you'll need to tell Jekyll to load the gem somehow, such as option 
 
 ### Making a new site
 
-To get started with a new site, create a fresh build directory that will be used to hold the jekyll input files. Here, all of your raw logs, styling, and templates will be stored.
+To get started with a new site, create a fresh build directory that will be used to hold the Jekyll input files. Here, all of your raw logs, styling, and templates will be stored.
 
 In this directory, create a file named `Rakefile` and require the gem to get access to its exposed tasks like so:
 
@@ -49,7 +49,7 @@ To set up a Jekyll site skeleton in the current directory, execute:
 
 This will pull in all the necessary files (SASS, `_includes`, default config, etc) for Jekyll to build the site. 
 
-*Important:* To allow jekyll to actually use the plugin, create a Gemfile as specified above in the *Bundler* section and place it into the build directory.
+*Important:* To allow Jekyll to actually use the plugin, create a Gemfile as specified above in the [Bundler](#bundler-recommended) section and place it into the build directory.
 
 Edit `_config.yml` and fill in the needed info for your setup.
 
@@ -59,13 +59,6 @@ Now you should be ready to build!
 
 ### Adding RPs
 Dump all of the raw logs into the `_rps/` directory of the site.
-
-All joins, parts, and quits are stripped, so you don't have to bother pulling those out. All lines that are emotes (`/me`) are RP, and all other lines are OOC by default. Consecutive posts from the same person with timestamps less than a few seconds apart are merged together.
-
-To flag an OOC line as RP, or vice versa, use
-
-* `!RP ` before the timestamp to manually flag the line as RP
-* `!OOC ` before the timestamp to manually flag the line as OOC
 
 #### YAML Front Matter
 In order to be picked up and parsed by Jekyll, each file needs a [YAML front matter](http://jekyllrb.com/docs/frontmatter/). One field is required:
@@ -86,6 +79,21 @@ There are also some more options you can toggle:
 * `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
 * `merge_text_into_rp` - YAML list - A list of nicks whose clients split actions into normal text, like [IRCCloud did for a while](https://twitter.com/XiaguZ/status/590773722593763328).
 * `infer_char_tags` - true/false - If false, don't infer the characters in the RP by the nicks who do emotes.
+
+#### Formatting the logs
+All joins, parts, and quits are stripped, so you don't have to bother pulling those out. All lines that are emotes (`/me`) are RP, and all other lines are OOC by default. Consecutive posts from the same person with timestamps less than a few seconds apart are merged together.
+
+To flag an OOC line as RP, or vice versa, use
+
+* `!RP ` before the timestamp to manually flag the line as RP
+* `!OOC ` before the timestamp to manually flag the line as OOC
+
+To force a line to be merged, or prevent it from being merged, use
+
+* `!MERGE ` before the timestamp to force the line to be merged into the previous one, regardless of the time between them
+* `!SPLIT ` before the timestamp to force the line to be kept separate from the previous one, regardless of the time between them
+
+These flags can be combined.
 
 ### Building the site
 Run this command: 
