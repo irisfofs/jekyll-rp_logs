@@ -8,6 +8,8 @@ module Jekyll
         MAX_SECONDS_BETWEEN_POSTS = 3
         RP_FLAG = '!RP'
         OOC_FLAG = '!OOC'
+        MERGE_FLAG = '!MERGE'
+        SPLIT_FLAG = '!SPLIT'
 
         attr :timestamp, :mode, :sender, :contents
         attr :flags
@@ -95,8 +97,12 @@ module Jekyll
           # Maybe a job for !NOTMERGE flag, or similar
           next_line_is_rp = next_line.output_type == :rp || \
             (@options[:merge_text_into_rp].include?(@sender) && next_line.base_type == :ooc)
+          # Do not merge line if next line marked with !SPLIT
+          split_flag = next_line.flags.include? SPLIT_FLAG
+          # Merge if next line marked with !MERGE, regardless of other options
+          merge_flag = next_line.flags.include? MERGE_FLAG
 
-          close_enough_time && same_sender && is_rp && next_line_is_rp
+          merge_flag || (!split_flag && close_enough_time && same_sender && is_rp && next_line_is_rp)
         end
 
         def merge!(next_line)
