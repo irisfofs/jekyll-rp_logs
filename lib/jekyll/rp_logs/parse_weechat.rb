@@ -9,14 +9,18 @@ module Jekyll
 
       # Stuff
       class << self
-        MODE = /([+%@&~!]?)/
-        NICK = /([\w\-\\\[\]\{\}\^\`\|]+)/
-        DATE_REGEXP = /(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
+        # Regular expressions for chunks repeated in each type of message
+        # (?<foo>pattern) is a named group, accessible via $~[:foo]
+        MODE = /(?<mode>[+%@&~!]?)/
+        NICK = /(?<nick>[\w\-\\\[\]\{\}\^\`\|]+)/
+        DATE_REGEXP = /(?<timestamp>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
 
-        FLAGS = /((?:![A-Z]+ )*)/
+        FLAGS = /(?<flags>(?:![A-Z]+ )*)/
+
+        # Regular expressions for matching each type of line
         JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/
-        EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+([^\n]*)$/
-        TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t([^\n]*)$/
+        EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+(?<msg>[^\n]*)$/
+        TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t(?<msg>[^\n]*)$/
 
         TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -25,14 +29,14 @@ module Jekyll
           when JUNK
             return nil
           when EMOTE
-            date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-            return Parser::LogLine.new(date, options, sender: $3, contents: $4, \
-              flags: $1, type: :rp)
+            date = DateTime.strptime($~[:timestamp], TIMESTAMP_FORMAT)
+            return Parser::LogLine.new(date, options, sender: $~[:nick], \
+              contents: $~[:msg], flags: $~[:flags], type: :rp)
           when TEXT
-            date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-            mode = if $3 != '' then $3 else ' ' end
-            return Parser::LogLine.new(date, options, sender: $4, contents: $5, \
-              flags: $1, type: :ooc, mode: mode)
+            date = DateTime.strptime($~[:timestamp], TIMESTAMP_FORMAT)
+            $~[:mode] = ' ' if $~[:mode] == ''
+            return Parser::LogLine.new(date, options, sender: $~[:nick], \
+              contents: $~[:msg], flags: $~[:flags], type: :ooc, mode: $~[:mode])
           else
             # Only put text and emotes in the log
             return nil
