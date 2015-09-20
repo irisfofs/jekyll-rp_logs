@@ -1,5 +1,18 @@
 # Jekyll::RpLogs
 
+This plugin provides support for building prettified versions of raw RP logs. Extra noise is stripped out during the building to keep the process as simple as possible: paste in entire log, add title and tags, and go.
+
+The result of building all the test files can be seen here. http://andrew.rs/projects/jekyll-rp_logs/
+
+## Features
+* Link to a specific post by its timestamp
+* Show and hide OOC chatter at will
+* Responsive layout is readable even on phones 
+* Can be extended to support more log formats via custom parsers (pull requests welcome!)
+* Supports multiple formats per file, for those times where you switched IRC clients in the middle of something. Or moved from IRC to Skype, or vice versa.
+* Infers characters involved in each RP by the nicks speaking
+* Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
+
 ## Installation
 
 ### Bundler (Recommended)
