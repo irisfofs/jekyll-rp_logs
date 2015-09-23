@@ -16,6 +16,7 @@ end
 
 CLEAN.include("dev_site/*")
 
+desc 'Deploys the site to the dev_site directory and serves it for testing'
 task :deploy => ["clean", "install", "dev_site", "dev_site/Gemfile", "dev_site/Rakefile"] do 
   puts Dir.pwd
   Bundler.with_clean_env do 
