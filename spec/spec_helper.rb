@@ -1,4 +1,6 @@
 # Must be in the very top, before application code loaded
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 require 'simplecov'
 SimpleCov.start
 
