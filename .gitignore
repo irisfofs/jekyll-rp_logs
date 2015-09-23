@@ -3,8 +3,13 @@
 /Gemfile.lock
 /_yardoc/
 /coverage/
+/dev_site/
 /doc/
 /pkg/
+/spec/examples.txt
 /spec/reports/
 /tmp/
-/dev_site/
+
+## Sublime
+jekyll-rp_logs.sublime-project
+jekyll-rp_logs.sublime-workspace
