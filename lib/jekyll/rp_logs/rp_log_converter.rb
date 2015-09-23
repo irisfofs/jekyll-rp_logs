@@ -1,6 +1,6 @@
-require_relative 'rp_parser'
-require_relative 'rp_arcs'
-require_relative 'rp_tags'
+require_relative "rp_parser"
+require_relative "rp_arcs"
+require_relative "rp_tags"
 
 module Jekyll
   module RpLogs
@@ -19,7 +19,8 @@ module Jekyll
       end
 
       def initialize(config)
-        config['rp_convert'] ||= true
+        # Should actually probably complain if things are undefined or missing
+        config["rp_convert"] ||= true
       end
 
       def skip_page(page, message)
@@ -29,12 +30,12 @@ module Jekyll
 
       def has_errors?(page)
         # Verify that formats are specified
-        if page.data['format'].nil? || page.data['format'].length == 0 then 
+        if page.data["format"].nil? || page.data["format"].length == 0 then 
           skip_page(page, "No formats specified")
           return true
         else
           # Verify that the parser for each format exists
-          page.data['format'].each { |format| 
+          page.data["format"].each { |format| 
             if @@parsers[format].nil? then
               skip_page(page, "Format #{format} does not exist.")
               return true
@@ -43,11 +44,11 @@ module Jekyll
         end
 
         # Verify that tags exist 
-        if page.data['rp_tags'].nil? then
+        if page.data["rp_tags"].nil? then
           skip_page(page, "No tags specified")
           return true
         # Verify that arc names are in the proper format
-        elsif not (page.data['arc_name'].nil? || page.data['arc_name'].respond_to?('each')) then
+        elsif not (page.data["arc_name"].nil? || page.data["arc_name"].respond_to?("each")) then
           skip_page(page, "arc_name must be blank or a YAML list")
           return true
         end
@@ -56,17 +57,17 @@ module Jekyll
       end
 
       def generate(site)
-        return unless site.config['rp_convert']
+        return unless site.config["rp_convert"]
         @site = site
 
         # Directory of RPs
-        index = site.pages.detect { |page| page.data['rp_index'] }
-        index.data['rps'] = {'canon' => [], 'noncanon' => []}
+        index = site.pages.detect { |page| page.data["rp_index"] }
+        index.data["rps"] = {"canon" => [], "noncanon" => []}
 
         # Arc-style directory
-        arc_page = site.pages.detect { |page| page.data['rp_arcs'] }
+        arc_page = site.pages.detect { |page| page.data["rp_arcs"] }
 
-        site.data['menu_pages'] = [index, arc_page]
+        site.data["menu_pages"] = [index, arc_page]
 
         arcs = Hash.new { |hash, key| hash[key] = Arc.new(key) }
         no_arc_rps = []
@@ -75,23 +76,23 @@ module Jekyll
         # Also build up our hash of tags
         site.collections[RP_KEY].docs.select { true }
           .each { |page|
-            # because we're iterating over a selected array, we can delete from the original
+            # because we"re iterating over a selected array, we can delete from the original
             begin
               next if has_errors? page
 
-              page.data['rp_tags'] = page.data['rp_tags'].split(',').map { |t| Tag.new t }
+              page.data["rp_tags"] = page.data["rp_tags"].split(",").map { |t| Tag.new t }
 
               # Skip if something goes wrong
               next unless convertRp page
 
-              key = if page.data['canon'] then 'canon' else 'noncanon' end
+              key = if page.data["canon"] then "canon" else "noncanon" end
               # Add key for canon/noncanon
-              index.data['rps'][key] << page
+              index.data["rps"][key] << page
               # Add tag for canon/noncanon
-              page.data['rp_tags'] << (Tag.new key)
-              page.data['rp_tags'].sort!
+              page.data["rp_tags"] << (Tag.new key)
+              page.data["rp_tags"].sort!
 
-              arc_name = page.data['arc_name']
+              arc_name = page.data["arc_name"]
               if arc_name then
                 arc_name.each { |n| arcs[n] << page }
               else
@@ -106,23 +107,23 @@ module Jekyll
           }
 
         arcs.each_key { |key| sort_chronologically! arcs[key].rps } 
-        combined_rps = no_arc_rps.map { |x| ['rp', x] } + arcs.values.map { |x| ['arc', x] }
+        combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }
         combined_rps.sort_by! { |type,x|
           case type
-          when 'rp'
-            x.data['start_date']
-          when 'arc'
+          when "rp"
+            x.data["start_date"]
+          when "arc"
             x.start_date 
           end
         }.reverse!
-        arc_page.data['rps'] = combined_rps 
+        arc_page.data["rps"] = combined_rps 
 
-        sort_chronologically! index.data['rps']['canon']
-        sort_chronologically! index.data['rps']['noncanon']
+        sort_chronologically! index.data["rps"]["canon"]
+        sort_chronologically! index.data["rps"]["noncanon"]
       end
 
       def sort_chronologically!(pages) 
-        pages.sort_by! { |p| p.data['start_date'] }.reverse!
+        pages.sort_by! { |p| p.data["start_date"] }.reverse!
       end
 
       def convertRp(page)
@@ -130,7 +131,7 @@ module Jekyll
 
         compiled_lines = []
         page.content.each_line { |raw_line| 
-          page.data['format'].each { |format| 
+          page.data["format"].each { |format| 
             log_line = @@parsers[format].parse_line(raw_line, options)
             if log_line then
               compiled_lines << log_line 
@@ -151,21 +152,21 @@ module Jekyll
 
         page.content = split_output.join("\n")
 
-        if page.data['infer_char_tags'] then
+        if page.data["infer_char_tags"] then
           # Turn the nicks into characters
-          nick_tags = stats[:nicks].map! { |n| Tag.new('char:' + n) }
-          page.data['rp_tags'] = (nick_tags.merge page.data['rp_tags']).to_a.sort
+          nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
+          page.data["rp_tags"] = (nick_tags.merge page.data["rp_tags"]).to_a.sort
         end
 
-        page.data['end_date'] = stats[:end_date]
-        page.data['start_date'] ||= stats[:start_date]
+        page.data["end_date"] = stats[:end_date]
+        page.data["start_date"] ||= stats[:start_date]
 
         true
       end
 
       def get_options(page)
-        { :strict_ooc => page.data['strict_ooc'],
-          :merge_text_into_rp => page.data['merge_text_into_rp'] }
+        { :strict_ooc => page.data["strict_ooc"],
+          :merge_text_into_rp => page.data["merge_text_into_rp"] }
       end
 
       def merge_lines!(compiled_lines)

@@ -6,10 +6,10 @@ module Jekyll
 
       class LogLine
         MAX_SECONDS_BETWEEN_POSTS = 3
-        RP_FLAG = '!RP'
-        OOC_FLAG = '!OOC'
-        MERGE_FLAG = '!MERGE'
-        SPLIT_FLAG = '!SPLIT'
+        RP_FLAG = "!RP"
+        OOC_FLAG = "!OOC"
+        MERGE_FLAG = "!MERGE"
+        SPLIT_FLAG = "!SPLIT"
 
         attr :timestamp, :mode, :sender, :contents
         attr :flags
@@ -20,14 +20,14 @@ module Jekyll
 
         attr :last_merged_timestamp
 
-        def initialize(timestamp, options = {}, sender:, contents:, flags:, type:, mode: ' ') 
+        def initialize(timestamp, options = {}, sender:, contents:, flags:, type:, mode: " ")
           @timestamp = timestamp
           # Initialize to be the same as @timestamp
           @last_merged_timestamp = timestamp
           @mode = mode
           @sender = sender
           @contents = contents
-          @flags = flags.split(' ')
+          @flags = flags.split(" ")
 
           @base_type = type
           @output_type = type
@@ -44,23 +44,24 @@ module Jekyll
           @output_type = :rp if @options[:strict_ooc]
 
           # Check the contents for (
-          @output_type = :ooc if @contents.strip[0] == '('
-          
+          @output_type = :ooc if @contents.strip[0] == "("
+
           # Flags override our assumptions, always
-          if @flags.include? RP_FLAG then
+          if @flags.include? RP_FLAG
             @output_type = :rp
-          elsif @flags.include? OOC_FLAG then
+          elsif @flags.include? OOC_FLAG
             @output_type = :ooc
           end
+          # TODO: Containing both flags should result in a warning
         end
 
         def output
           # String used for the timestamp anchors
-          anchor = @timestamp.strftime('%Y-%m-%d_%H:%M:%S')
+          anchor = @timestamp.strftime("%Y-%m-%d_%H:%M:%S")
           # String used when hovering over timestamps (friendly long-form)
-          title = @timestamp.strftime('%H:%M:%S %B %-d, %Y')
+          title = @timestamp.strftime("%H:%M:%S %B %-d, %Y")
           # String actually displayed on page
-          display = @timestamp.strftime('%H:%M')
+          display = @timestamp.strftime("%H:%M")
           ts_out = "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display}</a>"
 
           sender_out = nil
@@ -77,7 +78,7 @@ module Jekyll
           tag_class = nil
           tag_close = "</p>"
           case @output_type
-          when :rp 
+          when :rp
             tag_class = "rp"
           when :ooc
             tag_class = "ooc"
@@ -99,7 +100,7 @@ module Jekyll
           # Only merge rp lines
           is_rp = @output_type == :rp
           # Merge if next post is rp, or sender has split_to_normal_text property
-          # Only merge if the base type was OOC... otherwise you couldn't force not merging
+          # Only merge if the base type was OOC... otherwise you couldn"t force not merging
           # Maybe a job for !NOTMERGE flag, or similar
           next_line_is_rp = next_line.output_type == :rp || \
             (@options[:merge_text_into_rp].include?(@sender) && next_line.base_type == :ooc)
@@ -112,11 +113,11 @@ module Jekyll
         end
 
         def merge!(next_line)
-          @contents += ' ' + next_line.contents
+          @contents += " " + next_line.contents
           @last_merged_timestamp = next_line.timestamp
         end
 
-        def inspect()
+        def inspect
           "<#{@mode}#{@sender}> (#{@base_type} -> #{@output_type}) #{@content}"
         end
       end
