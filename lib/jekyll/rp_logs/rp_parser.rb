@@ -34,16 +34,22 @@ module Jekyll
 
           @options = options
 
+          classify
+        end
+
+        ##
+        # Set derived properties of this LogLine based on various options
+        def classify
           # This makes it RP by default
-          @output_type = :rp if options[:strict_ooc]
+          @output_type = :rp if @options[:strict_ooc]
 
           # Check the contents for (
-          @output_type = :ooc if contents.strip[0] == '('
+          @output_type = :ooc if @contents.strip[0] == '('
           
           # Flags override our assumptions, always
-          if flags.include? RP_FLAG then
+          if @flags.include? RP_FLAG then
             @output_type = :rp
-          elsif flags.include? OOC_FLAG then
+          elsif @flags.include? OOC_FLAG then
             @output_type = :ooc
           end
         end
