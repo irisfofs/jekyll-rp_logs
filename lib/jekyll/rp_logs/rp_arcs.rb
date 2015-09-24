@@ -17,7 +17,7 @@ module Jekyll
         # potential future idea: directories for each arc
       end
 
-      def <<(rp_page) 
+      def <<(rp_page)
         @rps << rp_page
       end
 
@@ -47,8 +47,8 @@ module Jekyll
 
       # actually by... start.. date?
       def <=>(o)
-        if self.class == o.class 
-          self.name <=> o.name 
+        if self.class == o.class
+          self.name <=> o.name
         else
           nil
         end

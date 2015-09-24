@@ -14,7 +14,7 @@ module Jekyll
 
       @@parsers = {}
 
-      def RpLogGenerator.add(parser) 
+      def RpLogGenerator.add(parser)
         @@parsers[parser::FORMAT_STR] = parser
       end
 
@@ -30,12 +30,12 @@ module Jekyll
 
       def has_errors?(page)
         # Verify that formats are specified
-        if page.data["format"].nil? || page.data["format"].length == 0 then 
+        if page.data["format"].nil? || page.data["format"].length == 0 then
           skip_page(page, "No formats specified")
           return true
         else
           # Verify that the parser for each format exists
-          page.data["format"].each { |format| 
+          page.data["format"].each { |format|
             if @@parsers[format].nil? then
               skip_page(page, "Format #{format} does not exist.")
               return true
@@ -43,7 +43,7 @@ module Jekyll
           }
         end
 
-        # Verify that tags exist 
+        # Verify that tags exist
         if page.data["rp_tags"].nil? then
           skip_page(page, "No tags specified")
           return true
@@ -98,7 +98,7 @@ module Jekyll
               else
                 no_arc_rps << page
               end
-            rescue 
+            rescue
               # Catch all for any other exception encountered when parsing a page
               skip_page(page, "Error parsing #{page.path}: " + $!.inspect)
               # Raise exception, so Jekyll prints backtrace if run with --trace
@@ -106,23 +106,23 @@ module Jekyll
             end
           }
 
-        arcs.each_key { |key| sort_chronologically! arcs[key].rps } 
+        arcs.each_key { |key| sort_chronologically! arcs[key].rps }
         combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }
         combined_rps.sort_by! { |type,x|
           case type
           when "rp"
             x.data["start_date"]
           when "arc"
-            x.start_date 
+            x.start_date
           end
         }.reverse!
-        arc_page.data["rps"] = combined_rps 
+        arc_page.data["rps"] = combined_rps
 
         sort_chronologically! index.data["rps"]["canon"]
         sort_chronologically! index.data["rps"]["noncanon"]
       end
 
-      def sort_chronologically!(pages) 
+      def sort_chronologically!(pages)
         pages.sort_by! { |p| p.data["start_date"] }.reverse!
       end
 
@@ -130,17 +130,17 @@ module Jekyll
         options = get_options page
 
         compiled_lines = []
-        page.content.each_line { |raw_line| 
-          page.data["format"].each { |format| 
+        page.content.each_line { |raw_line|
+          page.data["format"].each { |format|
             log_line = @@parsers[format].parse_line(raw_line, options)
             if log_line then
-              compiled_lines << log_line 
+              compiled_lines << log_line
               break
             end
           }
         }
 
-        if compiled_lines.length == 0 then 
+        if compiled_lines.length == 0 then
           skip_page(page, "No lines were matched by any format.")
           return false
         end
@@ -171,15 +171,15 @@ module Jekyll
 
       def merge_lines!(compiled_lines)
         last_line = nil
-        compiled_lines.reject! { |line| 
+        compiled_lines.reject! { |line|
           if last_line == nil then
             last_line = line
             false
           elsif last_line.mergeable_with? line then
             last_line.merge! line
-            # Delete the current line from output and maintain last_line 
+            # Delete the current line from output and maintain last_line
             # in case we need to merge multiple times.
-            true 
+            true
           else
             last_line = line
             false
@@ -187,9 +187,9 @@ module Jekyll
         }
       end
 
-      def extract_stats(compiled_lines) 
+      def extract_stats(compiled_lines)
         nicks = Set.new
-        compiled_lines.each { |line| 
+        compiled_lines.each { |line|
           nicks << line.sender if line.output_type == :rp
         }
 
