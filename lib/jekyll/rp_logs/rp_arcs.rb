@@ -5,6 +5,7 @@ module Jekyll
 
     # Holds arc information
     class Arc
+      include Comparable
 
       attr_accessor :name, :rps
 
@@ -22,11 +23,11 @@ module Jekyll
       end
 
       def start_date
-        @rps.map { |rp_page| rp_page.data["time_line"] || rp_page.data['start_date'] }.min
+        @rps.map { |rp_page| rp_page.data["time_line"] || rp_page.data["start_date"] }.min
       end
 
       def end_date
-        @rps.map { |rp_page| rp_page.data['last_post_time'] }.max
+        @rps.map { |rp_page| rp_page.data["last_post_time"] }.max
       end
 
       def is_arc?
@@ -38,7 +39,7 @@ module Jekyll
       end
 
       def eql?(arc)
-        self.class.equal?(arc.class) && (self.name == arc.name) && (self.rps.equal?(arc.rps))
+        (self.class == arc.class) && (self.name == arc.name) && (self.rps == arc.rps)
       end
 
       def hash
