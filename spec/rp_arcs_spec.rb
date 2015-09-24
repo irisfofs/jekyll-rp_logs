@@ -64,7 +64,7 @@ module Jekyll
         it { is_expected.to respond_to(:rps) }
         it { is_expected.to respond_to(:<<) }
         it "is an arc" do
-          expect(lorem_arc.is_arc?).to be_truthy
+          expect(lorem_arc.arc?).to be_truthy
         end
         it { is_expected.to respond_to(:to_s) }
         it { is_expected.to respond_to(:hash) }

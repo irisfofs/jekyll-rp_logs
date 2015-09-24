@@ -2,7 +2,6 @@
 
 module Jekyll
   module RpLogs
-
     # Holds arc information
     class Arc
       include Comparable
@@ -30,29 +29,27 @@ module Jekyll
         @rps.map { |rp_page| rp_page.data["last_post_time"] }.max
       end
 
-      def is_arc?
+      def arc?
         true
       end
 
       def to_s
-        self.name
+        name
       end
 
-      def eql?(arc)
-        (self.class == arc.class) && (self.name == arc.name) && (self.rps == arc.rps)
+      def eql?(other)
+        self.class == other.class &&
+          name == other.name &&
+          rps == other.rps
       end
 
       def hash
-        self.name.hash
+        name.hash
       end
 
       # actually by... start.. date?
-      def <=>(o)
-        if self.class == o.class
-          self.name <=> o.name
-        else
-          nil
-        end
+      def <=>(other)
+        name <=> other.name if self.class == other.class
       end
 
       def inspect
@@ -64,7 +61,6 @@ module Jekyll
 
         { "name" => @name, "rps" => @rps }
       end
-
     end
   end
 end
