@@ -56,25 +56,33 @@ module Jekyll
         end
 
         def output
+          tag_open, tag_close = output_tags
+          "#{tag_open}#{output_timestamp}#{output_sender} #{@contents}#{tag_close}"
+        end
+
+        def output_timestamp
           # String used for the timestamp anchors
           anchor = @timestamp.strftime("%Y-%m-%d_%H:%M:%S")
           # String used when hovering over timestamps (friendly long-form)
           title = @timestamp.strftime("%H:%M:%S %B %-d, %Y")
           # String actually displayed on page
           display = @timestamp.strftime("%H:%M")
-          ts_out = "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display}</a>"
+          "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display}</a>"
+        end
 
-          sender_out = nil
+        def output_sender
           case @base_type
           when :rp
-            sender_out = "  * #{@sender}"
+            return "  * #{@sender}"
           when :ooc
-            sender_out = " &lt;#{@mode}#{@sender}&gt;"
+            return " &lt;#{@mode}#{@sender}&gt;"
           else
             # Explode.
-            throw "No known type: #{@base_type}"
+            raise "No known type: #{@base_type}"
           end
+        end
 
+        def output_tags
           tag_class = nil
           tag_close = "</p>"
           case @output_type
@@ -84,11 +92,11 @@ module Jekyll
             tag_class = "ooc"
           else
             # Explode.
-            throw "No known type: #{@output_type}"
+            raise "No known type: #{@output_type}"
           end
           tag_open = "<p class=\"#{tag_class}\">"
 
-          "#{tag_open}#{ts_out}#{sender_out} #{@contents}#{tag_close}"
+          [tag_open, tag_close]
         end
 
         def mergeable_with?(next_line)
