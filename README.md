@@ -1,5 +1,9 @@
 # Jekyll::RpLogs
 
+[![Build Status](https://travis-ci.org/xiagu/web-character-sheets.svg?branch=master)](https://travis-ci.org/xiagu/web-character-sheets)
+[![Code Climate](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/gpa.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs)
+[![Gem Version](https://badge.fury.io/rb/jekyll-rp_logs.svg)](http://badge.fury.io/rb/jekyll-rp_logs)
+
 This plugin provides support for building prettified versions of raw RP logs. Extra noise is stripped out during the building to keep the process as simple as possible: paste in entire log, add title and tags, and go.
 
 The result of building all the test files can be seen here. http://andrew.rs/projects/jekyll-rp_logs/
