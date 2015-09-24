@@ -27,7 +27,6 @@ module Jekyll
           #when JUNK
             #nil
           when EMOTE
-            print "1"
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             contents = $6
             flags = $1
@@ -35,7 +34,6 @@ module Jekyll
             Parser::LogLine.new(date, options, sender: sendername, contents: contents, \
             flags: flags, type: :rp)
           when TEXT
-            # print "2"
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             contents = $5
             flags = $1
@@ -43,7 +41,6 @@ module Jekyll
             Parser::LogLine.new(date, options, sender: sendername, contents: contents, \
               flags: flags, type: :ooc)
           else
-            # print "3"
             # Only put text and emotes in the log
             nil
           end
