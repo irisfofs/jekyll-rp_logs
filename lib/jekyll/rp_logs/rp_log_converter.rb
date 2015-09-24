@@ -111,7 +111,7 @@ module Jekyll
         combined_rps.sort_by! { |type,x|
           case type
           when "rp"
-            x.data["start_date"]
+            x.data["time_line"] || x.data["start_date"]
           when "arc"
             x.start_date
           end
@@ -123,7 +123,15 @@ module Jekyll
       end
 
       def sort_chronologically!(pages)
-        pages.sort_by! { |p| p.data["start_date"] }.reverse!
+        # Check pages for invalid time_line value
+        pages.each do |p|
+          if p.data["time_line"] && !p.data["time_line"].is_a?(Date)
+            puts "Malformed time_line #{p.data['time_line']} in file #{p.path}"
+            raise "Malformed time_line date"
+          end
+        end
+        # Sort pages by time_line if present or start_date otherwise
+        pages.sort_by! { |p| p.data["time_line"] || p.data["start_date"] }.reverse!
       end
 
       def convertRp(page)

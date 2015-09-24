@@ -22,7 +22,7 @@ module Jekyll
       end
 
       def start_date
-        @rps.map { |rp_page| rp_page.data['start_date'] }.min
+        @rps.map { |rp_page| rp_page.data["time_line"] || rp_page.data['start_date'] }.min
       end
 
       def end_date
