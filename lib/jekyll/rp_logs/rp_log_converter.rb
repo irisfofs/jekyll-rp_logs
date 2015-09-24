@@ -122,8 +122,16 @@ module Jekyll
         sort_chronologically! index.data["rps"]["noncanon"]
       end
 
-      def sort_chronologically!(pages) 
-        pages.sort_by! { |p| p.data["start_date"] }.reverse!
+      def sort_chronologically!(pages)
+        for p in pages
+            if not p.data['time_line'].nil?
+                if not p.data["time_line"].is_a? Date
+                 print "\n \n You have a malformed date \"", p.data["time_line"], "\" In the file titled, \"", p.data["title"], "\"  Should be in the format 2015-01-30 \n Exiting now \n \n"
+                raise "Malformed time_line date"
+                end
+            end
+        end
+        pages.sort_by! { |p| !p.data["time_line"].nil? && DateTime.strptime(p.data["time_line"].to_s, '%Y-%m-%d') || p.data["start_date"] }.reverse!
       end
 
       def convertRp(page)
