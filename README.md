@@ -1,6 +1,7 @@
 # Jekyll::RpLogs
 
 [![Build Status](https://travis-ci.org/xiagu/web-character-sheets.svg?branch=master)](https://travis-ci.org/xiagu/web-character-sheets)
+[![Test Coverage](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/coverage.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs/coverage)
 [![Code Climate](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/gpa.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs)
 [![Gem Version](https://badge.fury.io/rb/jekyll-rp_logs.svg)](http://badge.fury.io/rb/jekyll-rp_logs)
 
@@ -11,7 +12,7 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
 ## Features
 * Link to a specific post by its timestamp
 * Show and hide OOC chatter at will
-* Responsive layout is readable even on phones 
+* Responsive layout is readable even on phones
 * Can be extended to support more log formats via custom parsers (pull requests welcome!)
 * Supports multiple formats per file, for those times where you switched IRC clients in the middle of something. Or moved from IRC to Skype, or vice versa.
 * Infers characters involved in each RP by the nicks speaking
@@ -21,15 +22,15 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
 
 ### Bundler (Recommended)
 
-Install the bundle gem with 
-    
+Install the bundle gem with
+
     gem install bundle
 
 Create a file named `Gemfile` with the following contents:
 
 ```ruby
 source 'https://rubygems.org'
- 
+
 group :jekyll_plugins do
   gem "jekyll-rp_logs"
 end
@@ -64,7 +65,7 @@ To set up a Jekyll site skeleton in the current directory, execute:
 
 	rake rp_logs:new
 
-This will pull in all the necessary files (SASS, `_includes`, default config, etc) for Jekyll to build the site. 
+This will pull in all the necessary files (SASS, `_includes`, default config, etc) for Jekyll to build the site.
 
 *Important:* To allow Jekyll to actually use the plugin, create a Gemfile as specified above in the [Bundler](#bundler-recommended) section and place it into the build directory.
 
@@ -113,8 +114,8 @@ To force a line to be merged, or prevent it from being merged, use
 These flags can be combined.
 
 ### Building the site
-Run this command: 
-	
+Run this command:
+
 	jekyll build
 
 Optionally, add the `--watch` flag to automatically rebuild if you add more logs. Then get the output to somewhere that's served by a webserver, either by setting your `destination` to something there or by copying it manually.
