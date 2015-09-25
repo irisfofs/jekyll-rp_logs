@@ -1,4 +1,5 @@
 require_relative "rp_parser"
+require_relative "rp_page"
 require_relative "rp_arcs"
 require_relative "rp_tags"
 
@@ -27,18 +28,19 @@ module Jekyll
       end
 
       def skip_page(page, message)
-        @site.collections[RP_KEY].docs.delete page
+        # TODO: prettify
+        @site.collections[RP_KEY].docs.delete page.page
         print "\nSkipping #{page.path}: #{message}"
       end
 
       def has_errors?(page)
         # Verify that formats are specified
-        if page.data["format"].nil? || page.data["format"].length == 0
+        if page[:format].nil? || page[:format].length == 0
           skip_page(page, "No formats specified")
           return true
         else
           # Verify that the parser for each format exists
-          page.data["format"].each { |format|
+          page[:format].each { |format|
             if self.class.parsers[format].nil?
               skip_page(page, "Format #{format} does not exist.")
               return true
@@ -47,11 +49,11 @@ module Jekyll
         end
 
         # Verify that tags exist
-        if page.data["rp_tags"].nil?
+        if page[:rp_tags].nil?
           skip_page(page, "No tags specified")
           return true
         # Verify that arc names are in the proper format
-        elsif page.data["arc_name"] && !page.data["arc_name"].respond_to?("each")
+        elsif page[:arc_name] && !page[:arc_name].respond_to?("each")
           skip_page(page, "arc_name must be blank or a YAML list")
           return true
         end
@@ -77,25 +79,25 @@ module Jekyll
 
         # Convert all of the posts to be pretty
         # Also build up our hash of tags
-        site.collections[RP_KEY].docs.select { true }
+        site.collections[RP_KEY].docs.map { |p| RpLogs::Page.new(p) }
           .each { |page|
             # because we're iterating over a selected array, we can delete from the original
             begin
               next if has_errors? page
 
-              page.data["rp_tags"] = page.data["rp_tags"].split(",").map { |t| Tag.new t }
+              page[:rp_tags] = page[:rp_tags].split(",").map { |t| Tag.new t }
 
               # Skip if something goes wrong
               next unless convert_rp page
 
-              key = page.data["canon"] ? "canon" : "noncanon"
+              key = page[:canon] ? "canon" : "noncanon"
               # Add key for canon/noncanon
               index.data["rps"][key] << page
               # Add tag for canon/noncanon
-              page.data["rp_tags"] << (Tag.new key)
-              page.data["rp_tags"].sort!
+              page[:rp_tags] << (Tag.new key)
+              page[:rp_tags].sort!
 
-              arc_name = page.data["arc_name"]
+              arc_name = page[:arc_name]
               if arc_name
                 arc_name.each { |n| arcs[n] << page }
               else
@@ -114,7 +116,7 @@ module Jekyll
         combined_rps.sort_by! { |type, x|
           case type
           when "rp"
-            x.data["time_line"] || x.data["start_date"]
+            x[:time_line] || x[:start_date]
           when "arc"
             x.start_date
           end
@@ -128,13 +130,13 @@ module Jekyll
       def sort_chronologically!(pages)
         # Check pages for invalid time_line value
         pages.each do |p|
-          if p.data["time_line"] && !p.data["time_line"].is_a?(Date)
-            puts "Malformed time_line #{p.data['time_line']} in file #{p.path}"
+          if p[:time_line] && !p[:time_line].is_a?(Date)
+            puts "Malformed time_line #{p[:time_line]} in file #{p.path}"
             fail "Malformed time_line date"
           end
         end
         # Sort pages by time_line if present or start_date otherwise
-        pages.sort_by! { |p| p.data["time_line"] || p.data["start_date"] }.reverse!
+        pages.sort_by! { |p| p[:time_line] || p[:start_date] }.reverse!
       end
 
       def convert_rp(page)
@@ -142,7 +144,7 @@ module Jekyll
 
         compiled_lines = []
         page.content.each_line { |raw_line|
-          page.data["format"].each { |format|
+          page[:format].each { |format|
             log_line = self.class.parsers[format].parse_line(raw_line, options)
             if log_line
               compiled_lines << log_line
@@ -162,21 +164,21 @@ module Jekyll
         split_output = compiled_lines.map(&:output)
         page.content = split_output.join("\n")
 
-        if page.data["infer_char_tags"]
+        if page[:infer_char_tags]
           # Turn the nicks into characters
           nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
-          page.data["rp_tags"] = (nick_tags.merge page.data["rp_tags"]).to_a.sort
+          page[:rp_tags] = (nick_tags.merge page[:rp_tags]).to_a.sort
         end
 
-        page.data["end_date"] = stats[:end_date]
-        page.data["start_date"] ||= stats[:start_date]
+        page[:end_date] = stats[:end_date]
+        page[:start_date] ||= stats[:start_date]
 
         true
       end
 
       def get_options(page)
-        { strict_ooc: page.data["strict_ooc"],
-          merge_text_into_rp: page.data["merge_text_into_rp"] }
+        { strict_ooc: page[:strict_ooc],
+          merge_text_into_rp: page[:merge_text_into_rp] }
       end
 
       def merge_lines!(compiled_lines)
