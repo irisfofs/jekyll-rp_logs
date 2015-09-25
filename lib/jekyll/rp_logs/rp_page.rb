@@ -2,11 +2,10 @@ module Jekyll
   module RpLogs
     class Page
       extend Forwardable
+      def_delegators :@page, :content, :content=, :path, :to_liquid
 
       # Jekyll::Page object
       attr_reader :page
-
-      def_delegators :@page, :content, :content=, :path, :to_liquid
 
       def initialize(page)
         @page = page
