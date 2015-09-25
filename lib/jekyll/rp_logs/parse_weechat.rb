@@ -1,16 +1,16 @@
 module Jekyll
   module RpLogs
-
+    ##
+    # Parses logs in the default format of [Weechat](https://weechat.org/)
     class WeechatParser < RpLogs::Parser
-
       # Add this class to the parsing dictionary
-      FORMAT_STR = 'weechat'
+      FORMAT_STR = "weechat"
       RpLogGenerator.add self
 
       # Stuff
       class << self
         # Regular expressions for chunks repeated in each type of message
-        # (?<foo>pattern) is a named group, accessible via $~[:foo]
+        # (?<foo>pattern) is a named group accessible via $LAST_MATCH_INFO[:foo]
         MODE = /(?<mode>[+%@&~!]?)/
         NICK = /(?<nick>[\w\-\\\[\]\{\}\^\`\|]+)/
         DATE_REGEXP = /(?<timestamp>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
@@ -22,29 +22,34 @@ module Jekyll
         EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+(?<msg>[^\n]*)$/
         TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t(?<msg>[^\n]*)$/
 
-        TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
+        TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-        def parse_line(line, options = {}) 
+        def parse_line(line, options = {})
           case line
           when JUNK
             return nil
           when EMOTE
-            date = DateTime.strptime($~[:timestamp], TIMESTAMP_FORMAT)
-            return Parser::LogLine.new(date, options, sender: $~[:nick], \
-              contents: $~[:msg], flags: $~[:flags], type: :rp)
+            type = :rp
           when TEXT
-            date = DateTime.strptime($~[:timestamp], TIMESTAMP_FORMAT)
-            $~[:mode] = ' ' if $~[:mode] == ''
-            return Parser::LogLine.new(date, options, sender: $~[:nick], \
-              contents: $~[:msg], flags: $~[:flags], type: :ooc, mode: $~[:mode])
+            type = :ooc
+            mode = $LAST_MATCH_INFO[:mode]
+            mode = " " if mode == ""
           else
             # Only put text and emotes in the log
             return nil
           end
+          date = DateTime.parse($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
+          Parser::LogLine.new(
+            date,
+            options,
+            sender: $LAST_MATCH_INFO[:nick],
+            contents: $LAST_MATCH_INFO[:msg],
+            flags: $LAST_MATCH_INFO[:flags],
+            type: type,
+            mode: mode
+          )
         end
       end
-
-    end  
-
+    end
   end
 end
