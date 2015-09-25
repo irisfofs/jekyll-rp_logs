@@ -4,7 +4,6 @@ require_relative "rp_tags"
 
 module Jekyll
   module RpLogs
-
     # Consider renaming since it is more of a converter in practice
     class RpLogGenerator < Jekyll::Generator
       safe true
@@ -12,10 +11,14 @@ module Jekyll
 
       RP_KEY = "rps"
 
-      @@parsers = {}
+      @parsers = {}
 
-      def RpLogGenerator.add(parser)
-        @@parsers[parser::FORMAT_STR] = parser
+      class << self
+        attr_reader :parsers
+
+        def add(parser)
+          @parsers[parser::FORMAT_STR] = parser
+        end
       end
 
       def initialize(config)
@@ -30,13 +33,13 @@ module Jekyll
 
       def has_errors?(page)
         # Verify that formats are specified
-        if page.data["format"].nil? || page.data["format"].length == 0 then
+        if page.data["format"].nil? || page.data["format"].length == 0
           skip_page(page, "No formats specified")
           return true
         else
           # Verify that the parser for each format exists
           page.data["format"].each { |format|
-            if @@parsers[format].nil? then
+            if self.class.parsers[format].nil?
               skip_page(page, "Format #{format} does not exist.")
               return true
             end
@@ -44,11 +47,11 @@ module Jekyll
         end
 
         # Verify that tags exist
-        if page.data["rp_tags"].nil? then
+        if page.data["rp_tags"].nil?
           skip_page(page, "No tags specified")
           return true
         # Verify that arc names are in the proper format
-        elsif not (page.data["arc_name"].nil? || page.data["arc_name"].respond_to?("each")) then
+        elsif page.data["arc_name"] && !page.data["arc_name"].respond_to?("each")
           skip_page(page, "arc_name must be blank or a YAML list")
           return true
         end
@@ -62,7 +65,7 @@ module Jekyll
 
         # Directory of RPs
         index = site.pages.detect { |page| page.data["rp_index"] }
-        index.data["rps"] = {"canon" => [], "noncanon" => []}
+        index.data["rps"] = { "canon" => [], "noncanon" => [] }
 
         # Arc-style directory
         arc_page = site.pages.detect { |page| page.data["rp_arcs"] }
@@ -76,16 +79,16 @@ module Jekyll
         # Also build up our hash of tags
         site.collections[RP_KEY].docs.select { true }
           .each { |page|
-            # because we"re iterating over a selected array, we can delete from the original
+            # because we're iterating over a selected array, we can delete from the original
             begin
               next if has_errors? page
 
               page.data["rp_tags"] = page.data["rp_tags"].split(",").map { |t| Tag.new t }
 
               # Skip if something goes wrong
-              next unless convertRp page
+              next unless convert_rp page
 
-              key = if page.data["canon"] then "canon" else "noncanon" end
+              key = page.data["canon"] ? "canon" : "noncanon"
               # Add key for canon/noncanon
               index.data["rps"][key] << page
               # Add tag for canon/noncanon
@@ -93,22 +96,22 @@ module Jekyll
               page.data["rp_tags"].sort!
 
               arc_name = page.data["arc_name"]
-              if arc_name then
+              if arc_name
                 arc_name.each { |n| arcs[n] << page }
               else
                 no_arc_rps << page
               end
             rescue
               # Catch all for any other exception encountered when parsing a page
-              skip_page(page, "Error parsing #{page.path}: " + $!.inspect)
+              skip_page(page, "Error parsing #{page.path}: #{$ERROR_INFO.inspect}\n")
               # Raise exception, so Jekyll prints backtrace if run with --trace
-              raise $!
+              raise $ERROR_INFO
             end
           }
 
         arcs.each_key { |key| sort_chronologically! arcs[key].rps }
         combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }
-        combined_rps.sort_by! { |type,x|
+        combined_rps.sort_by! { |type, x|
           case type
           when "rp"
             x.data["time_line"] || x.data["start_date"]
@@ -127,28 +130,28 @@ module Jekyll
         pages.each do |p|
           if p.data["time_line"] && !p.data["time_line"].is_a?(Date)
             puts "Malformed time_line #{p.data['time_line']} in file #{p.path}"
-            raise "Malformed time_line date"
+            fail "Malformed time_line date"
           end
         end
         # Sort pages by time_line if present or start_date otherwise
         pages.sort_by! { |p| p.data["time_line"] || p.data["start_date"] }.reverse!
       end
 
-      def convertRp(page)
+      def convert_rp(page)
         options = get_options page
 
         compiled_lines = []
         page.content.each_line { |raw_line|
           page.data["format"].each { |format|
-            log_line = @@parsers[format].parse_line(raw_line, options)
-            if log_line then
+            log_line = self.class.parsers[format].parse_line(raw_line, options)
+            if log_line
               compiled_lines << log_line
               break
             end
           }
         }
 
-        if compiled_lines.length == 0 then
+        if compiled_lines.length == 0
           skip_page(page, "No lines were matched by any format.")
           return false
         end
@@ -156,11 +159,10 @@ module Jekyll
         merge_lines! compiled_lines
         stats = extract_stats compiled_lines
 
-        split_output = compiled_lines.map { |line| line.output }
-
+        split_output = compiled_lines.map(&:output)
         page.content = split_output.join("\n")
 
-        if page.data["infer_char_tags"] then
+        if page.data["infer_char_tags"]
           # Turn the nicks into characters
           nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
           page.data["rp_tags"] = (nick_tags.merge page.data["rp_tags"]).to_a.sort
@@ -173,17 +175,17 @@ module Jekyll
       end
 
       def get_options(page)
-        { :strict_ooc => page.data["strict_ooc"],
-          :merge_text_into_rp => page.data["merge_text_into_rp"] }
+        { strict_ooc: page.data["strict_ooc"],
+          merge_text_into_rp: page.data["merge_text_into_rp"] }
       end
 
       def merge_lines!(compiled_lines)
         last_line = nil
         compiled_lines.reject! { |line|
-          if last_line == nil then
+          if last_line.nil?
             last_line = line
             false
-          elsif last_line.mergeable_with? line then
+          elsif last_line.mergeable_with? line
             last_line.merge! line
             # Delete the current line from output and maintain last_line
             # in case we need to merge multiple times.
@@ -201,11 +203,10 @@ module Jekyll
           nicks << line.sender if line.output_type == :rp
         }
 
-        { :nicks => nicks,
-          :end_date => compiled_lines[-1].timestamp,
-          :start_date => compiled_lines[0].timestamp }
+        { nicks: nicks,
+          end_date: compiled_lines[-1].timestamp,
+          start_date: compiled_lines[0].timestamp }
       end
     end
-
   end
 end
