@@ -4,7 +4,6 @@ require "jekyll/rp_logs/rp_parser"
 
 module Jekyll
   module RpLogs
-
     RSpec.describe Parser::LogLine do
       before do
         @alice_line = Parser::LogLine.new(
@@ -43,23 +42,23 @@ module Jekyll
       end
 
       # Test the proper classification of lines as RP or OOC for output, based
-      # on various properties: the strict_ooc option, beginning with parens, 
+      # on various properties: the strict_ooc option, beginning with parens,
       # and any flags specified
       before :context do
-          @timestamp = DateTime.new(2015, 9, 23, 14, 35, 27, "-4")
-          @rp_contents = "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
-          @ooc_contents = "(Lorem ipsum dolor sit amet, consectetur adipisicing elit.)"
+        @timestamp = DateTime.new(2015, 9, 23, 14, 35, 27, "-4")
+        @rp_contents = "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
+        @ooc_contents = "(Lorem ipsum dolor sit amet, consectetur adipisicing elit.)"
       end
-      let(:rp_line) do 
+      let(:rp_line) do
         Parser::LogLine.new(@timestamp, sender: "Alice", contents: @rp_contents, flags: "", type: :rp)
       end
-      let(:ooc_line) do 
+      let(:ooc_line) do
         Parser::LogLine.new(@timestamp, sender: "Alice", contents: @ooc_contents, flags: "", type: :ooc)
       end
-      let(:rp_flag) do 
+      let(:rp_flag) do
         Parser::LogLine.new(@timestamp, sender: "Alice", contents: @ooc_contents, flags: "!RP", type: :ooc)
       end
-      let(:ooc_flag) do 
+      let(:ooc_flag) do
         Parser::LogLine.new(@timestamp, sender: "Alice", contents: @rp_contents, flags: "!OOC", type: :rp)
       end
       let(:invalid_type) do
@@ -68,10 +67,10 @@ module Jekyll
 
       describe ".output_type" do
         context "with :strict_ooc option" do
-          let(:strict_ooc_default) do 
+          let(:strict_ooc_default) do
             Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @rp_contents, flags: "", type: :ooc)
           end
-          let(:strict_ooc_ooc) do 
+          let(:strict_ooc_ooc) do
             Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @ooc_contents, flags: "", type: :ooc)
           end
 
@@ -83,10 +82,10 @@ module Jekyll
           end
 
           context "with flags" do
-            let(:strict_rp_flag) do 
+            let(:strict_rp_flag) do
               Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @ooc_contents, flags: "!RP", type: :ooc)
             end
-            let(:strict_ooc_flag) do 
+            let(:strict_ooc_flag) do
               Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @rp_contents, flags: "!OOC", type: :rp)
             end
 
@@ -152,6 +151,5 @@ module Jekyll
         end
       end
     end
-
   end
 end

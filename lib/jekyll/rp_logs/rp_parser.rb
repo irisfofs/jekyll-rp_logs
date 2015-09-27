@@ -1,6 +1,5 @@
 module Jekyll
   module RpLogs
-
     class Parser
       FORMAT_STR = nil
 
@@ -11,14 +10,14 @@ module Jekyll
         MERGE_FLAG = "!MERGE"
         SPLIT_FLAG = "!SPLIT"
 
-        attr :timestamp, :mode, :sender, :contents
-        attr :flags
+        attr_reader :timestamp, :mode, :sender, :contents, :flags
         # Some things depend on the original type of the line (nick format)
-        attr :base_type
-        attr :output_type
-        attr :options
+        attr_reader :base_type, :output_type
+        attr_reader :options
 
-        attr :last_merged_timestamp
+        # Timestamp of the most recent line this line was merged with, to allow
+        # merging consecutive lines each MAX_SECONDS_BETWEEN_POSTS apart
+        attr_reader :last_merged_timestamp
 
         def initialize(timestamp, options = {}, sender:, contents:, flags:, type:, mode: " ")
           @timestamp = timestamp
@@ -78,7 +77,7 @@ module Jekyll
             return " &lt;#{@mode}#{@sender}&gt;"
           else
             # Explode.
-            raise "No known type: #{@base_type}"
+            fail "No known type: #{@base_type}"
           end
         end
 
@@ -92,7 +91,7 @@ module Jekyll
             tag_class = "ooc"
           else
             # Explode.
-            raise "No known type: #{@output_type}"
+            fail "No known type: #{@output_type}"
           end
           tag_open = "<p class=\"#{tag_class}\">"
 
@@ -107,8 +106,8 @@ module Jekyll
           same_sender = @sender == next_line.sender
           # Only merge rp lines
           is_rp = @output_type == :rp
-          # Merge if next post is rp, or sender has split_to_normal_text property
-          # Only merge if the base type was OOC... otherwise you couldn"t force not merging
+          # Merge if next post is rp or sender has split_to_normal_text property
+          # Only merge if the base type was OOC... otherwise you couldn't force not merging
           # Maybe a job for !NOTMERGE flag, or similar
           next_line_is_rp = next_line.output_type == :rp || \
             (@options[:merge_text_into_rp].include?(@sender) && next_line.base_type == :ooc)
@@ -130,6 +129,5 @@ module Jekyll
         end
       end
     end
-
   end
 end
