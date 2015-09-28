@@ -22,11 +22,11 @@ module Jekyll
       end
 
       def start_date
-        @rps.map { |rp_page| rp_page.data["time_line"] || rp_page.data["start_date"] }.min
+        @rps.map { |rp_page| rp_page[:time_line] || rp_page[:start_date] }.min
       end
 
       def end_date
-        @rps.map { |rp_page| rp_page.data["last_post_time"] }.max
+        @rps.map { |rp_page| rp_page[:last_post_time] }.max
       end
 
       def arc?
