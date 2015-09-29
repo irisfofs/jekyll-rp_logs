@@ -6,28 +6,19 @@ module Jekyll
   module RpLogs
     RSpec.describe Arc do
       let(:rp_2015) do
-        rp = double("rp_2015")
-        data_hash = { "start_date" => Date.parse("2015-09-24"),
-                      "last_post_time" => Date.parse("2015-09-25") }
-        allow(rp).to receive(:data).and_return(data_hash)
-        rp
+        { start_date: Date.parse("2015-09-24"),
+          last_post_time: Date.parse("2015-09-25") }
       end
 
       let(:rp_2015_adjusted) do
-        rp = double("rp_2015_adjusted")
-        data_hash = { "time_line" => Date.parse("2014-01-01"),
-                      "start_date" => Date.parse("2015-05-12"),
-                      "last_post_time" => Date.parse("2015-05-12") }
-        allow(rp).to receive(:data).and_return(data_hash)
-        rp
+        { time_line: Date.parse("2014-01-01"),
+          start_date: Date.parse("2015-05-12"),
+          last_post_time: Date.parse("2015-05-12") }
       end
 
       let(:rp_2014) do
-        rp = double("rp_2014")
-        data_hash = { "start_date" => Date.parse("2014-02-15"),
-                      "last_post_time" => Date.parse("2014-02-16") }
-        allow(rp).to receive(:data).and_return(data_hash)
-        rp
+        { start_date: Date.parse("2014-02-15"),
+          last_post_time: Date.parse("2014-02-16") }
       end
 
       let(:rps) do
@@ -81,16 +72,16 @@ module Jekyll
 
       describe ".start_date" do
         it "checks time_line values" do
-          expect(lorem_arc.start_date).to eql(rp_2015_adjusted.data["time_line"])
+          expect(lorem_arc.start_date).to eql(rp_2015_adjusted[:time_line])
         end
         it "returns first start_date" do
-          expect(no_time_line_arc.start_date).to eql(rp_2014.data["start_date"])
+          expect(no_time_line_arc.start_date).to eql(rp_2014[:start_date])
         end
       end
 
       describe ".end_date" do
         it "returns last end date" do
-          expect(lorem_arc.end_date).to eql(rp_2015.data["last_post_time"])
+          expect(lorem_arc.end_date).to eql(rp_2015[:last_post_time])
         end
       end
 
