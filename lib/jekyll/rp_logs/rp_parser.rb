@@ -100,8 +100,12 @@ module Jekyll
 
         def mergeable_with?(next_line)
           # Only merge posts close enough in time
-          # The difference in time between the post merged into this one, and the next post, must be less than the limit
-          close_enough_time = (next_line.timestamp - @last_merged_timestamp) * 24 * 60 * 60 <= MAX_SECONDS_BETWEEN_POSTS
+          # The difference in time between the post merged into this one, and
+          # the next post, must be less than the limit (and non-negative)
+          time_diff = (next_line.timestamp - @last_merged_timestamp) * 24 * 60 * 60
+          close_enough_time = time_diff >= 0 &&
+                              time_diff <= MAX_SECONDS_BETWEEN_POSTS
+
           # Only merge posts with same sender
           same_sender = @sender == next_line.sender
           # Only merge rp lines
