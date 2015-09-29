@@ -27,89 +27,71 @@ module Jekyll
         config["rp_convert"] ||= true
       end
 
-      def skip_page(page, message)
-        # TODO: prettify
-        @site.collections[RP_KEY].docs.delete page.page
+      def skip_page(site, page, message)
+        site.collections[RP_KEY].docs.delete page.page
         print "\nSkipping #{page.path}: #{message}"
-      end
-
-      def has_errors?(page)
-        # Verify that formats are specified
-        if page[:format].nil? || page[:format].length == 0
-          skip_page(page, "No formats specified")
-          return true
-        else
-          # Verify that the parser for each format exists
-          page[:format].each { |format|
-            if self.class.parsers[format].nil?
-              skip_page(page, "Format #{format} does not exist.")
-              return true
-            end
-          }
-        end
-
-        # Verify that tags exist
-        if page[:rp_tags].nil?
-          skip_page(page, "No tags specified")
-          return true
-        # Verify that arc names are in the proper format
-        elsif page[:arc_name] && !page[:arc_name].respond_to?("each")
-          skip_page(page, "arc_name must be blank or a YAML list")
-          return true
-        end
-
-        false
       end
 
       def generate(site)
         return unless site.config["rp_convert"]
-        @site = site
 
         # Directory of RPs
-        index = site.pages.detect { |page| page.data["rp_index"] }
-        index.data["rps"] = { "canon" => [], "noncanon" => [] }
+        main_index = site.pages.find { |page| page.data["rp_index"] }
+        main_index.data["rps"] = { "canon" => [], "noncanon" => [] }
 
         # Arc-style directory
-        arc_page = site.pages.detect { |page| page.data["rp_arcs"] }
+        arc_index = site.pages.find { |page| page.data["rp_arcs"] }
 
-        site.data["menu_pages"] = [index, arc_page]
+        site.data["menu_pages"] = [main_index, arc_index]
 
+        # Pull out all the pages that are error-free
+        rp_pages = extract_valid_rps(site)
+
+        convert_all_pages(site, main_index, arc_index, rp_pages)
+      end
+
+      ##
+      # Returns a list of RpLogs::Page objects that are error-free.
+      private def extract_valid_rps(site)
+        site.collections[RP_KEY].docs.map { |p| RpLogs::Page.new(p) }
+          .reject do |p|
+            message = p.errors?(self.class.parsers)
+            skip_page(site, p, message) if message
+            message
+          end
+      end
+
+      def convert_all_pages(site, main_index, arc_index, rp_pages)
         arcs = Hash.new { |hash, key| hash[key] = Arc.new(key) }
         no_arc_rps = []
 
         # Convert all of the posts to be pretty
         # Also build up our hash of tags
-        site.collections[RP_KEY].docs.map { |p| RpLogs::Page.new(p) }
-          .each { |page|
-            # because we're iterating over a selected array, we can delete from the original
-            begin
-              next if has_errors? page
+        rp_pages.each do |page|
+          begin
+            # Skip if something goes wrong
+            next unless convert_rp(site, page)
 
-              page[:rp_tags] = page[:rp_tags].split(",").map { |t| Tag.new t }
+            key = page[:canon] ? "canon" : "noncanon"
+            # Add key for canon/noncanon
+            main_index.data["rps"][key] << page
+            # Add tag for canon/noncanon
+            page[:rp_tags] << (Tag.new key)
+            page[:rp_tags].sort!
 
-              # Skip if something goes wrong
-              next unless convert_rp page
-
-              key = page[:canon] ? "canon" : "noncanon"
-              # Add key for canon/noncanon
-              index.data["rps"][key] << page
-              # Add tag for canon/noncanon
-              page[:rp_tags] << (Tag.new key)
-              page[:rp_tags].sort!
-
-              arc_name = page[:arc_name]
-              if arc_name
-                arc_name.each { |n| arcs[n] << page }
-              else
-                no_arc_rps << page
-              end
-            rescue
-              # Catch all for any other exception encountered when parsing a page
-              skip_page(page, "Error parsing #{page.path}: #{$ERROR_INFO.inspect}\n")
-              # Raise exception, so Jekyll prints backtrace if run with --trace
-              raise $ERROR_INFO
+            arc_name = page[:arc_name]
+            if arc_name && !arc_name.empty?
+              arc_name.each { |n| arcs[n] << page }
+            else
+              no_arc_rps << page
             end
-          }
+          rescue
+            # Catch all for any other exception encountered when parsing a page
+            skip_page(site, page, "Error parsing #{page.path}: #{$ERROR_INFO.inspect}\n")
+            # Raise exception, so Jekyll prints backtrace if run with --trace
+            raise $ERROR_INFO
+          end
+        end
 
         arcs.each_key { |key| sort_chronologically! arcs[key].rps }
         combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }
@@ -121,10 +103,10 @@ module Jekyll
             x.start_date
           end
         }.reverse!
-        arc_page.data["rps"] = combined_rps
+        arc_index.data["rps"] = combined_rps
 
-        sort_chronologically! index.data["rps"]["canon"]
-        sort_chronologically! index.data["rps"]["noncanon"]
+        sort_chronologically! main_index.data["rps"]["canon"]
+        sort_chronologically! main_index.data["rps"]["noncanon"]
       end
 
       def sort_chronologically!(pages)
@@ -139,7 +121,7 @@ module Jekyll
         pages.sort_by! { |p| p[:time_line] || p[:start_date] }.reverse!
       end
 
-      def convert_rp(page)
+      def convert_rp(site, page)
         options = get_options page
 
         compiled_lines = []
@@ -154,7 +136,7 @@ module Jekyll
         }
 
         if compiled_lines.length == 0
-          skip_page(page, "No lines were matched by any format.")
+          skip_page(site, page, "No lines were matched by any format.")
           return false
         end
 
