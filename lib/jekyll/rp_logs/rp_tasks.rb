@@ -1,4 +1,4 @@
-require 'rake'
+require "rake"
 
 module Jekyll
   module RpLogs
@@ -21,7 +21,7 @@ module Jekyll
       # Octopress
       def ask(message, valid_options)
         if valid_options
-          answer = get_stdin("#{message} #{valid_options.to_s.gsub(/"/, '').gsub(/, /,'/')} ") while !valid_options.include?(answer)
+          answer = get_stdin("#{message} #{valid_options.to_s.gsub(/"/, '').gsub(/, /, '/')} ") until valid_options.include?(answer)
         else
           answer = get_stdin(message)
         end
@@ -30,11 +30,10 @@ module Jekyll
 
       def install_tasks
         namespace :rp_logs do
+          directory "_rps"
 
-          directory '_rps'
-
-          desc 'Create a new Jekyll site for RP logs, with the default theme'
-          task :new do |args|
+          desc "Create a new Jekyll site for RP logs, with the default theme"
+          task :new do
             if File.directory?("_sass")
               abort("rake aborted!") if ask("A theme is already installed, proceeding will overwrite existing non-custom files. Are you sure?", ['y', 'n']) == 'n'
             end
