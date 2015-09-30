@@ -98,38 +98,88 @@ module Jekyll
           [tag_open, tag_close]
         end
 
+        ##
+        # Check if this line can be merged with the given line. In order to be
+        # merged, the two lines must fulfill the following requirements:
+        #
+        # * The timestamp difference is >= 0 and <= MAX_SECONDS_BETWEEN POSTS
+        #   (close_enough_timestamps?)
+        # * The lines have the same sender (same_sender?)
+        # * The first line has output_type :rp (rp?)
+        # * The next line has output_type :rp OR the sender has been specified
+        #   as someone who splits to normal text
+        #
+        # Exceptions:
+        # * If the next line has the SPLIT flag, it will never be merged
+        # * If the next line has the MERGE flag, it will always be merged
         def mergeable_with?(next_line)
-          # Only merge posts close enough in time
-          # The difference in time between the post merged into this one, and
-          # the next post, must be less than the limit (and non-negative)
-          time_diff = (next_line.timestamp - @last_merged_timestamp) * 24 * 60 * 60
-          close_enough_time = time_diff >= 0 &&
-                              time_diff <= MAX_SECONDS_BETWEEN_POSTS
+          # Perform the checks for the override flags
+          return true if next_line.merge_flag?
+          return false if next_line.split_flag?
+          mergeable_ignoring_flags?(next_line)
+        end
 
-          # Only merge posts with same sender
-          same_sender = @sender == next_line.sender
-          # Only merge rp lines
-          is_rp = @output_type == :rp
-          # Merge if next post is rp or sender has split_to_normal_text property
-          # Only merge if the base type was OOC... otherwise you couldn't force not merging
-          # Maybe a job for !NOTMERGE flag, or similar
-          next_line_is_rp = next_line.output_type == :rp || \
-            (@options[:merge_text_into_rp].include?(@sender) && next_line.base_type == :ooc)
-          # Do not merge line if next line marked with !SPLIT
-          split_flag = next_line.flags.include? SPLIT_FLAG
-          # Merge if next line marked with !MERGE, regardless of other options
-          merge_flag = next_line.flags.include? MERGE_FLAG
-
-          merge_flag || (!split_flag && close_enough_time && same_sender && is_rp && next_line_is_rp)
+        ##
+        # Does all the rest of the checks that don't have to do with the
+        # override flags SPLIT_FLAG and MERGE_FLAG.
+        private def mergeable_ignoring_flags?(next_line)
+          close_enough_timestamps?(next_line) &&
+            same_sender?(next_line) &&
+            rp? &&
+            (next_line.rp? || next_line.possible_split_to_normal_text?)
         end
 
         def merge!(next_line)
-          @contents += " " + next_line.contents
+          @contents += " #{next_line.contents}"
           @last_merged_timestamp = next_line.timestamp
+          self
         end
 
         def inspect
-          "<#{@mode}#{@sender}> (#{@base_type} -> #{@output_type}) #{@content}"
+          "<#{@mode}#{@sender}> (#{@base_type} -> #{@output_type}) #{@contents}"
+        end
+
+        ##
+        # Returns true if this line has the output_type :rp
+        def rp?
+          @output_type == :rp
+        end
+
+        def split_flag?
+          @flags.include? SPLIT_FLAG
+        end
+
+        def merge_flag?
+          @flags.include? MERGE_FLAG
+        end
+
+        ##
+        # Return true if this sender splits to normal text, and the line base
+        # type was OOC. This allows you to force a quick text post not to merge
+        # by flagging it !OOC.
+        #
+        # Only merge if the base type was OOC... otherwise you couldn't force not merging
+        # Maybe a job for !NOTMERGE flag, or similar
+        protected def possible_split_to_normal_text?
+          base_type == :ooc && @options[:merge_text_into_rp] &&
+            @options[:merge_text_into_rp].include?(@sender)
+        end
+
+        private
+
+        ##
+        # Only merge posts close enough in time
+        # The difference in time between the post merged into this one, and
+        # the next post, must be less than the limit (and non-negative)
+        def close_enough_timestamps?(next_line)
+          time_diff = (next_line.timestamp - @last_merged_timestamp) * 24 * 60 * 60
+          time_diff >= 0 && time_diff <= MAX_SECONDS_BETWEEN_POSTS
+        end
+
+        ##
+        # Returns if these lines have the same sender
+        def same_sender?(next_line)
+          @sender == next_line.sender
         end
       end
     end

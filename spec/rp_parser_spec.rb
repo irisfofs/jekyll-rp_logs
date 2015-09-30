@@ -1,4 +1,4 @@
-# spec/rp_parser_spec.rb
+# spec/rp_Parser_spec.rb
 require "jekyll"
 require "jekyll/rp_logs/rp_parser"
 
@@ -49,30 +49,25 @@ module Jekyll
         @rp_contents = "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
         @ooc_contents = "(Lorem ipsum dolor sit amet, consectetur adipisicing elit.)"
       end
-      let(:rp_line) do
-        Parser::LogLine.new(@timestamp, sender: "Alice", contents: @rp_contents, flags: "", type: :rp)
+
+      def log_line(timestamp: @timestamp, options: {}, sender: "Alice", contents: @rp_contents, flags: "", type: :rp)
+        Parser::LogLine.new(timestamp, options, sender: sender, contents: contents, flags: flags, type: type)
       end
-      let(:ooc_line) do
-        Parser::LogLine.new(@timestamp, sender: "Alice", contents: @ooc_contents, flags: "", type: :ooc)
+
+      def strict_log_line(timestamp: @timestamp, options: { strict_ooc: true }, sender: "Alice", contents: @rp_contents, flags: "", type: :rp)
+        Parser::LogLine.new(timestamp, options, sender: sender, contents: contents, flags: flags, type: type)
       end
-      let(:rp_flag) do
-        Parser::LogLine.new(@timestamp, sender: "Alice", contents: @ooc_contents, flags: "!RP", type: :ooc)
-      end
-      let(:ooc_flag) do
-        Parser::LogLine.new(@timestamp, sender: "Alice", contents: @rp_contents, flags: "!OOC", type: :rp)
-      end
-      let(:invalid_type) do
-        Parser::LogLine.new(@timestamp, sender: "Alice", contents: " ", flags: "", type: :not_a_type)
-      end
+
+      let(:rp_line) { log_line }
+      let(:ooc_line) { log_line(contents: @ooc_contents, type: :ooc) }
+      let(:rp_flag) { log_line(contents: @ooc_contents, flags: Parser::LogLine::RP_FLAG, type: :ooc) }
+      let(:ooc_flag) { log_line(flags: Parser::LogLine::OOC_FLAG) }
+      let(:invalid_type) { log_line(type: :not_a_type) }
 
       describe ".output_type" do
         context "with :strict_ooc option" do
-          let(:strict_ooc_default) do
-            Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @rp_contents, flags: "", type: :ooc)
-          end
-          let(:strict_ooc_ooc) do
-            Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @ooc_contents, flags: "", type: :ooc)
-          end
+          let(:strict_ooc_default) { strict_log_line(type: :ooc) }
+          let(:strict_ooc_ooc) { strict_log_line(contents: @ooc_contents, type: :ooc) }
 
           it "is RP without open paren" do
             expect(strict_ooc_default.output_type).to eql(:rp)
@@ -82,12 +77,8 @@ module Jekyll
           end
 
           context "with flags" do
-            let(:strict_rp_flag) do
-              Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @ooc_contents, flags: "!RP", type: :ooc)
-            end
-            let(:strict_ooc_flag) do
-              Parser::LogLine.new(@timestamp, { strict_ooc: true }, sender: "Alice", contents: @rp_contents, flags: "!OOC", type: :rp)
-            end
+            let(:strict_rp_flag) { strict_log_line(contents: @ooc_contents, flags: Parser::LogLine::RP_FLAG, type: :ooc) }
+            let(:strict_ooc_flag) { strict_log_line(flags: Parser::LogLine::OOC_FLAG) }
 
             it "is RP with !RP flag" do
               expect(strict_rp_flag.output_type).to eql(:rp)
@@ -148,6 +139,122 @@ module Jekyll
           it "raises a 'No known type' error" do
             expect { invalid_type.output_tags }.to raise_exception("No known type: not_a_type")
           end
+        end
+      end
+
+      describe ".output" do
+        context "when called" do
+          subject { rp_line }
+          it { is_expected.to receive(:output_tags) }
+          it { is_expected.to receive(:output_timestamp) }
+          it { is_expected.to receive(:output_sender) }
+          after { subject.output }
+        end
+      end
+
+      let(:merge_content_1) { "The quick brown fox" }
+      let(:merge_content_2) { "jumps over the lazy dog" }
+
+      # def add_seconds(line, secs)
+      #   Parser::LogLine.new(
+      #     line.timestamp + Rational(secs, 60 * 60 * 24),
+      #     line.options,
+      #     sender: line.sender,
+      #     contents: line.contents,
+      #     flags: line.flags.join(" "),
+      #     type: line.base_type,
+      #     mode: line.mode)
+      # end
+
+      def add_seconds(date, secs)
+        date + Rational(secs, 60 * 60 * 24)
+      end
+
+      let(:merged_content) { "#{merge_content_1} #{merge_content_2}" }
+      let(:line_1) { log_line(contents: merge_content_1) }
+      let(:line_2) { log_line(timestamp: add_seconds(line_1.timestamp, Parser::LogLine::MAX_SECONDS_BETWEEN_POSTS), contents: merge_content_2) }
+      let(:merged_line) do
+        line_1.merge! line_2
+      end
+
+      describe ".merge!" do
+        it "appends the contents of the next line" do
+          expect(merged_line.contents).to eql(merged_content)
+        end
+        it "updates last_merged_timestamp" do
+          expect(merged_line.last_merged_timestamp).to eql(line_2.timestamp)
+        end
+        it "returns itself" do
+          temp_var = line_1
+          expect(temp_var.merge! line_2).to equal(line_1)
+        end
+      end
+
+      describe ".mergeable_with?" do
+        context "when lines meet all requirements" do
+          it { expect(line_1.mergeable_with? line_2).to be true }
+        end
+
+        let(:future_line) { log_line(timestamp: add_seconds(@timestamp, Parser::LogLine::MAX_SECONDS_BETWEEN_POSTS+1)) }
+        context "when the timestamp difference is too large" do
+          it { expect(line_1.mergeable_with? future_line).to be_falsey }
+        end
+        context "when the timestamp difference is negative" do
+          it { expect(line_2.mergeable_with? line_1).to be_falsey }
+        end
+        context "with different senders" do
+          it { expect(line_1.mergeable_with? log_line(sender: "Bob")).to be_falsey }
+        end
+        context "with a non-:rp output_type for the first line" do
+          it { expect(log_line(type: :ooc).mergeable_with? line_2).to be_falsey }
+        end
+        context "with a non-:rp output_type for the second line" do
+          it { expect(line_1.mergeable_with? log_line(type: :ooc)).to be_falsey }
+          context "when the sender splits to normal text" do
+            let(:split_to_normal) { log_line(type: :ooc, options: { merge_text_into_rp: ["Alice"] }) }
+            it { expect(line_1.mergeable_with? split_to_normal).to be true }
+          end
+        end
+
+        context "when given override flags" do
+          def add_flag(line, flag)
+            Parser::LogLine.new(
+              line.timestamp,
+              line.options,
+              sender: line.sender,
+              contents: line.contents,
+              flags: flag,
+              type: line.base_type,
+              mode: line.mode)
+          end
+
+          def add_merge_flag(line)
+            add_flag(line, Parser::LogLine::MERGE_FLAG)
+          end
+          def add_split_flag(line)
+            add_flag(line, Parser::LogLine::SPLIT_FLAG)
+          end
+
+          context "when given !MERGE" do
+            it "is true for all kinds of invalid tests" do
+              expect(line_1.mergeable_with? add_merge_flag(future_line)).to be true
+              expect(line_2.mergeable_with? add_merge_flag(line_1)).to be true
+              expect(line_1.mergeable_with? add_merge_flag(log_line(sender: "Bob"))).to be true
+              expect(log_line(type: :ooc).mergeable_with? add_merge_flag(line_2)).to be true
+              expect(line_1.mergeable_with? add_merge_flag(log_line(type: :ooc))).to be true
+            end
+          end
+          context "when given !SPLIT" do
+            it "doesn't merge even acceptable lines" do
+              expect(line_1.mergeable_with? add_split_flag(line_2)).to be_falsey
+            end
+          end
+        end
+      end
+
+      describe ".inspect" do
+        it "returns a string" do
+          expect(rp_line.inspect).to be_instance_of(String)
         end
       end
     end
