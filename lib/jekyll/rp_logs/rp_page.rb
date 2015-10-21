@@ -52,6 +52,11 @@ module Jekyll
 
         false
       end
+
+      def options
+        { strict_ooc: self[:strict_ooc],
+          merge_text_into_rp: self[:merge_text_into_rp] }
+      end
     end
   end
 end

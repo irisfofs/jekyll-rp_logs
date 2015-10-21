@@ -35,6 +35,17 @@ module Jekyll
       def generate(site)
         return unless site.config["rp_convert"]
 
+        main_index, arc_index = extract_indexes(site)
+
+        # Pull out all the pages that are error-free
+        rp_pages = extract_valid_rps(site)
+
+        convert_all_pages(site, main_index, arc_index, rp_pages)
+      end
+
+      ##
+      #
+      private def extract_indexes(site)
         # Directory of RPs
         main_index = site.pages.find { |page| page.data["rp_index"] }
         main_index.data["rps"] = { "canon" => [], "noncanon" => [] }
@@ -43,11 +54,6 @@ module Jekyll
         arc_index = site.pages.find { |page| page.data["rp_arcs"] }
 
         site.data["menu_pages"] = [main_index, arc_index]
-
-        # Pull out all the pages that are error-free
-        rp_pages = extract_valid_rps(site)
-
-        convert_all_pages(site, main_index, arc_index, rp_pages)
       end
 
       ##
@@ -122,7 +128,7 @@ module Jekyll
       end
 
       def convert_rp(site, page)
-        options = get_options page
+        options = page.options
 
         compiled_lines = []
         page.content.each_line { |raw_line|
@@ -156,11 +162,6 @@ module Jekyll
         page[:start_date] ||= stats[:start_date]
 
         true
-      end
-
-      def get_options(page)
-        { strict_ooc: page[:strict_ooc],
-          merge_text_into_rp: page[:merge_text_into_rp] }
       end
 
       def merge_lines!(compiled_lines)
