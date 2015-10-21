@@ -61,6 +61,7 @@ module Jekyll
 
       describe ".generate" do
         subject do
+          Jekyll.logger.log_level = :error
           generator.generate(site)
           rp_basenames
         end
