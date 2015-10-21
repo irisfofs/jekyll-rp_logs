@@ -3,6 +3,19 @@ module Jekyll
     class Parser
       FORMAT_STR = nil
 
+      # These patterns are reasonably universal.
+      # (?<foo>pattern) is a named group accessible via $LAST_MATCH_INFO[:foo]
+
+      # IRC mode characters for most IRCds.
+      MODE = /(?<mode>[+%@&~!]?)/
+
+      # The allowable characters in nicks. Errs on the side of being permissive
+      # rather than restrictive
+      NICK = /(?<nick>[\w\-\\\[\]\{\}\^\`\|]+)/
+
+      # Match flags used for forcing the parser to treat the line a certain way
+      FLAGS = /(?<flags>(?:![A-Z]+ )*)/
+
       class LogLine
         MAX_SECONDS_BETWEEN_POSTS = 3
         RP_FLAG = "!RP"

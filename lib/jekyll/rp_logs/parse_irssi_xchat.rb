@@ -1,47 +1,45 @@
 module Jekyll
   module RpLogs
-
     class IrssiXChatParser < RpLogs::Parser
-
       # Add this class to the parsing dictionary
-      FORMAT_STR = 'irssi-xchat'
+      FORMAT_STR = "irssi-xchat"
       RpLogGenerator.add self
 
-      # Stuff
-      class << self
-        MODE = /([+%@&~!]?)/
-        NICK = /([\w\-\\\[\]\{\}\^\`\|]+)/
-        DATE_REGEXP = /(\d\d:\d\d)/
+      DATE_REGEXP = /(?<timestamp>\d\d:\d\d)/
+      TIMESTAMP_FORMAT = "%H:%M"
 
-        FLAGS = /((?:![A-Z]+ )*)/
-        # TODO: Update to match join/part/quit format
-        JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/ 
-        EMOTE = /^#{FLAGS}#{DATE_REGEXP} {16}\* \| #{NICK}\s+([^\n]*)$/
-        TEXT  = /^#{FLAGS}#{DATE_REGEXP} < *#{MODE}#{NICK}> \| ([^\n]*)$/
+      MSG = /(?<msg>[^\n]*)/
 
-        TIMESTAMP_FORMAT = '%H:%M'
+      # TODO: Update to match join/part/quit format
+      JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/
+      EMOTE = /^#{FLAGS}#{DATE_REGEXP} {16}\* \| #{NICK}\s+#{MSG}$/
+      TEXT  = /^#{FLAGS}#{DATE_REGEXP} <#{MODE}? *#{NICK}> \| #{MSG}$/
 
-        def parse_line(line, options = {}) 
-          case line
-          when JUNK
-            return nil
-          when EMOTE
-            date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-            return Parser::LogLine.new(date, options, sender: $3, contents: $4, \
-              flags: $1, type: :rp)
-          when TEXT
-            date = DateTime.strptime($2, TIMESTAMP_FORMAT)
-            mode = if $3 != '' then $3 else ' ' end
-            return Parser::LogLine.new(date, options, sender: $4, contents: $5, \
-              flags: $1, type: :ooc, mode: mode)
-          else
-            # Only put text and emotes in the log
-            return nil
-          end
+      def self.parse_line(line, options = {})
+        case line
+        when JUNK
+          return nil
+        when EMOTE
+          type = :rp
+        when TEXT
+          type = :ooc
+          mode = $LAST_MATCH_INFO[:mode]
+          mode = " " if mode == ""
+        else
+          # Only put text and emotes in the log
+          return nil
         end
+        date = DateTime.parse($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
+        Parser::LogLine.new(
+          date,
+          options,
+          sender: $LAST_MATCH_INFO[:nick],
+          contents: $LAST_MATCH_INFO[:msg],
+          flags: $LAST_MATCH_INFO[:flags],
+          type: type,
+          mode: mode
+        )
       end
-
-    end  
-
+    end
   end
 end

@@ -7,48 +7,39 @@ module Jekyll
       FORMAT_STR = "weechat"
       RpLogGenerator.add self
 
-      # Stuff
-      class << self
-        # Regular expressions for chunks repeated in each type of message
-        # (?<foo>pattern) is a named group accessible via $LAST_MATCH_INFO[:foo]
-        MODE = /(?<mode>[+%@&~!]?)/
-        NICK = /(?<nick>[\w\-\\\[\]\{\}\^\`\|]+)/
-        DATE_REGEXP = /(?<timestamp>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
+      # Date is repeated in each type of message
+      DATE_REGEXP = /(?<timestamp>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
+      TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-        FLAGS = /(?<flags>(?:![A-Z]+ )*)/
+      # Regular expressions for matching each type of line
+      JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/
+      EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+(?<msg>[^\n]*)$/
+      TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t(?<msg>[^\n]*)$/
 
-        # Regular expressions for matching each type of line
-        JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/
-        EMOTE = /^#{FLAGS}#{DATE_REGEXP}\t \*\t#{NICK}\s+(?<msg>[^\n]*)$/
-        TEXT  = /^#{FLAGS}#{DATE_REGEXP}\t#{MODE}#{NICK}\t(?<msg>[^\n]*)$/
-
-        TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
-
-        def parse_line(line, options = {})
-          case line
-          when JUNK
-            return nil
-          when EMOTE
-            type = :rp
-          when TEXT
-            type = :ooc
-            mode = $LAST_MATCH_INFO[:mode]
-            mode = " " if mode == ""
-          else
-            # Only put text and emotes in the log
-            return nil
-          end
-          date = DateTime.parse($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
-          Parser::LogLine.new(
-            date,
-            options,
-            sender: $LAST_MATCH_INFO[:nick],
-            contents: $LAST_MATCH_INFO[:msg],
-            flags: $LAST_MATCH_INFO[:flags],
-            type: type,
-            mode: mode
-          )
+      def self.parse_line(line, options = {})
+        case line
+        when JUNK
+          return nil
+        when EMOTE
+          type = :rp
+        when TEXT
+          type = :ooc
+          mode = $LAST_MATCH_INFO[:mode]
+          mode = " " if mode == ""
+        else
+          # Only put text and emotes in the log
+          return nil
         end
+        date = DateTime.parse($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
+        Parser::LogLine.new(
+          date,
+          options,
+          sender: $LAST_MATCH_INFO[:nick],
+          contents: $LAST_MATCH_INFO[:msg],
+          flags: $LAST_MATCH_INFO[:flags],
+          type: type,
+          mode: mode
+        )
       end
     end
   end
