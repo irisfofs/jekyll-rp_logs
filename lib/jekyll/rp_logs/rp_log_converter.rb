@@ -10,7 +10,7 @@ module Jekyll
       safe true
       priority :normal
 
-      RP_KEY = "rps"
+      RP_KEY = "rps".freeze
 
       @parsers = {}
 
@@ -29,7 +29,7 @@ module Jekyll
 
       def skip_page(site, page, message)
         site.collections[RP_KEY].docs.delete page.page
-        print "\nSkipping #{page.path}: #{message}"
+        Jekyll.logger.warn "\nSkipping #{page.path}: #{message}"
       end
 
       def generate(site)
@@ -119,7 +119,7 @@ module Jekyll
         # Check pages for invalid time_line value
         pages.each do |p|
           if p[:time_line] && !p[:time_line].is_a?(Date)
-            puts "Malformed time_line #{p[:time_line]} in file #{p.path}"
+            Jekyll.logger.error "Malformed time_line #{p[:time_line]} in file #{p.path}"
             fail "Malformed time_line date"
           end
         end
