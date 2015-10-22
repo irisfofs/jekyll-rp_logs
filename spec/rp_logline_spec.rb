@@ -68,6 +68,9 @@ module Jekyll
           it "is OOC with open paren" do
             expect(strict_ooc_ooc.output_type).to eql(:ooc)
           end
+          it "is OOC with open bracket" do
+            expect(strict_log_line(contents: "[Lorem ipsum").output_type).to eql(:ooc)
+          end
 
           context "with flags" do
             let(:strict_rp_flag) { strict_log_line(contents: @ooc_contents, flags: LogLine::RP_FLAG, type: :ooc) }
@@ -94,6 +97,16 @@ module Jekyll
           end
           it "is OOC with !OOC flag" do
             expect(ooc_flag.output_type).to eql(:ooc)
+          end
+
+          let(:rp_line_with_paren) { log_line(contents: @ooc_contents) }
+          let(:rp_line_with_bracket) { log_line(contents: "[Lorem ipsum") }
+
+          it "is OOC with open paren" do
+            expect(rp_line_with_paren.output_type).to eql(:ooc)
+          end
+          it "is OOC with open bracket" do
+            expect(rp_line_with_bracket.output_type).to eql(:ooc)
           end
         end
       end

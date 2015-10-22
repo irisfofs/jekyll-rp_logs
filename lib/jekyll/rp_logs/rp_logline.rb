@@ -3,7 +3,12 @@ require "cgi"
 module Jekyll
   module RpLogs
     class LogLine
+      # The max number of seconds between two lines that can still be merged
       MAX_SECONDS_BETWEEN_POSTS = 3
+
+      # All characters that can denote the beginning of an OOC line
+      OOC_START_DELIMITERS = "([".freeze
+
       RP_FLAG = "!RP".freeze
       OOC_FLAG = "!OOC".freeze
       MERGE_FLAG = "!MERGE".freeze
@@ -41,8 +46,8 @@ module Jekyll
         # This makes it RP by default
         @output_type = :rp if @options[:strict_ooc]
 
-        # Check the contents for (
-        @output_type = :ooc if @contents.strip[0] == "("
+        # Check the contents for leading ( or [
+        @output_type = :ooc if OOC_START_DELIMITERS.include? @contents.strip[0]
 
         # Flags override our assumptions, always
         if @flags.include? RP_FLAG
