@@ -4,10 +4,10 @@ module Jekyll
   module RpLogs
     class LogLine
       MAX_SECONDS_BETWEEN_POSTS = 3
-      RP_FLAG = "!RP"
-      OOC_FLAG = "!OOC"
-      MERGE_FLAG = "!MERGE"
-      SPLIT_FLAG = "!SPLIT"
+      RP_FLAG = "!RP".freeze
+      OOC_FLAG = "!OOC".freeze
+      MERGE_FLAG = "!MERGE".freeze
+      SPLIT_FLAG = "!SPLIT".freeze
 
       attr_reader :timestamp, :mode, :sender, :contents, :flags
       # Some things depend on the original type of the line (nick format)
@@ -56,7 +56,7 @@ module Jekyll
       def output
         tag_open, tag_close = output_tags
         # Escape any HTML special characters in the input
-        escaped_content = CGI::escapeHTML(@contents)
+        escaped_content = CGI.escapeHTML(@contents)
         "#{tag_open}#{output_timestamp}#{output_sender} #{escaped_content}#{tag_close}"
       end
 
@@ -83,18 +83,15 @@ module Jekyll
       end
 
       def output_tags
-        tag_class = nil
-        tag_close = "</p>"
-        case @output_type
-        when :rp
-          tag_class = "rp"
-        when :ooc
-          tag_class = "ooc"
-        else
-          # Explode.
-          fail "No known type: #{@output_type}"
-        end
+        tag_class =
+          case @output_type
+          when :rp then "rp"
+          when :ooc then "ooc"
+          else # Explode.
+            fail "No known type: #{@output_type}"
+          end
         tag_open = "<p class=\"#{tag_class}\">"
+        tag_close = "</p>"
 
         [tag_open, tag_close]
       end

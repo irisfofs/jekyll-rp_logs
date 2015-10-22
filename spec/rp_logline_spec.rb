@@ -5,20 +5,17 @@ require "jekyll/rp_logs/rp_logline"
 module Jekyll
   module RpLogs
     RSpec.describe LogLine do
-      before do
-        @alice_line = LogLine.new(
-          DateTime.new(2015, 9, 23, 14, 35, 27, "-4"),
-          sender: "Alice",
-          contents: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-          flags: "",
-          type: :rp
-        )
-      end
-
       describe "attributes" do
-        subject do
-          @alice_line
+        let(:alice_line) do
+          LogLine.new(
+            DateTime.new(2015, 9, 23, 14, 35, 27, "-4"),
+            sender: "Alice",
+            contents: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            flags: "",
+            type: :rp
+          )
         end
+        subject { alice_line }
 
         it { is_expected.to respond_to(:timestamp) }
         it { is_expected.to respond_to(:mode) }
@@ -27,10 +24,6 @@ module Jekyll
         it { is_expected.to respond_to(:flags) }
         it { is_expected.to respond_to(:base_type) }
         it { is_expected.to respond_to(:output_type) }
-
-        let(:alice_line) do
-          @alice_line
-        end
 
         context "without arguments" do
           describe ".mode" do
@@ -237,6 +230,7 @@ module Jekyll
           def add_merge_flag(line)
             add_flag(line, LogLine::MERGE_FLAG)
           end
+
           def add_split_flag(line)
             add_flag(line, LogLine::SPLIT_FLAG)
           end
