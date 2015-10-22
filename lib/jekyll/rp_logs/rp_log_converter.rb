@@ -25,7 +25,7 @@ module Jekyll
 
       def initialize(config)
         # Should actually probably complain if things are undefined or missing
-        config["rp_convert"] ||= true
+        config["rp_convert"] = true if config["rp_convert"].nil?
         Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
       end
 
