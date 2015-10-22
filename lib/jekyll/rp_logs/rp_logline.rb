@@ -1,3 +1,5 @@
+require "cgi"
+
 module Jekyll
   module RpLogs
     class LogLine
@@ -53,7 +55,9 @@ module Jekyll
 
       def output
         tag_open, tag_close = output_tags
-        "#{tag_open}#{output_timestamp}#{output_sender} #{@contents}#{tag_close}"
+        # Escape any HTML special characters in the input
+        escaped_content = CGI::escapeHTML(@contents)
+        "#{tag_open}#{output_timestamp}#{output_sender} #{escaped_content}#{tag_close}"
       end
 
       def output_timestamp

@@ -150,6 +150,12 @@ module Jekyll
           it { is_expected.to receive(:output_sender) }
           after { subject.output }
         end
+        context "when called with HTML special characters" do
+          subject { log_line(contents: "Foo & Bar \"baz\" <horse>").output }
+          it "escapes them" do
+            expect(subject).to include("Foo &amp; Bar &quot;baz&quot; &lt;horse&gt;")
+          end
+        end
       end
 
       let(:merge_content_1) { "The quick brown fox" }
