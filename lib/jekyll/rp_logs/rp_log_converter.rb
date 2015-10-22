@@ -1,4 +1,5 @@
 require_relative "rp_parser"
+require_relative "rp_logline"
 require_relative "rp_page"
 require_relative "rp_arcs"
 require_relative "rp_tags"

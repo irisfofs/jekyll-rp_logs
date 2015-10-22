@@ -55,7 +55,8 @@ module Jekyll
 
       def options
         { strict_ooc: self[:strict_ooc],
-          merge_text_into_rp: self[:merge_text_into_rp] }
+          merge_text_into_rp: self[:merge_text_into_rp],
+          splits_by_character: self[:splits_by_character] }
       end
     end
   end

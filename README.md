@@ -85,18 +85,19 @@ In order to be picked up and parsed by Jekyll, each file needs a [YAML front mat
 
 These are all optional (they have default values, configurable in `_config.yml`):
 
-* `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
+* `arc_name` - YAML list - names of story arcs that the RP belongs to
 * `canon` - true/false - Whether the RP is considered canonical (whatever that means to you). Sorts RPs into one of two categories in the index.
 * `complete` - true/false - Whether the RP is finished, or is still incomplete. Incomplete RPs are flagged as such on the index.
 * `format` - YAML list - What format(s) the logs are in, e.g., `[weechat]`
 * `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
-* `arc_name` - YAML list - names of story arcs that the RP belongs to
+* `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
 
-There are also some more options you can toggle:
+There are also some more options you can toggle. Some are needed for giving the parser more information about oddities in posts, so that it can merge split posts correctly.
 
-* `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
-* `merge_text_into_rp` - YAML list - A list of nicks whose clients split actions into normal text, like [IRCCloud did for a while](https://twitter.com/XiaguZ/status/590773722593763328).
 * `infer_char_tags` - true/false - If false, don't infer the characters in the RP by the nicks who do emotes.
+* `merge_text_into_rp` - YAML list - A list of nicks whose clients split actions into normal text, like [IRCCloud did for a while](https://twitter.com/XiaguZ/status/590773722593763328).
+* `splits_by_character` - YAML list - A list of nicks whose clients split posts by characters and not by words. (For example, splitting "hello" into "hel" "lo".)
+* `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
 
 #### Formatting the logs
 All joins, parts, and quits are stripped, so you don't have to bother pulling those out. All lines that are emotes (`/me`) are RP, and all other lines are OOC by default. Consecutive posts from the same person with timestamps less than a few seconds apart are merged together.

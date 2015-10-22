@@ -128,9 +128,24 @@ module Jekyll
       end
 
       def merge!(next_line)
-        @contents += " #{next_line.contents}"
+        @contents += "#{space_between_lines}#{next_line.contents}"
         @last_merged_timestamp = next_line.timestamp
         self
+      end
+
+      ##
+      # Returns "" if the sender has been said to split by characters.
+      # Returns " " otherwise.
+      #
+      # When the sender splits by characters, adding a space will put spaces in
+      # the middle of words. Their spaces will be preserved at the end of lines.
+      private def space_between_lines
+        if options[:splits_by_character] &&
+           options[:splits_by_character].include?(@sender)
+          ""
+        else
+          " "
+        end
       end
 
       def inspect

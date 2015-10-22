@@ -187,6 +187,15 @@ module Jekyll
           temp_var = line_1
           expect(temp_var.merge! line_2).to equal(line_1)
         end
+
+        context "with splits_by_character option" do
+          let(:sbc_1) { log_line(contents: "Sesquip", options: { splits_by_character: ["Alice"] }) }
+          let(:sbc_2) { log_line(contents: "edalian", options: { splits_by_character: ["Alice"] }) }
+
+          it "doesn't add a space" do
+            expect(sbc_1.merge!(sbc_2).contents).to eql("Sesquipedalian")
+          end
+        end
       end
 
       describe ".mergeable_with?" do

@@ -54,7 +54,7 @@ module Jekyll
         let(:test_names) do
           %w(test test_arc_name test_extension test_format_does_not_exist
              test_infer_char_tags test_no_format test_no_match
-             test_nonlist_arc_name)
+             test_nonlist_arc_name test_options)
         end
 
         context "when initialized" do
@@ -75,6 +75,7 @@ module Jekyll
         it { is_expected.to include("test_arc_name") }
         it { is_expected.to include("test_extension") }
         it { is_expected.to include("test_infer_char_tags") }
+        it { is_expected.to include("test_options") }
         it { is_expected.not_to include("test_format_does_not_exist") }
         it { is_expected.not_to include("test_no_format") }
         it { is_expected.not_to include("test_no_Match") }
@@ -92,6 +93,7 @@ module Jekyll
           it { is_expected.to include("Converted test_arc_name.md") }
           it { is_expected.to include("Converted test_extension.log") }
           it { is_expected.to include("Converted test_infer_char_tags.md") }
+          it { is_expected.to include("Converted test_options.md") }
         end
 
         context "to stderr" do
@@ -104,6 +106,21 @@ module Jekyll
           it { is_expected.to include("Skipping test_no_format.md") }
           it { is_expected.to include("Skipping test_nonlist_arc_name.md") }
           it { is_expected.to include("Skipping test_no_match.md") }
+        end
+      end
+
+      describe "page.options" do
+        context "when parsed" do
+          subject do
+            RpLogs::Page.new(
+              site.collections[RpLogGenerator::RP_KEY].docs
+                .find { |p| p.basename_without_ext == "test_options" }
+            ).options
+          end
+
+          it { is_expected.to include(strict_ooc: true) }
+          it { is_expected.to include(merge_text_into_rp: ["Alice"]) }
+          it { is_expected.to include(splits_by_character: ["Bob"]) }
         end
       end
     end
