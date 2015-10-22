@@ -39,7 +39,12 @@ module Jekyll
         end
       end
 
-      let(:generator) { RpLogGenerator.new(DEFAULT_CONFIGURATION) }
+      # this needs to happen first just so that the log level is overridable
+      let!(:generator) do
+        # Hide the plugin loaded message
+        Jekyll.logger.log_level = :warn
+        RpLogGenerator.new(DEFAULT_CONFIGURATION)
+      end
 
       let(:rp_basenames) do
         site.collections[RpLogGenerator::RP_KEY].docs.map(&:basename_without_ext)
@@ -59,7 +64,7 @@ module Jekyll
         end
       end
 
-      describe ".generate" do
+      describe "site RP collection docs after .generate" do
         subject do
           Jekyll.logger.log_level = :error
           generator.generate(site)
@@ -74,6 +79,32 @@ module Jekyll
         it { is_expected.not_to include("test_no_format") }
         it { is_expected.not_to include("test_no_Match") }
         it { is_expected.not_to include("test_nonlist_arc_name") }
+      end
+
+      describe ".generate's informational messages" do
+        context "to stdout" do
+          subject do
+            Jekyll.logger.log_level = :info
+            capture_stdout { capture_stderr { generator.generate(site) } }
+          end
+
+          it { is_expected.to include("Converted test.md") }
+          it { is_expected.to include("Converted test_arc_name.md") }
+          it { is_expected.to include("Converted test_extension.log") }
+          it { is_expected.to include("Converted test_infer_char_tags.md") }
+        end
+
+        context "to stderr" do
+          subject do
+            Jekyll.logger.log_level = :warn
+            capture_stderr { generator.generate(site) }
+          end
+
+          it { is_expected.to include("Skipping test_format_does_not_exist.md") }
+          it { is_expected.to include("Skipping test_no_format.md") }
+          it { is_expected.to include("Skipping test_nonlist_arc_name.md") }
+          it { is_expected.to include("Skipping test_no_match.md") }
+        end
       end
     end
   end

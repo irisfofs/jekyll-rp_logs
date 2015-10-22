@@ -25,11 +25,12 @@ module Jekyll
       def initialize(config)
         # Should actually probably complain if things are undefined or missing
         config["rp_convert"] ||= true
+        Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
       end
 
       def skip_page(site, page, message)
         site.collections[RP_KEY].docs.delete page.page
-        Jekyll.logger.warn "\nSkipping #{page.path}: #{message}"
+        Jekyll.logger.warn "Skipping #{page.basename}: #{message}"
       end
 
       def generate(site)
@@ -91,9 +92,11 @@ module Jekyll
             else
               no_arc_rps << page
             end
+
+            Jekyll.logger.info "Converted #{page.basename}"
           rescue
             # Catch all for any other exception encountered when parsing a page
-            skip_page(site, page, "Error parsing #{page.path}: #{$ERROR_INFO.inspect}\n")
+            skip_page(site, page, "Error parsing #{page.basename}: #{$ERROR_INFO.inspect}")
             # Raise exception, so Jekyll prints backtrace if run with --trace
             raise $ERROR_INFO
           end
