@@ -10,10 +10,10 @@ module Jekyll
       # Stuff
       class << self
         NICK = /([\w\-\\\[\]\{\}\^\`\|\s\'\)\(]+)/
-        DATE_REGEXP = /(\[\d?\d\/\d?\d\/\d\d\d\d\s\d?\d\:\d\d\:\d\d\s(AM|PM)\])/ 
+        DATE_REGEXP = /(\[\d?\d\/\d?\d\/\d\d\d\d\s\d?\d\:\d\d\:\d\d\s(AM|PM)\])/
         FLAGS = /((?:![A-Z]+ )*)/
         BAD_STUFF = /[^a-zA-Z\-\_]/
-      
+
         # Crappy but works
         USER_AT_HOST = /\(\w+@[^)]+\)/
         #Not needed?    JUNK = /#{DATE_REGEXP} \* #{MODE}#{NICK} (sets mode:|is now known as|(#{USER_AT_HOST} (has joined|Quit|has left))).*$/
@@ -22,7 +22,7 @@ module Jekyll
 
         TIMESTAMP_FORMAT = '[%m/%d/%Y %I:%M:%S %p]'
 
-        def parse_line(line, options = {}) 
+        def parse_line(line, options = {})
           case line
           #when JUNK
             #nil
@@ -31,14 +31,14 @@ module Jekyll
             contents = $6
             flags = $1
             sendername = $4.tr(' ', '-').gsub(BAD_STUFF, "")
-            Parser::LogLine.new(date, options, sender: sendername, contents: contents, \
+            LogLine.new(date, options, sender: sendername, contents: contents, \
             flags: flags, type: :rp)
           when TEXT
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             contents = $5
             flags = $1
             sendername = $4.tr(' ', '-').gsub(BAD_STUFF, "")
-            Parser::LogLine.new(date, options, sender: sendername, contents: contents, \
+            LogLine.new(date, options, sender: sendername, contents: contents, \
               flags: flags, type: :ooc)
           else
             # Only put text and emotes in the log
@@ -47,7 +47,7 @@ module Jekyll
         end
       end
 
-    end  
+    end
 
   end
 end

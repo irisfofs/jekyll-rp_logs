@@ -31,7 +31,7 @@ module Jekyll
           return nil
         end
         date = DateTime.parse($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
-        Parser::LogLine.new(
+        LogLine.new(
           date,
           options,
           sender: $LAST_MATCH_INFO[:nick],

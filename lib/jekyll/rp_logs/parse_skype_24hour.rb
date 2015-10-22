@@ -10,7 +10,7 @@ module Jekyll
       # Stuff
       class << self
         NICK = /([\w\-\\\[\]\{\}\^\`\|\s\']+)/
-        DATE_REGEXP = /(\[\d\d.\d\d.\d\d\s\d\d\:\d\d\:\d\d\])/ 
+        DATE_REGEXP = /(\[\d\d.\d\d.\d\d\s\d\d\:\d\d\:\d\d\])/
         FLAGS = /((?:![A-Z]+ )*)/
         BAD_STUFF = /[^a-zA-Z\-\_]/
         # Crappy but works
@@ -21,7 +21,7 @@ module Jekyll
 
         TIMESTAMP_FORMAT = '[%d.%m.%y %H:%M:%S]'
 
-        def parse_line(line, options = {}) 
+        def parse_line(line, options = {})
           case line
          # when JUNK
            # nil
@@ -30,14 +30,14 @@ module Jekyll
             contents = $5
             flags = $1
             sendername = $3.tr(' ', '-').gsub(BAD_STUFF, "")
-            Parser::LogLine.new(date, options, sender: sendername, contents: contents, \
+            LogLine.new(date, options, sender: sendername, contents: contents, \
             flags: flags, type: :rp)
           when TEXT
             date = DateTime.strptime($2, TIMESTAMP_FORMAT)
             contents = $4
             flags = $1
             sendername = $3.tr(' ', '-').gsub(BAD_STUFF, "")
-            Parser::LogLine.new(date, options, sender: sendername, contents: contents, \
+            LogLine.new(date, options, sender: sendername, contents: contents, \
               flags: flags, type: :ooc)
           else
             # Only put text and emotes in the log
@@ -46,7 +46,7 @@ module Jekyll
         end
       end
 
-    end  
+    end
 
   end
 end

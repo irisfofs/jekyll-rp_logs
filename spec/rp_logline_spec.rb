@@ -1,12 +1,12 @@
-# spec/rp_Parser_spec.rb
+# spec/rp_logline_spec.rb
 require "jekyll"
-require "jekyll/rp_logs/rp_parser"
+require "jekyll/rp_logs/rp_logline"
 
 module Jekyll
   module RpLogs
-    RSpec.describe Parser::LogLine do
+    RSpec.describe LogLine do
       before do
-        @alice_line = Parser::LogLine.new(
+        @alice_line = LogLine.new(
           DateTime.new(2015, 9, 23, 14, 35, 27, "-4"),
           sender: "Alice",
           contents: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
@@ -51,17 +51,17 @@ module Jekyll
       end
 
       def log_line(timestamp: @timestamp, options: {}, sender: "Alice", contents: @rp_contents, flags: "", type: :rp)
-        Parser::LogLine.new(timestamp, options, sender: sender, contents: contents, flags: flags, type: type)
+        LogLine.new(timestamp, options, sender: sender, contents: contents, flags: flags, type: type)
       end
 
       def strict_log_line(timestamp: @timestamp, options: { strict_ooc: true }, sender: "Alice", contents: @rp_contents, flags: "", type: :rp)
-        Parser::LogLine.new(timestamp, options, sender: sender, contents: contents, flags: flags, type: type)
+        LogLine.new(timestamp, options, sender: sender, contents: contents, flags: flags, type: type)
       end
 
       let(:rp_line) { log_line }
       let(:ooc_line) { log_line(contents: @ooc_contents, type: :ooc) }
-      let(:rp_flag) { log_line(contents: @ooc_contents, flags: Parser::LogLine::RP_FLAG, type: :ooc) }
-      let(:ooc_flag) { log_line(flags: Parser::LogLine::OOC_FLAG) }
+      let(:rp_flag) { log_line(contents: @ooc_contents, flags: LogLine::RP_FLAG, type: :ooc) }
+      let(:ooc_flag) { log_line(flags: LogLine::OOC_FLAG) }
       let(:invalid_type) { log_line(type: :not_a_type) }
 
       describe ".output_type" do
@@ -77,8 +77,8 @@ module Jekyll
           end
 
           context "with flags" do
-            let(:strict_rp_flag) { strict_log_line(contents: @ooc_contents, flags: Parser::LogLine::RP_FLAG, type: :ooc) }
-            let(:strict_ooc_flag) { strict_log_line(flags: Parser::LogLine::OOC_FLAG) }
+            let(:strict_rp_flag) { strict_log_line(contents: @ooc_contents, flags: LogLine::RP_FLAG, type: :ooc) }
+            let(:strict_ooc_flag) { strict_log_line(flags: LogLine::OOC_FLAG) }
 
             it "is RP with !RP flag" do
               expect(strict_rp_flag.output_type).to eql(:rp)
@@ -156,7 +156,7 @@ module Jekyll
       let(:merge_content_2) { "jumps over the lazy dog" }
 
       # def add_seconds(line, secs)
-      #   Parser::LogLine.new(
+      #   LogLine.new(
       #     line.timestamp + Rational(secs, 60 * 60 * 24),
       #     line.options,
       #     sender: line.sender,
@@ -172,7 +172,7 @@ module Jekyll
 
       let(:merged_content) { "#{merge_content_1} #{merge_content_2}" }
       let(:line_1) { log_line(contents: merge_content_1) }
-      let(:line_2) { log_line(timestamp: add_seconds(line_1.timestamp, Parser::LogLine::MAX_SECONDS_BETWEEN_POSTS), contents: merge_content_2) }
+      let(:line_2) { log_line(timestamp: add_seconds(line_1.timestamp, LogLine::MAX_SECONDS_BETWEEN_POSTS), contents: merge_content_2) }
       let(:merged_line) do
         line_1.merge! line_2
       end
@@ -195,7 +195,7 @@ module Jekyll
           it { expect(line_1.mergeable_with? line_2).to be true }
         end
 
-        let(:future_line) { log_line(timestamp: add_seconds(@timestamp, Parser::LogLine::MAX_SECONDS_BETWEEN_POSTS+1)) }
+        let(:future_line) { log_line(timestamp: add_seconds(@timestamp, LogLine::MAX_SECONDS_BETWEEN_POSTS+1)) }
         context "when the timestamp difference is too large" do
           it { expect(line_1.mergeable_with? future_line).to be_falsey }
         end
@@ -218,7 +218,7 @@ module Jekyll
 
         context "when given override flags" do
           def add_flag(line, flag)
-            Parser::LogLine.new(
+            LogLine.new(
               line.timestamp,
               line.options,
               sender: line.sender,
@@ -229,10 +229,10 @@ module Jekyll
           end
 
           def add_merge_flag(line)
-            add_flag(line, Parser::LogLine::MERGE_FLAG)
+            add_flag(line, LogLine::MERGE_FLAG)
           end
           def add_split_flag(line)
-            add_flag(line, Parser::LogLine::SPLIT_FLAG)
+            add_flag(line, LogLine::SPLIT_FLAG)
           end
 
           context "when given !MERGE" do
