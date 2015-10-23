@@ -14,7 +14,7 @@ destination: _site
 
 # Build settings
 markdown: kramdown
-exclude: 
+exclude:
   - LICENSE
   - README.md
   - Gemfile
@@ -30,10 +30,20 @@ rp_tag_dir: /tags
 rp_tag_index_layout: tag_index
 rp_tag_title_prefix: "RPs tagged "
 
+# The max number of seconds between two mergeable lines. Lines further apart
+# in time than this will not be merged.
+max_seconds_between_posts: 3
+
+# All characters that can denote the beginning of an OOC line, for the purposes
+# of strict_ooc and automatically converting OOC emotes to OOC text.
+ooc_start_delimiters: "(["
+
 collections:
   # The RPs must be in a directory named exactly this, prefixed by an underscore.
-  # So by default: _rps/ 
-  # If you change this, you also need to change the collection key name in rp_log_converter.rb
+  # So by default: _rps/
+  # This entry must be the first in the collections map, if you need to add
+  # more collections for some reason. Don't forget to update the `type` down
+  # below if you change this.
   rps:
     output: true
 

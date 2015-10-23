@@ -24,7 +24,7 @@ end
 CLEAN.include("dev_site/*")
 
 desc "Create and populate the dev_site directory, ready for building or serving"
-task deploy: ["clean", "dev_site", "dev_site/Gemfile", "dev_site/Rakefile"] do
+task deploy: ["clean", "dev_site", "dev_site/Gemfile", "dev_site/Rakefile", "install"] do
   Bundler.with_clean_env do
     Dir.chdir("dev_site") do
       sh "bundle --quiet"
@@ -36,7 +36,7 @@ task deploy: ["clean", "dev_site", "dev_site/Gemfile", "dev_site/Rakefile"] do
 end
 
 desc "Deploys the site to the dev_site directory and serves it for testing"
-task serve: ["deploy", "install"] do
+task serve: ["deploy"] do
   Bundler.with_clean_env do
     Dir.chdir("dev_site") do
       sh "bundle exec jekyll serve --trace --config _config.yml"

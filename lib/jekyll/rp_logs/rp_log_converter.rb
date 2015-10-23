@@ -11,26 +11,43 @@ module Jekyll
       safe true
       priority :normal
 
-      RP_KEY = "rps".freeze
-
       @parsers = {}
 
       class << self
-        attr_reader :parsers
+        attr_reader :parsers, :rp_key
 
         def add(parser)
           @parsers[parser::FORMAT_STR] = parser
         end
+
+        ##
+        # Extract global settings from the config file.
+        # The rp directory and collection name is pulled out; it must be the
+        # first collection defined.
+        def extract_settings(config)
+          # Looks this is just where it is in the file okay
+          @rp_key = config["collections"].keys[0].freeze
+        end
+      end
+
+      ##
+      # Convenience method for accessing the
+      private def rp_key
+        self.class.rp_key
       end
 
       def initialize(config)
         # Should actually probably complain if things are undefined or missing
-        config["rp_convert"] = true if config["rp_convert"].nil?
+        config["rp_convert"] = true unless config.key? "rp_convert"
+
+        RpLogGenerator.extract_settings(config)
+        LogLine.extract_settings(config)
+
         Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
       end
 
       def skip_page(site, page, message)
-        site.collections[RP_KEY].docs.delete page.page
+        site.collections[rp_key].docs.delete page.page
         Jekyll.logger.warn "Skipping #{page.basename}: #{message}"
       end
 
@@ -61,7 +78,7 @@ module Jekyll
       ##
       # Returns a list of RpLogs::Page objects that are error-free.
       private def extract_valid_rps(site)
-        site.collections[RP_KEY].docs.map { |p| RpLogs::Page.new(p) }
+        site.collections[rp_key].docs.map { |p| RpLogs::Page.new(p) }
           .reject do |p|
             message = p.errors?(self.class.parsers)
             skip_page(site, p, message) if message

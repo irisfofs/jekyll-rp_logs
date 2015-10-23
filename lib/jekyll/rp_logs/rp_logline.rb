@@ -3,12 +3,6 @@ require "cgi"
 module Jekyll
   module RpLogs
     class LogLine
-      # The max number of seconds between two lines that can still be merged
-      MAX_SECONDS_BETWEEN_POSTS = 3
-
-      # All characters that can denote the beginning of an OOC line
-      OOC_START_DELIMITERS = "([".freeze
-
       RP_FLAG = "!RP".freeze
       OOC_FLAG = "!OOC".freeze
       MERGE_FLAG = "!MERGE".freeze
@@ -22,6 +16,23 @@ module Jekyll
       # Timestamp of the most recent line this line was merged with, to allow
       # merging consecutive lines each MAX_SECONDS_BETWEEN_POSTS apart
       attr_reader :last_merged_timestamp
+
+      # The max number of seconds between two lines that can still be merged
+      @max_seconds_between_posts = 3
+
+      # All characters that can denote the beginning of an OOC line
+      @ooc_start_delimiters = "([".freeze
+
+      class << self
+        attr_reader :ooc_start_delimiters, :max_seconds_between_posts
+
+        def extract_settings(config)
+          @max_seconds_between_posts = config.fetch("max_seconds_between_posts",
+                                                    @max_seconds_between_posts)
+          @ooc_start_delimiters = config.fetch("ooc_start_delimiters",
+                                               @ooc_start_delimiters).freeze
+        end
+      end
 
       def initialize(timestamp, options = {}, sender:, contents:, flags:, type:, mode: " ")
         @timestamp = timestamp
@@ -47,7 +58,7 @@ module Jekyll
         @output_type = :rp if @options[:strict_ooc]
 
         # Check the contents for leading ( or [
-        @output_type = :ooc if OOC_START_DELIMITERS.include? @contents.strip[0]
+        @output_type = :ooc if ooc_start_delimiters.include? @contents.strip[0]
 
         # Flags override our assumptions, always
         if @flags.include? RP_FLAG
@@ -191,13 +202,21 @@ module Jekyll
       # the next post, must be less than the limit (and non-negative)
       def close_enough_timestamps?(next_line)
         time_diff = (next_line.timestamp - @last_merged_timestamp) * 24 * 60 * 60
-        time_diff >= 0 && time_diff <= MAX_SECONDS_BETWEEN_POSTS
+        time_diff >= 0 && time_diff <= max_seconds_between_posts
       end
 
       ##
       # Returns if these lines have the same sender
       def same_sender?(next_line)
         @sender == next_line.sender
+      end
+
+      def max_seconds_between_posts
+        self.class.max_seconds_between_posts
+      end
+
+      def ooc_start_delimiters
+        self.class.ooc_start_delimiters
       end
     end
   end

@@ -34,7 +34,7 @@ module Jekyll
         Dir.chdir("dev_site") do
           site = Jekyll::Site.new(DEFAULT_CONFIGURATION)
           site.read
-          # puts site.collections[RpLogGenerator::RP_KEY].inspect
+          # puts site.collections[RpLogGenerator.rp_key].inspect
           site
         end
       end
@@ -47,7 +47,7 @@ module Jekyll
       end
 
       let(:rp_basenames) do
-        site.collections[RpLogGenerator::RP_KEY].docs.map(&:basename_without_ext)
+        site.collections[RpLogGenerator.rp_key].docs.map(&:basename_without_ext)
       end
 
       describe "site" do
@@ -113,7 +113,7 @@ module Jekyll
         context "when parsed" do
           subject do
             RpLogs::Page.new(
-              site.collections[RpLogGenerator::RP_KEY].docs
+              site.collections[RpLogGenerator.rp_key].docs
                 .find { |p| p.basename_without_ext == "test_options" }
             ).options
           end
@@ -121,6 +121,54 @@ module Jekyll
           it { is_expected.to include(strict_ooc: true) }
           it { is_expected.to include(merge_text_into_rp: ["Alice"]) }
           it { is_expected.to include(splits_by_character: ["Bob"]) }
+        end
+      end
+
+      describe ".initialize" do
+        context "when called" do
+          describe "LogLine" do
+            before do
+              logline_config = DEFAULT_CONFIGURATION.merge(
+                "ooc_start_delimiters" => "abc",
+                "max_seconds_between_posts" => 5
+              )
+              Jekyll.logger.log_level = :warn
+              RpLogGenerator.new(logline_config)
+            end
+
+            it "gets max_seconds_between_posts from config file" do
+              expect(LogLine.max_seconds_between_posts).to eql(5)
+            end
+            it "gets ooc_start_delimiters from config file" do
+              expect(LogLine.ooc_start_delimiters).to eql("abc")
+            end
+
+            after do
+              # Restore the default configuration. Very important
+              RpLogGenerator.new(DEFAULT_CONFIGURATION)
+            end
+          end
+
+          describe "RpLogGenerator" do
+            let(:diff_key_generator) do
+              logline_config = DEFAULT_CONFIGURATION.merge(
+                "collections" => { "lorem" => { "output" => true } }
+              )
+              Jekyll.logger.log_level = :warn
+              RpLogGenerator.new(logline_config)
+            end
+
+            it "gets default rp_key from default config file" do
+              expect(generator.class.rp_key).to eql("rps")
+            end
+            it "gets rp_key from config file" do
+              expect(diff_key_generator.class.rp_key).to eql("lorem")
+            end
+
+            after do
+              RpLogGenerator.new(DEFAULT_CONFIGURATION)
+            end
+          end
         end
       end
     end

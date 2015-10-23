@@ -100,7 +100,11 @@ There are also some more options you can toggle. Some are needed for giving the 
 * `strict_ooc` - true/false - If true, only lines beginning with `(` are considered OOC by default.
 
 #### Formatting the logs
-All joins, parts, and quits are stripped, so you don't have to bother pulling those out. All lines that are emotes (`/me`) are RP, and all other lines are OOC by default. Consecutive posts from the same person with timestamps less than a few seconds apart are merged together.
+The goal of this plugin is to make updating logs as easy and painless as possible. The goal is to be able to paste a log in, add trivial metadata at the top, and be good to go. Here's everything the plugin does for you so you don't have to:
+* All joins, parts, and quits are stripped, so you don't have to bother pulling those out
+* All lines that are emotes (`/me`) are interpreted as RP, and all other lines are OOC by default
+* Lines starting with `(` or `[` are interpreted as OOC, even if they're an emote. (These characters are configurable in `_config.yml`.)
+* Consecutive posts from the same person with timestamps less than or equal to 3 seconds apart are merged together. (The exact amount of time is configurable in `_config.yml`.)
 
 To flag an OOC line as RP, or vice versa, use
 

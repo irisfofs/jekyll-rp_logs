@@ -184,7 +184,7 @@ module Jekyll
 
       let(:merged_content) { "#{merge_content_1} #{merge_content_2}" }
       let(:line_1) { log_line(contents: merge_content_1) }
-      let(:line_2) { log_line(timestamp: add_seconds(line_1.timestamp, LogLine::MAX_SECONDS_BETWEEN_POSTS), contents: merge_content_2) }
+      let(:line_2) { log_line(timestamp: add_seconds(line_1.timestamp, LogLine.max_seconds_between_posts), contents: merge_content_2) }
       let(:merged_line) do
         line_1.merge! line_2
       end
@@ -216,7 +216,7 @@ module Jekyll
           it { expect(line_1.mergeable_with? line_2).to be true }
         end
 
-        let(:future_line) { log_line(timestamp: add_seconds(@timestamp, LogLine::MAX_SECONDS_BETWEEN_POSTS+1)) }
+        let(:future_line) { log_line(timestamp: add_seconds(@timestamp, LogLine.max_seconds_between_posts+1)) }
         context "when the timestamp difference is too large" do
           it { expect(line_1.mergeable_with? future_line).to be_falsey }
         end
