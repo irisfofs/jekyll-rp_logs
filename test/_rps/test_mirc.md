@@ -1,0 +1,11 @@
+---
+title: mirc
+canon: false
+complete: true
+rp_tags: Test
+format: [MIRC]
+---
+
+06 11 15[22:14] * Alice Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+0306 14 15[18:52] * Test (664@244-224-824-22-dolar.sit) has joined #omnis
+06 14 15[18:54] <Alice> (Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.)

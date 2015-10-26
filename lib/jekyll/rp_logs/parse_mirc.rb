@@ -8,7 +8,7 @@ module Jekyll
       # Remember to change this for your date format
       # For example, this regex is for, mm dd yy[HH:nn] or 06 14 15[18:48]
       # The default mirc date format is HH:nn
-      DATE_REGEXP = /(\d\d \d\d \d\d\[\d\d:\d\d\])/
+      DATE_REGEXP = /(?<timestamp>\d\d \d\d \d\d\[\d\d:\d\d\])/
       # Also make sure to change this - http://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html
       # If you are using the default mirc format, this should be "[%H:%M]"
       TIMESTAMP_FORMAT = "%m %d %y[%H:%M]"
