@@ -53,7 +53,7 @@ module Jekyll
 
       ##
       # Set derived properties of this LogLine based on various options
-      def classify
+      private def classify
         # This makes it RP by default
         @output_type = :rp if @options[:strict_ooc]
 
@@ -164,10 +164,6 @@ module Jekyll
         end
       end
 
-      def inspect
-        "<#{@mode}#{@sender}> (#{@base_type} -> #{@output_type}) #{@contents}"
-      end
-
       ##
       # Returns true if this line has the output_type :rp
       def rp?
@@ -194,6 +190,10 @@ module Jekyll
           @options[:merge_text_into_rp].include?(@sender)
       end
 
+      def inspect
+        "<#{@mode}#{@sender}> (#{@base_type} -> #{@output_type}) #{@contents}"
+      end
+
       private
 
       ##
@@ -211,6 +211,8 @@ module Jekyll
         @sender == next_line.sender
       end
 
+      ##
+      # Convenience methods for accessing class instance variables
       def max_seconds_between_posts
         self.class.max_seconds_between_posts
       end

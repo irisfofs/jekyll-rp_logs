@@ -42,14 +42,13 @@ module Jekyll
       end
 
       # Returns a hash of tags => [pages with tag]
-      def rps_by_tag(site)
+      private def rps_by_tag(site)
         tag_ref = Hash.new { |hash, key| hash[key] = Set.new }
         site.collections[RpLogGenerator.rp_key].docs.each { |page|
             page.data["rp_tags"].each { |tag| tag_ref[tag] << page }
           }
         return tag_ref
       end
-
     end
   end
 end

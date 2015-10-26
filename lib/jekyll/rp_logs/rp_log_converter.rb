@@ -25,15 +25,8 @@ module Jekyll
         # The rp directory and collection name is pulled out; it must be the
         # first collection defined.
         def extract_settings(config)
-          # Looks this is just where it is in the file okay
           @rp_key = config["collections"].keys[0].freeze
         end
-      end
-
-      ##
-      # Convenience method for accessing the
-      private def rp_key
-        self.class.rp_key
       end
 
       def initialize(config)
@@ -44,11 +37,6 @@ module Jekyll
         LogLine.extract_settings(config)
 
         Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
-      end
-
-      def skip_page(site, page, message)
-        site.collections[rp_key].docs.delete page.page
-        Jekyll.logger.warn "Skipping #{page.basename}: #{message}"
       end
 
       def generate(site)
@@ -62,9 +50,17 @@ module Jekyll
         convert_all_pages(site, main_index, arc_index, rp_pages)
       end
 
+      private
+
+      ##
+      # Convenience method for accessing the collection key name
+      def rp_key
+        self.class.rp_key
+      end
+
       ##
       #
-      private def extract_indexes(site)
+      def extract_indexes(site)
         # Directory of RPs
         main_index = site.pages.find { |page| page.data["rp_index"] }
         main_index.data["rps"] = { "canon" => [], "noncanon" => [] }
@@ -77,7 +73,7 @@ module Jekyll
 
       ##
       # Returns a list of RpLogs::Page objects that are error-free.
-      private def extract_valid_rps(site)
+      def extract_valid_rps(site)
         site.collections[rp_key].docs.map { |p| RpLogs::Page.new(p) }
           .reject do |p|
             message = p.errors?(self.class.parsers)
@@ -185,6 +181,17 @@ module Jekyll
         true
       end
 
+      ##
+      # Skip the page. Removes it from the site collection, and outputs a
+      # warning message saying it was skipped with the given reason.
+      def skip_page(site, page, message)
+        site.collections[rp_key].docs.delete page.page
+        Jekyll.logger.warn "Skipping #{page.basename}: #{message}"
+      end
+
+      ##
+      # Consider moving this into Parser or RpLogs::Page
+      # It doesn't really belong here
       def merge_lines!(compiled_lines)
         last_line = nil
         compiled_lines.reject! { |line|
