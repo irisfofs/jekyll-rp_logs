@@ -29,7 +29,7 @@ module Jekyll
           # Only put text and emotes in the log
           return nil
         end
-        date = DateTime.parse($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
+        date = DateTime.strptime($LAST_MATCH_INFO[:timestamp], TIMESTAMP_FORMAT)
         LogLine.new(
           date,
           options,
