@@ -57,7 +57,15 @@ module Jekyll
       let(:ooc_flag) { log_line(flags: LogLine::OOC_FLAG) }
       let(:invalid_type) { log_line(type: :not_a_type) }
 
-      describe ".output_type" do
+      describe "#initialize" do
+        let(:whitespace_line) { log_line(contents: "  ", type: :ooc) }
+
+        it "does not crash on lines that are entirely whitespace" do
+          expect(whitespace_line.output_type).to eql(:ooc)
+        end
+      end
+
+      describe "#output_type" do
         context "with :strict_ooc option" do
           let(:strict_ooc_default) { strict_log_line(type: :ooc) }
           let(:strict_ooc_ooc) { strict_log_line(contents: @ooc_contents, type: :ooc) }
@@ -111,7 +119,7 @@ module Jekyll
         end
       end
 
-      describe ".output_timestamp" do
+      describe "#output_timestamp" do
         # This feels like a bad test :S
         it "combines anchor, title, and display" do
           expect(rp_line.output_timestamp).to eql("<a name=\"#{@timestamp.strftime('%Y-%m-%d_%H:%M:%S')}\" title=\"#{@timestamp.strftime('%H:%M:%S %B %-d, %Y')}\" href=\"##{@timestamp.strftime('%Y-%m-%d_%H:%M:%S')}\">#{@timestamp.strftime('%H:%M')}</a>")
@@ -134,7 +142,7 @@ module Jekyll
         end
       end
 
-      describe ".output_tags" do
+      describe "#output_tags" do
         it "outputs .rp when given RP output type" do
           expect(rp_line.output_tags).to eql(['<p class="rp">', "</p>"])
         end
@@ -148,7 +156,7 @@ module Jekyll
         end
       end
 
-      describe ".output" do
+      describe "#output" do
         context "when called" do
           subject { rp_line }
           it { is_expected.to receive(:output_tags) }
@@ -211,7 +219,7 @@ module Jekyll
         end
       end
 
-      describe ".mergeable_with?" do
+      describe "#mergeable_with?" do
         context "when lines meet all requirements" do
           it { expect(line_1.mergeable_with? line_2).to be true }
         end
@@ -274,7 +282,7 @@ module Jekyll
         end
       end
 
-      describe ".inspect" do
+      describe "#inspect" do
         it "returns a string" do
           expect(rp_line.inspect).to be_instance_of(String)
         end

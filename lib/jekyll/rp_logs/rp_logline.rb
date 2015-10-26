@@ -58,7 +58,8 @@ module Jekyll
         @output_type = :rp if @options[:strict_ooc]
 
         # Check the contents for leading ( or [
-        @output_type = :ooc if ooc_start_delimiters.include? @contents.strip[0]
+        first_char = @contents.strip[0]
+        @output_type = :ooc if first_char && ooc_start_delimiters.include?(first_char)
 
         # Flags override our assumptions, always
         if @flags.include? RP_FLAG

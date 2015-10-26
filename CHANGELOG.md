@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.1] - 2015-10-26
+### Fixed
+- Lines whose contents are completely whitespace are parsed correctly ([#40])
+
 ## [0.2.0] - 2015-10-26
 ### Added
 - The RP log directory can now be renamed ([#15])
@@ -40,6 +44,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Set required Ruby version to `~> 2.1` ([#32])
 
 
+[0.2.1]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.1.6...v0.2.0
 
 [#11]: https://github.com/xiagu/jekyll-rp_logs/issues/11
@@ -53,3 +58,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#8]: https://github.com/xiagu/jekyll-rp_logs/issues/8
 [#7]: https://github.com/xiagu/jekyll-rp_logs/issues/7
 [#4]: https://github.com/xiagu/jekyll-rp_logs/issues/4
+[#40]: https://github.com/xiagu/jekyll-rp_logs/issues/40
