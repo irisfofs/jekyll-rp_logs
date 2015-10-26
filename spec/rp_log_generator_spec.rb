@@ -54,7 +54,8 @@ module Jekyll
         let(:test_names) do
           %w(test test_arc_name test_extension test_format_does_not_exist
              test_infer_char_tags test_no_format test_no_match
-             test_nonlist_arc_name test_options)
+             test_nonlist_arc_name test_options
+             test_mirc test_skype12 test_skype24)
         end
 
         context "when initialized" do
@@ -76,9 +77,12 @@ module Jekyll
         it { is_expected.to include("test_extension") }
         it { is_expected.to include("test_infer_char_tags") }
         it { is_expected.to include("test_options") }
+        it { is_expected.to include("test_mirc") }
+        it { is_expected.to include("test_skype12") }
+        it { is_expected.to include("test_skype24") }
         it { is_expected.not_to include("test_format_does_not_exist") }
         it { is_expected.not_to include("test_no_format") }
-        it { is_expected.not_to include("test_no_Match") }
+        it { is_expected.not_to include("test_no_match") }
         it { is_expected.not_to include("test_nonlist_arc_name") }
       end
 
@@ -94,6 +98,9 @@ module Jekyll
           it { is_expected.to include("Converted test_extension.log") }
           it { is_expected.to include("Converted test_infer_char_tags.md") }
           it { is_expected.to include("Converted test_options.md") }
+          it { is_expected.to include("Converted test_mirc.md") }
+          it { is_expected.to include("Converted test_skype12.md") }
+          it { is_expected.to include("Converted test_skype24.md") }
         end
 
         context "to stderr" do
