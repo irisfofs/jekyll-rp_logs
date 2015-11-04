@@ -137,7 +137,7 @@ module Jekyll
         pages.each do |p|
           if p[:time_line] && !p[:time_line].is_a?(Date)
             Jekyll.logger.error "Malformed time_line #{p[:time_line]} in file #{p.path}"
-            fail "Malformed time_line date"
+            fail "Malformed time_line date, must be in the format YYYY-MM-DD"
           end
         end
         # Sort pages by time_line if present or start_date otherwise
