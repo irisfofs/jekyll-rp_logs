@@ -105,19 +105,19 @@ module Jekyll
       describe "#generate's informational messages" do
         context "to stdout" do
           subject do
-            Jekyll.logger.log_level = :info
+            Jekyll.logger.log_level = :debug
             capture_stdout { capture_stderr { generator.generate(site) } }
           end
 
-          it { is_expected.to include("Converted test.md") }
-          it { is_expected.to include("Converted test_arc_name.md") }
+          it { is_expected.to include("Converted test.rp") }
+          it { is_expected.to include("Converted test_arc_name.rp") }
           it { is_expected.to include("Converted test_extension.log") }
-          it { is_expected.to include("Converted test_infer_char_tags.md") }
-          it { is_expected.to include("Converted test_options.md") }
-          it { is_expected.to include("Converted test_disable_liquid.md") }
-          it { is_expected.to include("Converted test_mirc.md") }
-          it { is_expected.to include("Converted test_skype12.md") }
-          it { is_expected.to include("Converted test_skype24.md") }
+          it { is_expected.to include("Converted test_infer_char_tags.rp") }
+          it { is_expected.to include("Converted test_options.rp") }
+          it { is_expected.to include("Converted test_disable_liquid.rp") }
+          it { is_expected.to include("Converted test_mirc.rp") }
+          it { is_expected.to include("Converted test_skype12.rp") }
+          it { is_expected.to include("Converted test_skype24.rp") }
           it { is_expected.to include("9 RPs converted") }
         end
 
@@ -127,10 +127,10 @@ module Jekyll
             capture_stderr { generator.generate(site) }
           end
 
-          it { is_expected.to include("Skipping test_format_does_not_exist.md") }
-          it { is_expected.to include("Skipping test_no_format.md") }
-          it { is_expected.to include("Skipping test_nonlist_arc_name.md") }
-          it { is_expected.to include("Skipping test_no_match.md") }
+          it { is_expected.to include("Skipping test_format_does_not_exist.rp") }
+          it { is_expected.to include("Skipping test_no_format.rp") }
+          it { is_expected.to include("Skipping test_nonlist_arc_name.rp") }
+          it { is_expected.to include("Skipping test_no_match.rp") }
         end
       end
 

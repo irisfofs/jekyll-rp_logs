@@ -39,6 +39,7 @@ module Jekyll
         tags.each_pair { |tag, pages|
           site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages)
         }
+        Jekyll.logger.info "#{tags.size} tag pages generated."
       end
 
       # Returns a hash of tags => [pages with tag]

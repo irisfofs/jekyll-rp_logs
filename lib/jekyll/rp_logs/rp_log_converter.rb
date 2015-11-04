@@ -121,7 +121,7 @@ module Jekyll
               no_arc_rps << page
             end
 
-            Jekyll.logger.info "Converted #{page.basename}"
+            Jekyll.logger.debug "Converted #{page.basename}"
           rescue
             # Catch all for any other exception encountered when parsing a page
             skip_page(site, page, "Error parsing #{page.basename}: #{$ERROR_INFO.inspect}")
@@ -131,7 +131,6 @@ module Jekyll
         end
 
         Jekyll.logger.info "#{site.collections[rp_key].docs.size} RPs converted."
-        Jekyll.logger.log_level = :debug
 
         arcs.each_key { |key| sort_chronologically! arcs[key].rps }
         combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }

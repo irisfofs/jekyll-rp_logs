@@ -4,9 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Upcoming
 ### Added
+- Logs the total number of tag pages generated.
 - Logs the total number of RPs converted after processing them.
 
 ### Changed
+- Logging each individual conversion is now debug level output and not info.
 - Test RPs now use the `.rp` extension instead of `.md`. This keeps them from being run through the Markdown converter, which saves time!
 
 ### Fixed
