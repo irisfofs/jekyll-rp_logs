@@ -116,6 +116,8 @@ module Jekyll
           end
         end
 
+        Jekyll.logger.info "#{site.collections[rp_key].docs.size} RPs converted."
+
         arcs.each_key { |key| sort_chronologically! arcs[key].rps }
         combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }
         combined_rps.sort_by! { |type, x|

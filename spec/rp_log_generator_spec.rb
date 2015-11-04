@@ -101,6 +101,7 @@ module Jekyll
           it { is_expected.to include("Converted test_mirc.md") }
           it { is_expected.to include("Converted test_skype12.md") }
           it { is_expected.to include("Converted test_skype24.md") }
+          it { is_expected.to include("8 RPs converted") }
         end
 
         context "to stderr" do

@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Upcoming
+### Added
+- Logs the total number of RPs converted after processing them.
+
 ## [0.2.1] - 2015-10-26
 ### Fixed
 - Lines whose contents are completely whitespace are parsed correctly ([#40])
