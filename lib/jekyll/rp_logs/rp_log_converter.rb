@@ -44,6 +44,7 @@ module Jekyll
 
         main_index, arc_index = extract_indexes(site)
 
+        disable_liquid_rendering(site)
         # Pull out all the pages that are error-free
         rp_pages = extract_valid_rps(site)
 
@@ -69,6 +70,19 @@ module Jekyll
         arc_index = site.pages.find { |page| page.data["rp_arcs"] }
 
         site.data["menu_pages"] = [main_index, arc_index]
+      end
+
+      ##
+      # Redefine the #render_with_liquid? method for every RP Document. This
+      # speeds up the rendering process a little, and also avoids Liquid
+      # throwing a fit if someone typed {{ in the log.
+      def disable_liquid_rendering(site)
+        site.collections[rp_key].docs.each do |doc|
+          # https://github.com/jekyll/jekyll/blob/6e8fd8cb50eab4dab527eaaa0b23d08593b9972b/lib/jekyll/document.rb#L150
+          def doc.render_with_liquid?
+            false
+          end
+        end
       end
 
       ##
@@ -117,6 +131,7 @@ module Jekyll
         end
 
         Jekyll.logger.info "#{site.collections[rp_key].docs.size} RPs converted."
+        Jekyll.logger.log_level = :debug
 
         arcs.each_key { |key| sort_chronologically! arcs[key].rps }
         combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }

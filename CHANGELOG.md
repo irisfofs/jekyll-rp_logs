@@ -6,7 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Logs the total number of RPs converted after processing them.
 
+### Changed
+- Test RPs now use the `.rp` extension instead of `.md`. This keeps them from being run through the Markdown converter, which saves time!
+
 ### Fixed
+- Liquid rendering is disabled for RP logs. ([#46])
 - `RpLogs::Page` can be tested on its own, now that it requires `Forwardable`.
 
 ## [0.2.1] - 2015-10-26
@@ -66,3 +70,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#7]: https://github.com/xiagu/jekyll-rp_logs/issues/7
 [#4]: https://github.com/xiagu/jekyll-rp_logs/issues/4
 [#40]: https://github.com/xiagu/jekyll-rp_logs/issues/40
+[#46]: https://github.com/xiagu/jekyll-rp_logs/issues/46

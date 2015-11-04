@@ -33,6 +33,7 @@ module Jekyll
       let(:site) do
         Dir.chdir("dev_site") do
           site = Jekyll::Site.new(DEFAULT_CONFIGURATION)
+          site.reset
           site.read
           # puts site.collections[RpLogGenerator.rp_key].inspect
           site
@@ -54,13 +55,27 @@ module Jekyll
         let(:test_names) do
           %w(test test_arc_name test_extension test_format_does_not_exist
              test_infer_char_tags test_no_format test_no_match
-             test_nonlist_arc_name test_options
+             test_nonlist_arc_name test_options test_disable_liquid
              test_mirc test_skype12 test_skype24)
         end
 
         context "when initialized" do
           it "has all test files before .generate" do
             expect(rp_basenames).to match_array(test_names)
+          end
+        end
+
+        describe "#render" do
+          subject do
+            generator.generate(site)
+            # Needs to be exactly around this to get the dir right
+            Dir.chdir("dev_site") do
+              site.render
+            end
+          end
+
+          it "does not try to parse Liquid tags" do
+            expect { subject }.to_not raise_error
           end
         end
       end
@@ -77,6 +92,7 @@ module Jekyll
         it { is_expected.to include("test_extension") }
         it { is_expected.to include("test_infer_char_tags") }
         it { is_expected.to include("test_options") }
+        it { is_expected.to include("test_disable_liquid") }
         it { is_expected.to include("test_mirc") }
         it { is_expected.to include("test_skype12") }
         it { is_expected.to include("test_skype24") }
@@ -86,7 +102,7 @@ module Jekyll
         it { is_expected.not_to include("test_nonlist_arc_name") }
       end
 
-      describe ".generate's informational messages" do
+      describe "#generate's informational messages" do
         context "to stdout" do
           subject do
             Jekyll.logger.log_level = :info
@@ -98,10 +114,11 @@ module Jekyll
           it { is_expected.to include("Converted test_extension.log") }
           it { is_expected.to include("Converted test_infer_char_tags.md") }
           it { is_expected.to include("Converted test_options.md") }
+          it { is_expected.to include("Converted test_disable_liquid.md") }
           it { is_expected.to include("Converted test_mirc.md") }
           it { is_expected.to include("Converted test_skype12.md") }
           it { is_expected.to include("Converted test_skype24.md") }
-          it { is_expected.to include("8 RPs converted") }
+          it { is_expected.to include("9 RPs converted") }
         end
 
         context "to stderr" do
@@ -117,7 +134,7 @@ module Jekyll
         end
       end
 
-      describe "page.options" do
+      describe "page#options" do
         context "when parsed" do
           subject do
             RpLogs::Page.new(
@@ -132,7 +149,7 @@ module Jekyll
         end
       end
 
-      describe ".initialize" do
+      describe "#initialize" do
         context "when called" do
           describe "LogLine" do
             before do
