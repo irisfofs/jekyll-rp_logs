@@ -91,6 +91,7 @@ These are all optional (they have default values, configurable in `_config.yml`)
 * `format` - YAML list - What format(s) the logs are in, e.g., `[weechat]`
 * `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
 * `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
+* `time_line` - Used to change the order an RP in an Arc is stored in while keeping the displayed start_date correct. Useful if story RPs were done out of order. Must be a valid YAML date, such as `YYYY-MM-DD`. - 
 
 There are also some more options you can toggle. Some are needed for giving the parser more information about oddities in posts, so that it can merge split posts correctly.
 
