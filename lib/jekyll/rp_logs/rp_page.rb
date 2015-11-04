@@ -1,3 +1,5 @@
+require "forwardable"
+
 module Jekyll
   module RpLogs
     class Page

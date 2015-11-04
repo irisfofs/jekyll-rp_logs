@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Logs the total number of RPs converted after processing them.
 
+### Fixed
+- `RpLogs::Page` can be tested on its own, now that it requires `Forwardable`.
+
 ## [0.2.1] - 2015-10-26
 ### Fixed
 - Lines whose contents are completely whitespace are parsed correctly ([#40])
