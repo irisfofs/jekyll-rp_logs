@@ -2,34 +2,32 @@
 
 module Jekyll
   module RpLogs
-
-    TAG_NAME_MAP = {
-      "#"  => "sharp",
-      "/"  => "slash",
-      "\\" => "backslash",
-      " "  => "_"
-    }
-
     # Holds tag information
     class Tag
-
-      attr_accessor :dir, :name, :type
-
-      TYPES = [:meta, :character, :general]
-      CHAR_FLAG = /char:(.*)/
+      TYPES = [:meta, :character, :general].freeze
+      CHAR_FLAG = /^char:(?<char_name>.*)/
       META_TAGS = /(safe|questionable|explicit|canon|noncanon|complete|incomplete)/
 
+      TAG_NAME_MAP = {
+        "#"  => "sharp",
+        "/"  => "slash",
+        "\\" => "backslash",
+        " "  => "_"
+      }.freeze
+
       TYPE_CLASSES = {
-        :character => ['rp-tag-character'],
-        :meta => ['rp-tag-meta'],
-        :general => []
-      }
+        character: ["rp-tag-character"],
+        meta: ["rp-tag-meta"],
+        general: []
+      }.freeze
+
+      attr_accessor :dir, :name, :type
 
       def initialize(name)
         # inspect types
         name.strip!
-        if (name =~ CHAR_FLAG) == 0 then
-          @name = $1
+        if CHAR_FLAG =~ name
+          @name = $LAST_MATCH_INFO[:char_name]
           @type = :character
         else
           @name = name.downcase
@@ -40,25 +38,25 @@ module Jekyll
       end
 
       def to_s
-        self.name
+        name
       end
 
-      def eql?(tag)
-        self.class.equal?(tag.class) && (self.name == tag.name && self.type == tag.type)
+      def eql?(other)
+        self.class.equal?(other.class) && (name == other.name && type == other.type)
       end
 
       def hash
-        self.name.hash
+        name.hash
       end
 
       def <=>(o)
-        if self.class == o.class && self.type == o.type
-          self.name <=> o.name 
-        elsif self.type == :character
+        if self.class == o.class && type == o.type
+          name <=> o.name
+        elsif type == :character
           -1
         elsif o.type == :character
-          1 
-        elsif self.type == :meta
+          1
+        elsif type == :meta
           -1
         elsif o.type == :meta
           1
@@ -74,11 +72,11 @@ module Jekyll
       def to_liquid
         # Liquid wants a hash, not an object.
 
-        { "name" => @name, "dir" => @dir, "classes" => self.classes }
+        { "name" => @name, "dir" => @dir, "classes" => classes }
       end
 
-      def classes      
-        TYPE_CLASSES[@type].join ' '
+      def classes
+        TYPE_CLASSES[@type].join " "
       end
 
       private
@@ -88,11 +86,11 @@ module Jekyll
       def name_to_dir(name)
         s = ""
         name.each_char do |c|
-          if (c =~ /[-A-Za-z0-9_|\[\]]/) != nil
+          if c =~ /[-A-Za-z0-9_|\[\]]/
             s += c
           else
             c2 = TAG_NAME_MAP[c]
-            if not c2
+            unless c2
               msg = "Bad character '#{c}' in tag '#{name}'"
               puts("*** #{msg}")
               raise Exception.new(msg)
