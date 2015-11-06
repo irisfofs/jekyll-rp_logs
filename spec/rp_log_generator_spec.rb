@@ -51,22 +51,25 @@ module Jekyll
         site.collections[RpLogGenerator.rp_key].docs.map(&:basename_without_ext)
       end
 
-      describe "site" do
-        let(:test_names) do
-          %w(test test_arc_name test_extension test_format_does_not_exist
-             test_infer_char_tags test_no_format test_no_match
-             test_nonlist_arc_name test_options test_disable_liquid
-             test_mirc test_skype12 test_skype24)
-        end
+      valid_test_names =
+        %w(test test_arc_name test_extension test_infer_char_tags test_options
+           test_disable_liquid test_tag_implication
+           test_mirc test_skype12 test_skype24).freeze
 
+      skipped_test_names =
+        %w(test_format_does_not_exist test_no_format test_no_match
+           test_nonlist_arc_name).freeze
+
+      describe "site" do
         context "when initialized" do
           it "has all test files before .generate" do
-            expect(rp_basenames).to match_array(test_names)
+            expect(rp_basenames).to match_array(valid_test_names + skipped_test_names)
           end
         end
 
         describe "#render" do
           subject do
+            Jekyll.logger.log_level = :error
             generator.generate(site)
             # Needs to be exactly around this to get the dir right
             Dir.chdir("dev_site") do
@@ -80,26 +83,33 @@ module Jekyll
         end
       end
 
-      describe "site RP collection docs after .generate" do
+      describe "#generate" do
+        describe "keeps and removes the right RPs from the collection" do
+          subject do
+            Jekyll.logger.log_level = :error
+            generator.generate(site)
+            rp_basenames
+          end
+
+          valid_test_names.each { |fn| it { is_expected.to include(fn) } }
+          skipped_test_names.each { |fn| it { is_expected.not_to include(fn) } }
+        end
+
         subject do
           Jekyll.logger.log_level = :error
           generator.generate(site)
-          rp_basenames
+          RpLogs::Page.new(site.collections[RpLogGenerator.rp_key].docs
+            .find { |rp| rp.basename_without_ext == "test_tag_implication" }
+          )
         end
 
-        it { is_expected.to include("test") }
-        it { is_expected.to include("test_arc_name") }
-        it { is_expected.to include("test_extension") }
-        it { is_expected.to include("test_infer_char_tags") }
-        it { is_expected.to include("test_options") }
-        it { is_expected.to include("test_disable_liquid") }
-        it { is_expected.to include("test_mirc") }
-        it { is_expected.to include("test_skype12") }
-        it { is_expected.to include("test_skype24") }
-        it { is_expected.not_to include("test_format_does_not_exist") }
-        it { is_expected.not_to include("test_no_format") }
-        it { is_expected.not_to include("test_no_match") }
-        it { is_expected.not_to include("test_nonlist_arc_name") }
+        it "infers character tags from posts" do
+          expect(subject.tag_strings).to include("char:Alice")
+        end
+        it "performs tag implication and aliasing" do
+          expect(subject.tag_strings).to match_array(
+            %w(test char:John char:Alice lorem\ ipsum dolor sit\ amet noncanon))
+        end
       end
 
       describe "#generate's informational messages" do
@@ -109,16 +119,8 @@ module Jekyll
             capture_stdout { capture_stderr { generator.generate(site) } }
           end
 
-          it { is_expected.to include("Converted test.rp") }
-          it { is_expected.to include("Converted test_arc_name.rp") }
-          it { is_expected.to include("Converted test_extension.log") }
-          it { is_expected.to include("Converted test_infer_char_tags.rp") }
-          it { is_expected.to include("Converted test_options.rp") }
-          it { is_expected.to include("Converted test_disable_liquid.rp") }
-          it { is_expected.to include("Converted test_mirc.rp") }
-          it { is_expected.to include("Converted test_skype12.rp") }
-          it { is_expected.to include("Converted test_skype24.rp") }
-          it { is_expected.to include("9 RPs converted") }
+          valid_test_names.each { |fn| it { is_expected.to include("Converted #{fn}") } }
+          it { is_expected.to include("#{valid_test_names.size} RPs converted") }
         end
 
         context "to stderr" do
@@ -127,10 +129,7 @@ module Jekyll
             capture_stderr { generator.generate(site) }
           end
 
-          it { is_expected.to include("Skipping test_format_does_not_exist.rp") }
-          it { is_expected.to include("Skipping test_no_format.rp") }
-          it { is_expected.to include("Skipping test_nonlist_arc_name.rp") }
-          it { is_expected.to include("Skipping test_no_match.rp") }
+          skipped_test_names.each { |fn| it { is_expected.to include("Skipping #{fn}") } }
         end
       end
 

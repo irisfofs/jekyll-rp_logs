@@ -23,14 +23,20 @@ module Jekyll
 
       attr_accessor :dir, :name, :type
 
+      ##
+      # Inspired by Hash, convert a list of strings to a list of Tags.
+      def self.[](*args)
+        args[0].map { |t| Tag.new t }
+      end
+
       def initialize(name)
         # inspect types
-        name.strip!
-        if CHAR_FLAG =~ name
+        my_name = name.strip
+        if CHAR_FLAG =~ my_name
           @name = $LAST_MATCH_INFO[:char_name]
           @type = :character
         else
-          @name = name.downcase
+          @name = my_name.downcase
           @type = @name =~ META_TAGS ? :meta : :general
         end
 
@@ -38,7 +44,11 @@ module Jekyll
       end
 
       def to_s
-        name
+        if type == :character
+          "char:#{name}"
+        else
+          name
+        end
       end
 
       def eql?(other)
@@ -71,7 +81,6 @@ module Jekyll
 
       def to_liquid
         # Liquid wants a hash, not an object.
-
         { "name" => @name, "dir" => @dir, "classes" => classes }
       end
 

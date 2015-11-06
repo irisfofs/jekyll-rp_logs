@@ -1,4 +1,6 @@
 require "forwardable"
+require_relative "rp_tags"
+require_relative "rp_tag_implication_handler"
 
 module Jekyll
   module RpLogs
@@ -9,11 +11,19 @@ module Jekyll
       # Jekyll::Page object
       attr_reader :page
 
+      class << self
+        attr_reader :tag_implication_handler
+
+        def extract_settings(config)
+          @tag_implication_handler = TagImplicationHandler.new(config)
+        end
+      end
+
       def initialize(page)
         @page = page
 
         # If the tags exist, try to convert them to a list of Tag objects
-        self[:rp_tags] &&= self[:rp_tags].split(",").map { |t| Tag.new t }
+        self[:rp_tags] = Tag[self[:rp_tags].split(",")] if self[:rp_tags].is_a?(String)
       end
 
       ##
@@ -25,6 +35,14 @@ module Jekyll
 
       def []=(key, value)
         @page.data[key.to_s] = value
+      end
+
+      def tags
+        self[:rp_tags]
+      end
+
+      def tag_strings
+        tags.map(&:to_s)
       end
 
       ##
@@ -59,6 +77,13 @@ module Jekyll
         { strict_ooc: self[:strict_ooc],
           merge_text_into_rp: self[:merge_text_into_rp],
           splits_by_character: self[:splits_by_character] }
+      end
+
+      ##
+      # Updates tags with implications and aliases.
+      def update_tags
+        self[:rp_tags] = Tag[self.class.tag_implication_handler.update_tags(tag_strings.to_set)]
+        self
       end
     end
   end

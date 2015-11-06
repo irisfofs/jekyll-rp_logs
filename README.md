@@ -17,6 +17,7 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
 * Supports multiple formats per file, for those times where you switched IRC clients in the middle of something. Or moved from IRC to Skype, or vice versa.
 * Infers characters involved in each RP by the nicks speaking
 * Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
+* Tagging and a tag implication/alias system
 
 ## Installation
 
@@ -91,7 +92,7 @@ These are all optional (they have default values, configurable in `_config.yml`)
 * `format` - YAML list - What format(s) the logs are in, e.g., `[weechat]`
 * `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
 * `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
-* `time_line` - Used to change the order an RP in an Arc is stored in while keeping the displayed start_date correct. Useful if story RPs were done out of order. Must be a valid YAML date, such as `YYYY-MM-DD`. - 
+* `time_line` - Used to change the order an RP in an Arc is stored in while keeping the displayed start_date correct. Useful if story RPs were done out of order. Must be a valid YAML date, such as `YYYY-MM-DD`. -
 
 There are also some more options you can toggle. Some are needed for giving the parser more information about oddities in posts, so that it can merge split posts correctly.
 
@@ -127,6 +128,24 @@ Run this command:
 Optionally, add the `--watch` flag to automatically rebuild if you add more logs. Then get the output to somewhere that's served by a webserver, either by setting your `destination` to something there or by copying it manually.
 
 **Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
+
+### Tag implications and aliases
+This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with other tags, in a list. The implied tags need to be a list, even if there's only one. Example syntax:
+
+```yaml
+tag_implications:
+  apple: [fruit]
+  lorem ipsum: [dolor, sit amet]
+```
+
+Tag aliases function just like implications, except the original tag is removed. So they effectively convert one tag into another tag. Or tags. Example syntax:
+
+```yaml
+tag_aliases:
+  # Keys with a : in them are fine; only a `: ` is parsed as the separator
+  char:John_Smith: ["char:John"] # Needs the quotes because of the :
+  etaoin: [etaoin shrdlu]
+```
 
 ## Development
 

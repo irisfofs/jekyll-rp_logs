@@ -4,10 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Upcoming
 ### Added
+- Tag implications and tag aliases! ([#12], [#36])
+- Added sample `tag_implications` and `tag_aliases` settings to the default config file
+- A test RP for tag implication and aliasing.
+- `Tag.[]` method for converting an array of strings into Tags, inspired by `Hash`
 - Logs the total number of tag pages generated.
 - Logs the total number of RPs converted after processing them.
 
 ### Changed
+- `Tag#to_s` returns character tags prefixed with `"char:"`. Use `#name` to get the raw name.
+- Cleaned up the tests for `RpLogGenerator` a lot.
 - Logging each individual conversion is now debug level output and not info.
 - Test RPs now use the `.rp` extension instead of `.md`. This keeps them from being run through the Markdown converter, which saves time!
 
@@ -73,3 +79,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#4]: https://github.com/xiagu/jekyll-rp_logs/issues/4
 [#40]: https://github.com/xiagu/jekyll-rp_logs/issues/40
 [#46]: https://github.com/xiagu/jekyll-rp_logs/issues/46
+[#12]: https://github.com/xiagu/jekyll-rp_logs/issues/12
+[#36]: https://github.com/xiagu/jekyll-rp_logs/issues/36

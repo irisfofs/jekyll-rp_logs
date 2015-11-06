@@ -17,7 +17,7 @@ module Jekyll
         # Sort tagged RPs by their start date
         data["pages"] = pages.sort_by { |p| p.data["start_date"] }
         tag_title_prefix = site.config["rp_tag_title_prefix"] || "Tag: "
-        data["title"] = "#{tag_title_prefix}#{tag}"
+        data["title"] = "#{tag_title_prefix}#{tag.name}"
       end
     end
 

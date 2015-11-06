@@ -35,6 +35,7 @@ module Jekyll
 
         RpLogGenerator.extract_settings(config)
         LogLine.extract_settings(config)
+        Page.extract_settings(config)
 
         Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
       end
@@ -182,6 +183,7 @@ module Jekyll
         merge_lines! compiled_lines
         stats = extract_stats compiled_lines
 
+        # A decent amount of this could be moved into Page
         split_output = compiled_lines.map(&:output)
         page.content = split_output.join("\n")
 
@@ -189,6 +191,7 @@ module Jekyll
           # Turn the nicks into characters
           nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
           page[:rp_tags] = (nick_tags.merge page[:rp_tags]).to_a.sort
+          page.update_tags
         end
 
         page[:end_date] = stats[:end_date]

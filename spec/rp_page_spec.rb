@@ -39,7 +39,7 @@ module Jekyll
                         data: [val_tags, val_format, { "arc_name" => "Wrong" }].reduce(&:merge))
       end
 
-      describe "initialize" do
+      describe "#initialize" do
         it "splits and converts a string listing tags to RpLogs::Tag objects" do
           expect(Page.new(valid_page)[:rp_tags].size).to eql(2)
         end
@@ -48,7 +48,7 @@ module Jekyll
         end
       end
 
-      describe ".errors?" do
+      describe "#errors?" do
         context "with malformed formats" do
           let(:nil_format) do
             instance_double("Jekyll::Page",
@@ -80,6 +80,57 @@ module Jekyll
 
         it "validates a page with no errors" do
           expect(Page.new(valid_page).errors?(format_list)).to be_falsey
+        end
+      end
+
+      def valid_page_with(more_options)
+        valid_page.data.merge!(more_options)
+        valid_page
+      end
+
+      let(:apple_page) { Page.new(valid_page_with("rp_tags" => "apple")) }
+      let(:bananana_page) { Page.new(valid_page_with("rp_tags" => "bananana")) }
+      let(:combo_page) { Page.new(valid_page_with("rp_tags" => "apple,fruit,bananana,banana")) }
+
+      let(:implication_set_1) do
+        { "tag_implications" =>
+            { "apple" => ["fruit", "delicious"],
+              "fruit" => ["plant ovary"],
+              "banana" => ["fruit", "easy to eat"]
+            },
+          "tag_aliases" => { "bananana" => ["banana"] }
+        }
+      end
+
+      let(:imply_aliased_tags) do
+        { "tag_implications" => { "apple" => ["tasty", "fruit"] },
+          "tag_aliases" =>
+          { "tasty" => ["delicious"],
+            "fruit" => ["not a fruit"] }
+        }
+      end
+
+      describe "#update_tags" do
+        context "when given valid rules" do
+          before { Page.extract_settings(implication_set_1) }
+          it "implicates tags" do
+            expect(apple_page.update_tags.tag_strings).to match_array(
+              ["apple", "fruit", "delicious", "plant ovary"])
+          end
+          it "implies aliased tags" do
+            expect(bananana_page.update_tags.tag_strings).to match_array(
+              ["banana", "fruit", "easy to eat", "plant ovary"])
+          end
+          it "adds implied tags already partially there" do
+            expect(combo_page.update_tags.tag_strings).to match_array(
+              ["banana", "apple", "delicious", "fruit", "easy to eat", "plant ovary"])
+          end
+        end
+        context "when implying aliased tags" do
+          before { capture_stderr { Page.extract_settings(imply_aliased_tags) } }
+          it "doesn't output anything" do
+            expect(capture_stderr { apple_page.update_tags }).to eql ""
+          end
         end
       end
     end
