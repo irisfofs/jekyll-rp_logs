@@ -9,6 +9,23 @@ This plugin provides support for building prettified versions of raw RP logs. Ex
 
 The result of building all the test files can be seen here. http://andrew.rs/projects/jekyll-rp_logs/
 
+## Table of Contents
+
+  * [Features](#features)
+  * [Installation](#installation)
+    * [Bundler (Recommended)](#bundler-recommended)
+    * [Manually](#manually)
+    * [Updating](#updating)
+  * [Usage](#usage)
+    * [Making a new site](#making-a-new-site)
+    * [Adding RPs](#adding-rps)
+      * [YAML Front Matter](#yaml-front-matter)
+      * [Formatting the logs](#formatting-the-logs)
+    * [Building the site](#building-the-site)
+    * [Tag implications and aliases](#tag-implications-and-aliases)
+  * [Development](#development)
+  * [Contributing](#contributing)
+
 ## Features
 * Link to a specific post by its timestamp
 * Show and hide OOC chatter at will
@@ -20,6 +37,8 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
 * Tagging and a tag implication/alias system
 
 ## Installation
+
+If you are interested in developing this gem, skip down to the [Development](#development) section instead. This section is for setting up a site that uses the gem.
 
 ### Bundler (Recommended)
 
@@ -51,6 +70,17 @@ Alternatively, install it yourself as:
     gem install jekyll-rp_logs
 
 In this case you'll need to tell Jekyll to load the gem somehow, such as option 2 on the [Installing a plugin](http://jekyllrb.com/docs/plugins/#installing-a-plugin) instructions.
+
+### Updating
+When a new version of the gem is released, you can update with
+
+    bundle update
+
+If there were any theme updates that you want to install, you'll have to run
+
+    rake rp_logs:new
+
+again too. This will overwrite any changes you've made to the default SCSS, includes and index files. `_custom-vars.scss` and `_custom-rules.scss` won't be affected.
 
 ## Usage
 
@@ -153,7 +183,7 @@ After checking out the repo, run `bin/setup` to install dependencies.
 
 To install this gem onto your local machine, run `rake install`.
 
-To install the gem and create, then serve a development site to test your changes, run `rake deploy`. This will do a bunch of things:
+To install the gem and create, then serve a development site to test your changes, run `rake serve`. This will do a bunch of things:
 
 * Create the `dev_site` directory
 * Populate it with a `Gemfile` and `Rakefile` as mentioned in the installation instructions
