@@ -11,7 +11,15 @@ layout: default
   </header>
 
   <article class="post-content">
-    {% if page.start_date %}<p>Started {{ page.start_date | date: "%-d %B %Y" }}</p>{% endif %}
+    <div id="tag-and-date">
+      <div class="tags">
+      {% for t in page.rp_tags %}
+        <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+      {% endfor %}
+      </div>
+
+      {% if page.start_date %}<p class="start-date"><span class="fa fa-calendar-o"></span> {{ page.start_date | date: "%-d %B %Y" }}</p>{% endif %}
+    </div>
 
 
     <nav id="fixed_menu" class="scroll-nav">

@@ -7,7 +7,7 @@
 }
 
 // Temporary fix until baseline is back to normal
-li { 
+li {
   list-style: none;
 }
 
@@ -63,7 +63,7 @@ li {
     }
 
     .rp { color: #DCDCCC; }
-    .ooc { 
+    .ooc {
         color: #A0A090;
         white-space: pre-wrap;
         font-family: monospace;
@@ -132,11 +132,30 @@ a.rp-tag {
     }
 
     &:hover {
-        
+
     }
 }
 
 // Undo a styling for RP and arc titles
 .arc-title>a {
     color: inherit;
+}
+
+/* Display for the tags on an RP page */
+#tag-and-date {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+
+    .tags {
+        flex: 1 1 auto;
+
+        .rp-tag {
+            margin-right: 4px;
+        }
+    }
+
+    .start-date {
+        flex: 0 0 auto;
+    }
 }

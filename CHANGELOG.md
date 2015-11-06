@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Upcoming
 ### Added
+- Tags are displayed underneath the title of an RP on its page (requires theme update) ([#37])
 - Tag implications and tag aliases! ([#12], [#36])
 - Added sample `tag_implications` and `tag_aliases` settings to the default config file
 - A test RP for tag implication and aliasing.
@@ -11,7 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Logs the total number of tag pages generated.
 - Logs the total number of RPs converted after processing them.
 
+
 ### Changed
+- Calendar icon instead of the word "Started" for start dates (requires theme update)
 - `Tag#to_s` returns character tags prefixed with `"char:"`. Use `#name` to get the raw name.
 - Cleaned up the tests for `RpLogGenerator` a lot.
 - Logging each individual conversion is now debug level output and not info.
@@ -81,3 +84,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#46]: https://github.com/xiagu/jekyll-rp_logs/issues/46
 [#12]: https://github.com/xiagu/jekyll-rp_logs/issues/12
 [#36]: https://github.com/xiagu/jekyll-rp_logs/issues/36
+[#37]: https://github.com/xiagu/jekyll-rp_logs/issues/37
