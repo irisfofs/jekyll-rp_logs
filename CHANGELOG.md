@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Upcoming
+## [0.3.0] - 2015-11-06
 ### Added
 - Tags are displayed underneath the title of an RP on its page (requires theme update) ([#37])
 - Tag implications and tag aliases! ([#12], [#36])
@@ -66,6 +66,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Set required Ruby version to `~> 2.1` ([#32])
 
 
+[0.3.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.1.6...v0.2.0
 
