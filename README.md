@@ -160,7 +160,9 @@ Optionally, add the `--watch` flag to automatically rebuild if you add more logs
 **Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
 
 ### Tag implications and aliases
-This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with other tags, in a list. The implied tags need to be a list, even if there's only one. Example syntax:
+This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with a list of other tags. The implied tags need to be a list, even if there's only one.
+
+Example syntax (for your `_config.yml`):
 
 ```yaml
 tag_implications:
@@ -168,7 +170,9 @@ tag_implications:
   lorem ipsum: [dolor, sit amet]
 ```
 
-Tag aliases function just like implications, except the original tag is removed. So they effectively convert one tag into another tag. Or tags. Example syntax:
+Tag aliases function just like implications, except the original tag is removed. So they effectively convert one tag into another tag. Or tags.
+
+Example syntax (for your `_config.yml`):
 
 ```yaml
 tag_aliases:
@@ -176,6 +180,8 @@ tag_aliases:
   char:John_Smith: ["char:John"] # Needs the quotes because of the :
   etaoin: [etaoin shrdlu]
 ```
+
+The [default config file](https://github.com/xiagu/jekyll-rp_logs/blob/1247e4d2cacd7a1cb658828d286bbae049ce2e13/.themes/default/source/_config.yml.default#L41) has these same examples, demonstrating how and where they should be set.
 
 ## Development
 
