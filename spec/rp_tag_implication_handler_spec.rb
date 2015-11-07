@@ -72,6 +72,11 @@ module Jekyll
           it { expect { TagImplicationHandler.new(implication_set_1) }.to_not raise_error }
         end
         context "when given invalid rules" do
+          before do
+            @old_level = Jekyll.logger.writer.level
+            Jekyll.logger.log_level = :info
+          end
+
           it "detects a 2-item alias loop" do
             expect_extraction(two_elem_alias_loop).to raise_error TagImplicationHandler::TagImplicationError
             expect_extraction_output(two_elem_alias_loop).to include("cycle")
@@ -93,6 +98,10 @@ module Jekyll
           end
           it "warns when implying aliased tags" do
             expect_extraction_output(imply_aliased_tags).to include("are aliased tags.")
+          end
+
+          after do
+            Jekyll.logger.writer.level = @old_level
           end
         end
       end
