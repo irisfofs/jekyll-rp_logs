@@ -174,8 +174,8 @@ module Jekyll
           # Turn the nicks into characters
           nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
           self[:rp_tags] = (nick_tags.merge self[:rp_tags]).to_a.sort
-          update_tags
         end
+        update_tags
 
         self[:end_date] = stats[:end_date]
         self[:start_date] ||= stats[:start_date]

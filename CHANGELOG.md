@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Certain characters (`#/\`) are replaced with `_` now instead of a word escape.
 
 ### Fixed
+- Tag implication and aliasing still works even with `infer_char_tags` turned off. ([#52])
 - Unsafe characters for URLs are replaced with `_` in tags now instead of throwing an exception. ([#48], [#49])
 
 ## [0.3.0] - 2015-11-06
@@ -95,3 +96,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#37]: https://github.com/xiagu/jekyll-rp_logs/issues/37
 [#48]: https://github.com/xiagu/jekyll-rp_logs/issues/48
 [#49]: https://github.com/xiagu/jekyll-rp_logs/issues/49
+[#52]: https://github.com/xiagu/jekyll-rp_logs/issues/52

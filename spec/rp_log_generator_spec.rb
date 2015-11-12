@@ -98,8 +98,9 @@ module Jekyll
         subject do
           Jekyll.logger.log_level = :error
           generator.generate(site)
-          RpLogs::Page.new(site.collections[RpLogGenerator.rp_key].docs
-            .find { |rp| rp.basename_without_ext == "test_tag_implication" }
+          RpLogs::Page.new(
+            site.collections[RpLogGenerator.rp_key].docs
+              .find { |rp| rp.basename_without_ext == "test_tag_implication" }
           )
         end
 
@@ -110,6 +111,26 @@ module Jekyll
           expect(subject.tag_strings).to match_array(
             %w(test char:John char:Alice lorem\ ipsum dolor sit\ amet noncanon
                "developer's\ quote\ test"))
+        end
+
+        context "when infer_char_tags is disabled" do
+          subject do
+            Jekyll.logger.log_level = :error
+            generator.generate(site)
+            RpLogs::Page.new(
+              site.collections[RpLogGenerator.rp_key].docs
+                .find { |rp| rp.basename_without_ext == "test_infer_char_tags" }
+            )
+          end
+
+          it "doesn't infer character tags" do
+            expect(subject.tag_strings).not_to include("char:Alice")
+            expect(subject.tag_strings).not_to include("char:Bob")
+          end
+          it "still performs tag implication and aliasing" do
+            expect(subject.tag_strings).to include("dolor")
+            expect(subject.tag_strings).to include("sit amet")
+          end
         end
       end
 

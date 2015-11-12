@@ -1,6 +1,6 @@
 ---
 title: No character tag inference
-rp_tags: test
+rp_tags: test, lorem ipsum
 infer_char_tags: false
 ---
 
