@@ -108,7 +108,8 @@ module Jekyll
         end
         it "performs tag implication and aliasing" do
           expect(subject.tag_strings).to match_array(
-            %w(test char:John char:Alice lorem\ ipsum dolor sit\ amet noncanon))
+            %w(test char:John char:Alice lorem\ ipsum dolor sit\ amet noncanon
+               "developer's\ quote\ test"))
         end
       end
 
