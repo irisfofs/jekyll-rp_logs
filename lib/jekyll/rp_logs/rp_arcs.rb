@@ -1,10 +1,14 @@
 # Largely inspired by http://brizzled.clapper.org/blog/2010/12/20/some-jekyll-hacks/
+require "forwardable"
 
 module Jekyll
   module RpLogs
     # Holds arc information
     class Arc
+      extend Forwardable
       include Comparable
+
+      def_delegator :@name, :hash
 
       attr_accessor :name, :rps
 
@@ -41,10 +45,6 @@ module Jekyll
         self.class == other.class &&
           name == other.name &&
           rps == other.rps
-      end
-
-      def hash
-        name.hash
       end
 
       # actually by... start.. date?

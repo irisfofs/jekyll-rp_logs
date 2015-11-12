@@ -162,42 +162,12 @@ module Jekyll
       end
 
       def convert_rp(site, page)
-        options = page.options
-
-        compiled_lines = []
-        page.content.each_line { |raw_line|
-          page[:format].each { |format|
-            log_line = self.class.parsers[format].parse_line(raw_line, options)
-            if log_line
-              compiled_lines << log_line
-              break
-            end
-          }
-        }
-
-        if compiled_lines.length == 0
-          skip_page(site, page, "No lines were matched by any format.")
-          return false
+        msg = catch :skip_page do
+          page.convert_rp(self.class.parsers)
+          return true
         end
-
-        merge_lines! compiled_lines
-        stats = extract_stats compiled_lines
-
-        # A decent amount of this could be moved into Page
-        split_output = compiled_lines.map(&:output)
-        page.content = split_output.join("\n")
-
-        if page[:infer_char_tags]
-          # Turn the nicks into characters
-          nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
-          page[:rp_tags] = (nick_tags.merge page[:rp_tags]).to_a.sort
-          page.update_tags
-        end
-
-        page[:end_date] = stats[:end_date]
-        page[:start_date] ||= stats[:start_date]
-
-        true
+        skip_page(site, page, msg)
+        false
       end
 
       ##
@@ -206,38 +176,6 @@ module Jekyll
       def skip_page(site, page, message)
         site.collections[rp_key].docs.delete page.page
         Jekyll.logger.warn "Skipping #{page.basename}: #{message}"
-      end
-
-      ##
-      # Consider moving this into Parser or RpLogs::Page
-      # It doesn't really belong here
-      def merge_lines!(compiled_lines)
-        last_line = nil
-        compiled_lines.reject! { |line|
-          if last_line.nil?
-            last_line = line
-            false
-          elsif last_line.mergeable_with? line
-            last_line.merge! line
-            # Delete the current line from output and maintain last_line
-            # in case we need to merge multiple times.
-            true
-          else
-            last_line = line
-            false
-          end
-        }
-      end
-
-      def extract_stats(compiled_lines)
-        nicks = Set.new
-        compiled_lines.each { |line|
-          nicks << line.sender if line.output_type == :rp
-        }
-
-        { nicks: nicks,
-          end_date: compiled_lines[-1].timestamp,
-          start_date: compiled_lines[0].timestamp }
       end
     end
   end
