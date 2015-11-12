@@ -2,12 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Upcoming
+## [0.3.1] - 2015-11-12
 ### Changed
 - Certain characters (`#/\`) are replaced with `_` now instead of a word escape.
 
 ### Fixed
-- Tag implication and aliasing still works even with `infer_char_tags` turned off. ([#52])
+- Tag implication and aliasing still work even with `infer_char_tags` turned off. ([#52])
 - Unsafe characters for URLs are replaced with `_` in tags now instead of throwing an exception. ([#48], [#49])
 
 ## [0.3.0] - 2015-11-06
@@ -74,6 +74,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Set required Ruby version to `~> 2.1` ([#32])
 
 
+[0.3.1]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.1.6...v0.2.0
