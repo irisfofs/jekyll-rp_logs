@@ -1,4 +1,4 @@
-# spec/rp_parser_spec.rb
+# spec/rp_page_spec.rb
 require "jekyll"
 require "jekyll/rp_logs/rp_page"
 
