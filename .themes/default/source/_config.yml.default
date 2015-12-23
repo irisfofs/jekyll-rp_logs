@@ -53,6 +53,9 @@ tag_aliases:
   char:John_Smith: ["char:John"] # Needs the quotes because of the :
   etaoin: [etaoin shrdlu]
 
+tag_descriptions:
+  char:Alice: "Have some words"
+  test: "More words"
 
 collections:
   # The RPs must be in a directory named exactly this, prefixed by an underscore.

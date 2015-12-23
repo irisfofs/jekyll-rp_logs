@@ -14,6 +14,8 @@ module Jekyll
         tag_index = (site.config["rp_tag_index_layout"] || "tag_index") + ".html"
         read_yaml(File.join(base, "_layouts"), tag_index)
         data["tag"] = tag # Set which tag this index is for
+        data["description"] = site.config["tag_descriptions"][tag.to_s]
+
         # Sort tagged RPs by their start date
         data["pages"] = pages.sort_by { |p| p.data["start_date"] }
         tag_title_prefix = site.config["rp_tag_title_prefix"] || "Tag: "
@@ -45,9 +47,9 @@ module Jekyll
       # Returns a hash of tags => [pages with tag]
       private def rps_by_tag(site)
         tag_ref = Hash.new { |hash, key| hash[key] = Set.new }
-        site.collections[RpLogGenerator.rp_key].docs.each { |page|
-            page.data["rp_tags"].each { |tag| tag_ref[tag] << page }
-          }
+        site.collections[RpLogGenerator.rp_key].docs.each do |page|
+          page.data["rp_tags"].each { |tag| tag_ref[tag] << page }
+        end
         return tag_ref
       end
     end
