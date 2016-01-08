@@ -65,10 +65,12 @@ module Jekyll
       def extract_indexes(site)
         # Directory of RPs
         main_index = site.pages.find { |page| page.data["rp_index"] }
+        Jekyll.logger.abort_with "Main index page missing" if main_index.nil?
         main_index.data["rps"] = { "canon" => [], "noncanon" => [] }
 
         # Arc-style directory
         arc_index = site.pages.find { |page| page.data["rp_arcs"] }
+        Jekyll.logger.abort_with "Arc index page missing" if arc_index.nil?
 
         site.data["menu_pages"] = [main_index, arc_index]
       end

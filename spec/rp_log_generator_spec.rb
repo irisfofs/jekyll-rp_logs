@@ -132,6 +132,43 @@ module Jekyll
             expect(subject.tag_strings).to include("sit amet")
           end
         end
+
+        def remove_one
+          site.pages.delete_if &Proc.new # block condition
+          generator.generate(site)
+        end
+
+        context "when missing main index.html" do
+          subject { remove_one { |p| p.data["rp_index"] } }
+
+          it "logs error message" do
+            expect do
+              begin subject
+              rescue SystemExit # Suppress it so we can check output value
+              end
+            end.to output(/Main index page missing/).to_stderr
+          end
+
+          it "aborts" do
+            expect { capture_stderr { subject } }.to raise_error SystemExit
+          end
+        end
+
+        context "when missing arc index.html" do
+          subject { remove_one { |p| p.data["rp_arcs"] } }
+
+          it "logs error message" do
+            expect do
+              begin subject
+              rescue SystemExit # Suppress it so we can check output value
+              end
+            end.to output(/Arc index page missing/).to_stderr
+          end
+
+          it "aborts" do
+            expect { capture_stderr { subject } }.to raise_error SystemExit
+          end
+        end
       end
 
       describe "#generate's informational messages" do
