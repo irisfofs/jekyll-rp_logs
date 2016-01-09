@@ -14,7 +14,7 @@ module Jekyll
   module RpLogs
     DEFAULT_CONFIGURATION = Util.gross_setup_stuff
 
-    RSpec.describe RpLogGenerator do
+    RSpec.describe "Integration Tests" do
       before(:all) do
         Dir.chdir("dev_site") do
           site = Jekyll::Site.new(DEFAULT_CONFIGURATION)
@@ -30,6 +30,22 @@ module Jekyll
           dirs = Util::VALID_TEST_NAMES.map { |n| "<a href=\"/#{n}/\">" }
           dirs.each do |name|
             it { is_expected.to include(name) }
+          end
+        end
+
+        describe "the existing rp pages" do
+          subject { Dir.glob("dev_site/_site/*") }
+
+          Util::VALID_TEST_NAMES.map { |n| "dev_site/_site/#{n}" }.each do |name|
+            it { is_expected.to include(name) }
+          end
+        end
+
+        describe "the existing tag pages" do
+          subject { Dir.glob("dev_site/_site/tags/*") }
+
+          Util::EXISTING_TAGS.map { |t| "dev_site/_site/tags/#{t}" }.each do |tag|
+            it { is_expected.to include(tag) }
           end
         end
       end
