@@ -33,20 +33,33 @@ module Jekyll
           end
         end
 
-        describe "the existing rp pages" do
-          subject { Dir.glob("dev_site/_site/*") }
+        describe "the tag description" do
+          desc_map = { "Alice" => "Have some words", "test" => "More words" }
 
-          Util::VALID_TEST_NAMES.map { |n| "dev_site/_site/#{n}" }.each do |name|
-            it { is_expected.to include(name) }
+          desc_map.each_pair do |tag, desc|
+            context "for tag #{tag}" do
+              fn = File.join("dev_site", "_site", "tags", tag, "index.html")
+              it "has the description \"#{desc}\"" do
+                expect(File.read(fn)).to include(desc)
+              end
+            end
           end
         end
+      end
 
-        describe "the existing tag pages" do
-          subject { Dir.glob("dev_site/_site/tags/*") }
+      describe "the existing rp pages" do
+        subject { Dir.glob("dev_site/_site/*") }
 
-          Util::EXISTING_TAGS.map { |t| "dev_site/_site/tags/#{t}" }.each do |tag|
-            it { is_expected.to include(tag) }
-          end
+        Util::VALID_TEST_NAMES.map { |n| "dev_site/_site/#{n}" }.each do |name|
+          it { is_expected.to include(name) }
+        end
+      end
+
+      describe "the existing tag pages" do
+        subject { Dir.glob("dev_site/_site/tags/*") }
+
+        Util::EXISTING_TAGS.map { |t| "dev_site/_site/tags/#{t}" }.each do |tag|
+          it { is_expected.to include(tag) }
         end
       end
     end

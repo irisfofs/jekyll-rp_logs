@@ -53,6 +53,9 @@ tag_aliases:
   char:John_Smith: ["char:John"] # Needs the quotes because of the :
   etaoin: [etaoin shrdlu]
 
+# These show up on the page for a tag, for instance:
+# .../rps/tags/Alice/
+# .../rps/tags/test/
 tag_descriptions:
   char:Alice: "Have some words"
   test: "More words"

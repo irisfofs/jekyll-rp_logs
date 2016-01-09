@@ -23,6 +23,7 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
       * [Formatting the logs](#formatting-the-logs)
     * [Building the site](#building-the-site)
     * [Tag implications and aliases](#tag-implications-and-aliases)
+    * [Tag descriptions](#tag-descriptions)
   * [Development](#development)
   * [Contributing](#contributing)
 
@@ -35,6 +36,7 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
 * Infers characters involved in each RP by the nicks speaking
 * Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
 * Tagging and a tag implication/alias system
+* Tag descriptions
 
 ## Installation
 
@@ -182,6 +184,17 @@ tag_aliases:
 ```
 
 The [default config file](https://github.com/xiagu/jekyll-rp_logs/blob/1247e4d2cacd7a1cb658828d286bbae049ce2e13/.themes/default/source/_config.yml.default#L41) has these same examples, demonstrating how and where they should be set.
+
+### Tag descriptions
+This feature lets you add a blurb of text on the page for a tag (the one that lists all RPs with that tag).
+
+Example syntax (for your `_config.yml`):
+
+```yaml
+tag_descriptions:
+  char:Alice: "Have some words"
+  test: "More words"
+```
 
 ## Development
 
