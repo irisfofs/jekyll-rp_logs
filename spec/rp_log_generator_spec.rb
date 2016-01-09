@@ -7,27 +7,11 @@ require "jekyll/rp_logs/rp_log_converter"
 require "rake"
 require "yaml"
 
+require_relative "util"
+
 module Jekyll
   module RpLogs
-    # Pretty sure this is gross
-
-    # Rake will eat the ARGV otherwise
-    # https://github.com/jimweirich/rake/issues/277
-    # Perhaps it doesn't exactly "eat" it but still, it shouldn't think that
-    # rspec's command line arguments are its own
-    orig_argv = ARGV.dup
-    ARGV.replace([])
-    Rake.application.init
-    ARGV.replace(orig_argv)
-
-    Rake.application.load_rakefile
-    Rake.application.options.verbose = false
-    Rake::Task["deploy"].invoke
-
-    Dir.chdir("dev_site") do
-      DEFAULT_CONFIGURATION = Jekyll::Configuration::DEFAULTS.merge(
-        "source" => "./").merge YAML.load_file("_config.yml")
-    end
+    DEFAULT_CONFIGURATION = Util.gross_setup_stuff
 
     RSpec.describe RpLogGenerator do
       let(:site) do
@@ -51,10 +35,7 @@ module Jekyll
         site.collections[RpLogGenerator.rp_key].docs.map(&:basename_without_ext)
       end
 
-      valid_test_names =
-        %w(test test_arc_name test_extension test_infer_char_tags test_options
-           test_disable_liquid test_tag_implication
-           test_mirc test_skype12 test_skype24).freeze
+      valid_test_names = Util::VALID_TEST_NAMES
 
       skipped_test_names =
         %w(test_format_does_not_exist test_no_format test_no_match
