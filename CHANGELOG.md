@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.0] - 2016-01-11
+### Added
+- Tag descriptions can be set in the config file and show up on each tag's page that lists all RPs with that tag. ([#28])
+
+### Fixed
+- The clickable region for the RP titles in the default theme now only covers the text and not a large amount of blank space to the right. ([#59])
+- Error messages for missing index pages (main and arc) improved. ([#56])
+
 ## [0.3.1] - 2015-11-12
 ### Changed
 - Certain characters (`#/\`) are replaced with `_` now instead of a word escape.
@@ -74,6 +82,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Set required Ruby version to `~> 2.1` ([#32])
 
 
+[0.4.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/xiagu/jekyll-rp_logs/compare/v0.2.0...v0.2.1
@@ -98,3 +107,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#48]: https://github.com/xiagu/jekyll-rp_logs/issues/48
 [#49]: https://github.com/xiagu/jekyll-rp_logs/issues/49
 [#52]: https://github.com/xiagu/jekyll-rp_logs/issues/52
+[#28]: https://github.com/xiagu/jekyll-rp_logs/issues/28
+[#59]: https://github.com/xiagu/jekyll-rp_logs/issues/59
+[#56]: https://github.com/xiagu/jekyll-rp_logs/issues/56
