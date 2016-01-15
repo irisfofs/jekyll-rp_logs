@@ -11,9 +11,9 @@ require_relative "util"
 
 module Jekyll
   module RpLogs
-    DEFAULT_CONFIGURATION = Util.gross_setup_stuff
-
     RSpec.describe RpLogGenerator do
+      DEFAULT_CONFIGURATION = Util.gross_setup_stuff
+
       let(:site) do
         Dir.chdir("dev_site") do
           site = Jekyll::Site.new(DEFAULT_CONFIGURATION)

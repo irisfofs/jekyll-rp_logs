@@ -115,7 +115,7 @@ module Jekyll
             # Skip if something goes wrong
             next unless convert_rp(site, page)
 
-            key = page[:canon] ? "canon" : "noncanon"
+            key = page.canon
             # Add key for canon/noncanon
             main_index.data["rps"][key] << page
             # Add tag for canon/noncanon

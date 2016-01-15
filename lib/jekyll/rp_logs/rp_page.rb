@@ -45,6 +45,10 @@ module Jekyll
         tags.map(&:to_s)
       end
 
+      def canon
+        self[:canon] ? "canon" : "noncanon"
+      end
+
       def convert_rp(parsers)
         compiled_lines = convert_all_lines(parsers)
 

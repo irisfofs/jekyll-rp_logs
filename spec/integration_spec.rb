@@ -4,6 +4,7 @@ require "jekyll"
 require "jekyll/rp_logs"
 require "jekyll/rp_logs/rp_log_converter"
 
+require "nokogiri"
 require "rake"
 require "yaml"
 
@@ -12,9 +13,9 @@ require_relative "util"
 
 module Jekyll
   module RpLogs
-    DEFAULT_CONFIGURATION = Util.gross_setup_stuff
-
     RSpec.describe "Integration Tests" do
+      DEFAULT_CONFIGURATION = Util.gross_setup_stuff
+
       before(:all) do
         Dir.chdir("dev_site") do
           site = Jekyll::Site.new(DEFAULT_CONFIGURATION)
@@ -43,6 +44,27 @@ module Jekyll
                 expect(File.read(fn)).to include(desc)
               end
             end
+          end
+        end
+
+        describe "a rendered RP" do
+          subject do
+            fn = File.join("dev_site", "_site", "test_disable_liquid", "index.html")
+            content = File.open(fn) { |f| Nokogiri::HTML(f) }
+            content.at_css("p.rp > a")
+          end
+
+          it "has the correct timestamp attributes" do
+            name = "2015-07-08_01:55:00"
+            title = "01:55:00 July 8, 2015"
+            expect(subject.attributes["name"].value).to eq name
+            expect(subject.attributes["title"].value).to eq title
+            expect(subject.attributes["href"].value).to eq "##{name}"
+          end
+
+          it "has the right text" do
+            text = "  * Alice lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi voluptatibus, quis ratione sit porro vitae, placeat, quos rem quaerat autem voluptates tempore officiis praesentium ipsum distinctio tempora voluptatum veritatis unde."
+            expect(subject.next_sibling.text).to eq text
           end
         end
       end
