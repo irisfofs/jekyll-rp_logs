@@ -43,6 +43,11 @@ module Jekyll
       def generate(site)
         return unless site.config["rp_convert"]
 
+        # There doesn't seem to be a better way to add this to all pages than
+        # by modifying the configuration file, which is added onto the `site`
+        # liquid variable.
+        site.config["rp_logs_version"] = RpLogs::VERSION
+
         main_index, arc_index = extract_indexes(site)
 
         disable_liquid_rendering(site)
