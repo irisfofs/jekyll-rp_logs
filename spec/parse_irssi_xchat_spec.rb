@@ -1,7 +1,7 @@
 # spec/parse_irssi_xchat_spec.rb
 require "jekyll"
 require "jekyll/rp_logs/rp_log_converter"
-require "jekyll/rp_logs/parse_irssi_xchat"
+require "jekyll/rp_logs/parsers/irssi_xchat"
 
 module Jekyll
   module RpLogs

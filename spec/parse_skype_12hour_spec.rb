@@ -1,7 +1,7 @@
 # spec/parse_skype_12hour_spec.rb
 require "jekyll"
 require "jekyll/rp_logs/rp_log_converter"
-require "jekyll/rp_logs/parse_skype_12hour"
+require "jekyll/rp_logs/parsers/skype_12hour"
 
 module Jekyll
   module RpLogs

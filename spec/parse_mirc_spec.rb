@@ -1,7 +1,7 @@
 # spec/parse_mirc_spec.rb
 require "jekyll"
 require "jekyll/rp_logs/rp_log_converter"
-require "jekyll/rp_logs/parse_mirc"
+require "jekyll/rp_logs/parsers/mirc"
 
 module Jekyll
   module RpLogs

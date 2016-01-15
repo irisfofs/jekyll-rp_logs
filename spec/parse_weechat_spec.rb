@@ -1,7 +1,7 @@
 # spec/parse_weechat_spec.rb
 require "jekyll"
 require "jekyll/rp_logs/rp_log_converter"
-require "jekyll/rp_logs/parse_weechat"
+require "jekyll/rp_logs/parsers/weechat"
 
 module Jekyll
   module RpLogs
@@ -15,7 +15,7 @@ module Jekyll
       let(:quit_line)  { "2015-07-08 01:56:02\t<--\tAlice (Alice@my.cool.vhost) has quit (Quit: Leaving)" }
       let(:nick_line)  { "2015-07-08 01:57:03\t--\tBob is now known as Carol" }
       let(:text_line)  { "2015-07-08 02:00:04\tAlice\there's a text line" }
-      let(:text_mode_line)  { "2015-07-08 02:00:04\t@Alice\there's a text line" }
+      let(:text_mode_line) { "2015-07-08 02:00:04\t@Alice\there's a text line" }
       let(:unmatched)  { "lorem" }
 
       describe ".parse_line" do
