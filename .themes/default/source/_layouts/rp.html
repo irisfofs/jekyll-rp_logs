@@ -29,7 +29,9 @@ layout: default
     </nav>
 
     <div id="log">
-      {{ content }}
+      {% for line in page.content %}
+        {% include rp_line.html line=line %}
+      {% endfor %}
     </div>
   </article>
 
