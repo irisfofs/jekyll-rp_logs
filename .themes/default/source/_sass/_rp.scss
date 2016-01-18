@@ -57,15 +57,19 @@ li {
 
 /* Undo normal pre styles */
 #log {
-
     p {
         margin: 0;
         margin-top: 0.5em;
     }
 
-    .rp { color: #DCDCCC; }
+    .rp {
+        color: $text-color;
+        & a { color: darken($text-color, 20%); }
+    }
     .ooc {
-        color: #A0A090;
+        color: $dark-text-color;
+        & a { color: darken($dark-text-color, 20%); }
+
         white-space: pre-wrap;
         font-family: monospace;
         font-size: 80%;
@@ -73,7 +77,19 @@ li {
 
     /* timestamps */
     a {
-        color: inherit;
+        /* Set them off to the left */
+        display: inline-block;
+        margin-left: -4rem;
+        /* This is definitely too thin for them but overflow makes it okay */
+        margin-right: 2rem;
+        width: 2rem;
+
+        /* Give it some room to breathe */
+        $laptop-plus: $on-laptop + $base-font-size * 5;
+        @include media-query($laptop-plus) {
+            margin: 0;
+            margin-right: 1rem;
+        }
 
         &:hover {
             text-decoration: underline;

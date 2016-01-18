@@ -73,7 +73,7 @@ module Jekyll
 
         it "has the right text" do
           text = "Alice lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi voluptatibus, quis ratione sit porro vitae, placeat, quos rem quaerat autem voluptates tempore officiis praesentium ipsum distinctio tempora voluptatum veritatis unde."
-          expect(rp_text.text).to eq text
+          expect(rp_text.text.rstrip).to eq text
         end
 
         it "formats RP senders correctly" do
@@ -82,8 +82,8 @@ module Jekyll
         end
 
         it "formats OOC senders correctly" do
-          expect(ooc_text.text).to start_with("&lt;@Alice&gt;")
-          expect(rp_flag_text.text).to start_with("&lt;@Alice&gt;")
+          expect(ooc_text.to_s).to start_with("&lt;@Alice&gt;")
+          expect(rp_flag_text.to_s).to start_with("&lt;@Alice&gt;")
         end
 
         it "gives RP the .rp class" do

@@ -1,7 +1,7 @@
 {% assign line = include.line %}
 
 {% if line.base_type == "rp" %}
-  {% capture sender %} * {{ line.sender }}{% endcapture %}
+  {% capture sender %}{{ line.sender }}{% endcapture %}
 {% else %}
   {% capture sender %}&lt;{{ line.mode }}{{ line.sender }}&gt;{% endcapture %}
 {% endif %}
@@ -9,4 +9,4 @@
 {% assign anchor_name = line.timestamp | date: "%Y-%m-%d_%H:%M:%S" %}
 {% assign anchor_title = line.timestamp | date: "%H:%M:%S %B %-d, %Y" %}
 {% assign anchor_display = line.timestamp | date: "%H:%M" %}
-<p class="{{ line.output_type }}"><a name="{{ anchor_name }}" title="{{ anchor_title }}" href="#{{ anchor_name }}">{{ anchor_display }}</a> {{ sender }} {{ line.content }}</p>
+<p class="{{ line.output_type }}"><a name="{{ anchor_name }}" title="{{ anchor_title }}" href="#{{ anchor_name }}">{{ anchor_display }} </a>{{ sender }} {{ line.content }}</p>
