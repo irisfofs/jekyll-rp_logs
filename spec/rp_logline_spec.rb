@@ -119,59 +119,6 @@ module Jekyll
         end
       end
 
-      describe "#output_timestamp" do
-        # This feels like a bad test :S
-        it "combines anchor, title, and display" do
-          expect(rp_line.output_timestamp).to eql("<a name=\"#{@timestamp.strftime('%Y-%m-%d_%H:%M:%S')}\" title=\"#{@timestamp.strftime('%H:%M:%S %B %-d, %Y')}\" href=\"##{@timestamp.strftime('%Y-%m-%d_%H:%M:%S')}\">#{@timestamp.strftime('%H:%M')}</a>")
-        end
-      end
-
-      describe ".output_sender" do
-        it "diplays RP senders correctly" do
-          expect(rp_line.output_sender).to eql("  * Alice")
-          expect(ooc_flag.output_sender).to eql("  * Alice")
-        end
-        it "displays OOC senders correctly" do
-          expect(ooc_line.output_sender).to eql(" &lt; Alice&gt;")
-          expect(rp_flag.output_sender).to eql(" &lt; Alice&gt;")
-        end
-        context "when given a nonexistent base_type" do
-          it "raises a 'No known type' error" do
-            expect { invalid_type.output_sender }.to raise_exception("No known type: not_a_type")
-          end
-        end
-      end
-
-      describe "#output_tags" do
-        it "outputs .rp when given RP output type" do
-          expect(rp_line.output_tags).to eql(['<p class="rp">', "</p>"])
-        end
-        it "outputs .ooc when given OOC output type" do
-          expect(ooc_line.output_tags).to eql(['<p class="ooc">', "</p>"])
-        end
-        context "when given a nonexistent output_type" do
-          it "raises a 'No known type' error" do
-            expect { invalid_type.output_tags }.to raise_exception("No known type: not_a_type")
-          end
-        end
-      end
-
-      describe "#output" do
-        context "when called" do
-          subject { rp_line }
-          it { is_expected.to receive(:output_tags) }
-          it { is_expected.to receive(:output_timestamp) }
-          it { is_expected.to receive(:output_sender) }
-          after { subject.output }
-        end
-        context "when called with HTML special characters" do
-          subject { log_line(contents: "Foo & Bar \"baz\" <horse>").output }
-          it "escapes them" do
-            expect(subject).to include("Foo &amp; Bar &quot;baz&quot; &lt;horse&gt;")
-          end
-        end
-      end
-
       let(:merge_content_1) { "The quick brown fox" }
       let(:merge_content_2) { "jumps over the lazy dog" }
 
