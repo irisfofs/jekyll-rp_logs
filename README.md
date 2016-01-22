@@ -92,7 +92,7 @@ To get started with a new site, create a fresh build directory that will be used
 
 In this directory, create a file named `Rakefile` and require the gem to get access to its exposed tasks like so:
 
-	echo "require 'jekyll/rp_logs'" > Rakefile
+	echo require 'jekyll/rp_logs' > Rakefile
 
 To set up a Jekyll site skeleton in the current directory, execute:
 
