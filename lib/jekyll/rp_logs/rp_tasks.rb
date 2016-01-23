@@ -30,10 +30,35 @@ module Jekyll
 
       def install_tasks
         namespace :rp_logs do
+          desc "Create a new Jekyll site for RP logs, with the default theme"
+          task :create_new_site, [:dir] do |t, args|
+            puts "Creating directory #{args[:dir]}"
+            # Maybe warn if not empty
+            Dir.mkdir(args[:dir])
+            Dir.chdir(args[:dir]) do
+              Rake::Task["rp_logs:copy_theme"].invoke
+            end
+          end
+
           directory "_rps"
 
-          desc "Create a new Jekyll site for RP logs, with the default theme"
-          task :new do
+          file "Gemfile" do |tsk|
+            File.open(tsk.name, "w") do |f|
+              f << <<-END.gsub(/^\s+\|/, "")
+                |source "https://rubygems.org"
+                |
+                |group :jekyll_plugins do
+                |  gem "jekyll-rp_logs"
+                |end
+              END
+            end
+          end
+
+          task bundler: "Gemfile" do
+            sh "bundle"
+          end
+
+          task copy_theme: :bundler do
             if File.directory?("_sass")
               abort("rake aborted!") if ask("A theme is already installed, proceeding will overwrite existing non-custom files. Are you sure?", ['y', 'n']) == 'n'
             end

@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require "jekyll/rp_logs"
+require "optparse"
+require "rake"
+
+OptionParser.new do |opt|
+  opt.on("-n", "--new DIR",
+         "Generate a simple site skeleton in the directory DIR") do |dir|
+    Rake::Task["rp_logs:create_new_site"].invoke(dir)
+  end
+
+  opt.on("-h", "--help", "Show this message") do
+    puts opt
+  end
+
+  opt.on("--version", "Show gem version") do
+    puts Jekyll::RpLogs::VERSION
+  end
+end.parse!
