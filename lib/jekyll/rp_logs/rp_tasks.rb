@@ -32,9 +32,16 @@ module Jekyll
         namespace :rp_logs do
           desc "Create a new Jekyll site for RP logs, with the default theme"
           task :create_new_site, [:dir] do |t, args|
-            puts "Creating directory #{args[:dir]}"
-            # Maybe warn if not empty
-            Dir.mkdir(args[:dir])
+            if Dir.exist? args[:dir]
+              if (Dir.entries(args[:dir]) - %w(. ..)).empty?
+                puts "Using empty directory #{args[:dir]}"
+              else
+                fail "Directory #{args[:dir]} already exists, and is non-empty. Won't overwrite."
+              end
+            else
+              mkdir_p args[:dir]
+            end
+
             Dir.chdir(args[:dir]) do
               Rake::Task["rp_logs:copy_theme"].invoke
             end

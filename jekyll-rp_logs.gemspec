@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "jekyll", "~> 2.5"
   spec.add_runtime_dependency "rake", "~> 10.0"
+  spec.add_runtime_dependency "gli", "~> 2.13"
 
   spec.required_ruby_version = "~> 2.1"
 end

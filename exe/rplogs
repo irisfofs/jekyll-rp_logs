@@ -1,20 +1,26 @@
 #!/usr/bin/env ruby
-
+require "gli"
 require "jekyll/rp_logs"
-require "optparse"
 require "rake"
 
-OptionParser.new do |opt|
-  opt.on("-n", "--new DIR",
-         "Generate a simple site skeleton in the directory DIR") do |dir|
-    Rake::Task["rp_logs:create_new_site"].invoke(dir)
+# A class to namespace the GLI commands, preventing rake's DSL from conflicting.
+class RpLogsApp
+  extend GLI::App
+
+  program_desc "Create scaffolding/a skeleton for a Jekyll::RpLogs site"
+
+  version Jekyll::RpLogs::VERSION
+
+  subcommand_option_handling :normal
+  arguments :strict
+
+  desc "Create a scaffold for a new Jekyll::RpLogs site"
+  arg_name "path/to/directory"
+  command :init do |c|
+    c.action do |_, _, args|
+      Rake::Task["rp_logs:create_new_site"].invoke(args[0])
+    end
   end
 
-  opt.on("-h", "--help", "Show this message") do
-    puts opt
-  end
-
-  opt.on("--version", "Show gem version") do
-    puts Jekyll::RpLogs::VERSION
-  end
-end.parse!
+  exit run(ARGV)
+end
