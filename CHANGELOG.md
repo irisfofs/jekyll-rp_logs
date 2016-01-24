@@ -15,6 +15,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The default theme's timestamps are in their own column on the left now. They revert to being inline when the page width gets too small. ([#60])
 - Instead of needing a Rakefile, this gem now exposes an `rplogs` executable to perform tasks like setting up a new site scaffold. ([#63])
 
+### Fixed
+- `main.scss` no longer has its executable bits set. ([#67])
+
 ## [0.4.0] - 2016-01-11
 ### Added
 - Tag descriptions can be set in the config file and show up on each tag's page that lists all RPs with that tag. ([#28])
@@ -126,3 +129,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#47]: https://github.com/xiagu/jekyll-rp_logs/issues/47
 [#57]: https://github.com/xiagu/jekyll-rp_logs/issues/57
 [#60]: https://github.com/xiagu/jekyll-rp_logs/issues/60
+[#67]: https://github.com/xiagu/jekyll-rp_logs/issues/67
