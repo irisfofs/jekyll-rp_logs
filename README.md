@@ -7,7 +7,7 @@
 
 This plugin provides support for building prettified versions of raw RP logs. Extra noise is stripped out during the building to keep the process as simple as possible: paste in entire log, add title and tags, and go.
 
-The result of building all the test files can be seen here. http://andrew.rs/projects/jekyll-rp_logs/
+The result of building all the test files can be seen here: http://andrew.rs/projects/jekyll-rp_logs/
 
 ## Table of Contents
 
@@ -38,46 +38,70 @@ The result of building all the test files can be seen here. http://andrew.rs/pro
 * Tagging and a tag implication/alias system
 * Tag descriptions
 
-## Installation
+## Quick Start
 
-If you are interested in developing this gem, skip down to the [Development](#development) section instead. This section is for setting up a site that uses the gem.
-
-### Bundler (Recommended)
-
-Install the bundle gem with
-
-    gem install bundle
-
-Create a file named `Gemfile` with the following contents:
-
-```ruby
-source 'https://rubygems.org'
-
-group :jekyll_plugins do
-  gem "jekyll-rp_logs"
-end
-```
-
-(If you already have a Gemfile, just add the three group lines instead.)
-
-And then execute:
-
-    bundle
-
-The Gemfile group will tell Jekyll to load the gem, and let you keep it up to date easily with Bundler.
-
-### Manually
-Alternatively, install it yourself as:
+Install the gem with
 
     gem install jekyll-rp_logs
 
-In this case you'll need to tell Jekyll to load the gem somehow, such as option 2 on the [Installing a plugin](http://jekyllrb.com/docs/plugins/#installing-a-plugin) instructions.
+(Installing on Windows will require the [Ruby DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit) to build some of the dependencies.)
+
+Create a new bare-bones Jekyll site to run the RpLogs plugin from:
+
+    rplogs init path/to/your/new/site
+
+This will create that directory (it aborts if the given directory is not empty) and set up basic scaffold for your site. After the command finishes running, you should have a structure like this:
+
+```
+.
+├── arcs.html
+├── _config.yml
+├── _config.yml.default
+├── css/
+│   └── main.scss
+├── Gemfile
+├── Gemfile.lock
+├── _includes/
+│   ├── footer.html
+│   ├── header.html
+│   ├── head.html
+│   ├── rp.html
+│   └── rp_line.html
+├── index.html
+├── js/
+│   └── toggle_ooc.js
+├── _layouts/
+│   ├── default.html
+│   ├── page.html
+│   ├── post.html
+│   ├── rp.html
+│   └── tag_index.html
+├── _rps/
+└── _sass/
+    ├── _base.scss
+    ├── _custom-rules.scss
+    ├── _custom-vars.scss
+    ├── _layout.scss
+    ├── _rp.scss
+    └── _syntax-highlighting.scss
+```
+
+Edit `_config.yml` and fill in the needed info for your setup.
+
+**Warning:** Don't tell Jekyll to output to a directory that has anything useful in it -- it deletes anything in the `destination` directory whenever you build the site.
+
+Now you should be ready to build!
+
+    bundle exec jekyll build
+
+Building the site should generate an `index.html` in the `destination` directory you configured, along with all the CSS and JS. There won't be any RPs on the index, but it will exist, and have your title and description on it!
 
 ### Updating
 When a new version of the gem is released, you can update with
 
     bundle update
 
+<!-- FIXME, updating doesn't currently exist -->
 If there were any theme updates that you want to install, you'll have to run
 
     rake rp_logs:new
@@ -85,28 +109,6 @@ If there were any theme updates that you want to install, you'll have to run
 again too. This will overwrite any changes you've made to the default SCSS, includes and index files. `_custom-vars.scss` and `_custom-rules.scss` won't be affected.
 
 ## Usage
-
-### Making a new site
-
-To get started with a new site, create a fresh build directory that will be used to hold the Jekyll input files. Here, all of your raw logs, styling, and templates will be stored.
-
-In this directory, create a file named `Rakefile` and require the gem to get access to its exposed tasks like so:
-
-	echo require 'jekyll/rp_logs' > Rakefile
-
-To set up a Jekyll site skeleton in the current directory, execute:
-
-	rake rp_logs:new
-
-This will pull in all the necessary files (SASS, `_includes`, default config, etc) for Jekyll to build the site.
-
-*Important:* To allow Jekyll to actually use the plugin, create a Gemfile as specified above in the [Bundler](#bundler-recommended) section and place it into the build directory.
-
-Edit `_config.yml` and fill in the needed info for your setup.
-
-**Warning:** Don't tell Jekyll to output to a directory that has anything useful in it -- it deletes anything in the `destination` directory whenever you build the site.
-
-Now you should be ready to build!
 
 ### Adding RPs
 Dump all of the raw logs into the `_rps/` directory of the site.
@@ -155,7 +157,7 @@ These flags can be combined.
 ### Building the site
 Run this command:
 
-	jekyll build
+    bundle exec jekyll build
 
 Optionally, add the `--watch` flag to automatically rebuild if you add more logs. Then get the output to somewhere that's served by a webserver, either by setting your `destination` to something there or by copying it manually.
 
