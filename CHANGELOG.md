@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Parsers live in `lib/jekyll/rp_logs/parsers/` now. This is purely a development-side change.
 - The default theme's timestamps are in their own column on the left now. They revert to being inline when the page width gets too small. ([#60])
 - Instead of needing a Rakefile, this gem now exposes an `rplogs` executable to perform tasks like setting up a new site scaffold. ([#63])
+  - The `rplogs` program is also used to update your installed theme, with `rplogs update`. ([#69])
 
 ### Fixed
 - `main.scss` no longer has its executable bits set. ([#67])
@@ -130,3 +131,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#57]: https://github.com/xiagu/jekyll-rp_logs/issues/57
 [#60]: https://github.com/xiagu/jekyll-rp_logs/issues/60
 [#67]: https://github.com/xiagu/jekyll-rp_logs/issues/67
+[#69]: https://github.com/xiagu/jekyll-rp_logs/issues/69

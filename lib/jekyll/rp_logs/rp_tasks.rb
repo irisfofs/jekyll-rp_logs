@@ -43,6 +43,7 @@ module Jekyll
             end
 
             Dir.chdir(args[:dir]) do
+              Rake::Task["rp_logs:bundler"].invoke
               Rake::Task["rp_logs:copy_theme"].invoke
             end
           end
@@ -65,7 +66,7 @@ module Jekyll
             sh "bundle"
           end
 
-          task copy_theme: :bundler do
+          task :copy_theme do
             if File.directory?("_sass")
               abort("rake aborted!") if ask("A theme is already installed, proceeding will overwrite existing non-custom files. Are you sure?", ['y', 'n']) == 'n'
             end
