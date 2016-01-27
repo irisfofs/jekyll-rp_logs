@@ -84,15 +84,15 @@ module Jekyll
         title = @timestamp.strftime("%H:%M:%S %B %-d, %Y")
         # String actually displayed on page
         display = @timestamp.strftime("%H:%M")
-        "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display}</a>"
+        "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display} </a>"
       end
 
       def output_sender
         case @base_type
         when :rp
-          return "  * #{@sender}"
+          return "#{@sender}"
         when :ooc
-          return " &lt;#{@mode}#{@sender}&gt;"
+          return "&lt;#{@mode}#{@sender}&gt;"
         else
           # Explode.
           fail "No known type: #{@base_type}"
