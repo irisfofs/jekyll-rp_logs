@@ -12,12 +12,9 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
 ## Table of Contents
 
   * [Features](#features)
-  * [Installation](#installation)
-    * [Bundler (Recommended)](#bundler-recommended)
-    * [Manually](#manually)
+  * [Quick Start](#quick-start)
     * [Updating](#updating)
   * [Usage](#usage)
-    * [Making a new site](#making-a-new-site)
     * [Adding RPs](#adding-rps)
       * [YAML Front Matter](#yaml-front-matter)
       * [Formatting the logs](#formatting-the-logs)
@@ -28,6 +25,7 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
   * [Contributing](#contributing)
 
 ## Features
+
 * Link to a specific post by its timestamp
 * Show and hide OOC chatter at will
 * Responsive layout is readable even on phones
@@ -53,7 +51,7 @@ Create a new bare-bones Jekyll site to run the RpLogs plugin from:
 This will create that directory (it aborts if the given directory is not empty) and set up basic scaffold for your site. After the command finishes running, you should have a structure like this:
 
 ```
-.
+path/to/your/new/site
 ├── arcs.html
 ├── _config.yml
 ├── _config.yml.default
@@ -101,17 +99,16 @@ When a new version of the gem is released, you can update with
 
     bundle update
 
-<!-- FIXME, updating doesn't currently exist -->
 If there were any theme updates that you want to install, you'll have to run
 
-    rake rp_logs:new
+    rplogs update
 
-again too. This will overwrite any changes you've made to the default SCSS, includes and index files. `_custom-vars.scss` and `_custom-rules.scss` won't be affected.
+in your site directory. This will overwrite any changes you've made to the default SCSS, includes and index files. `_custom-vars.scss` and `_custom-rules.scss` won't be affected.
 
 ## Usage
 
 ### Adding RPs
-Dump all of the raw logs into the `_rps/` directory of the site.
+Dump all of the raw logs into the `_rps/` directory of the site. The extension doesn't matter; `.rp` or `.txt` is fine. Don't use `.md` or any other Markdown extension, as that will cause Jekyll to run the file through its Markdown parser (which will take a long time).
 
 #### YAML Front Matter
 In order to be picked up and parsed by Jekyll, each file needs a [YAML front matter](http://jekyllrb.com/docs/frontmatter/). One field is required:
@@ -125,8 +122,8 @@ These are all optional (they have default values, configurable in `_config.yml`)
 * `complete` - true/false - Whether the RP is finished, or is still incomplete. Incomplete RPs are flagged as such on the index.
 * `format` - YAML list - What format(s) the logs are in, e.g., `[weechat]`
 * `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
-* `start_date` - Any valid YAML date, such as `YYYY-MM-DD`. - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
-* `time_line` - Used to change the order an RP in an Arc is stored in while keeping the displayed start_date correct. Useful if story RPs were done out of order. Must be a valid YAML date, such as `YYYY-MM-DD`. -
+* `start_date` - Any valid YAML date, such as `YYYY-MM-DD` - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
+* `time_line` - Any valid YAML date, such as `YYYY-MM-DD` - Used to change the order an RP in an Arc is stored in while keeping the displayed `start_date` correct. Useful if story RPs were done out of order.
 
 There are also some more options you can toggle. Some are needed for giving the parser more information about oddities in posts, so that it can merge split posts correctly.
 
