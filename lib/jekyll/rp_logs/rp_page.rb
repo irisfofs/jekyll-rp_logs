@@ -51,10 +51,13 @@ module Jekyll
 
       def convert_rp(parsers)
         compiled_lines = convert_all_lines(parsers)
-        merge_lines! compiled_lines
 
+        merge_lines! compiled_lines
         stats = extract_stats compiled_lines
-        page.content = compiled_lines
+
+        # A decent amount of this could be moved into Page
+        split_output = compiled_lines.map(&:output)
+        page.content = split_output.join("\n")
 
         update_page_properties(stats)
 

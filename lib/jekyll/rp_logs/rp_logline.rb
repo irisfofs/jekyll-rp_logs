@@ -70,13 +70,47 @@ module Jekyll
         # TODO: Containing both flags should result in a warning
       end
 
-      def to_liquid
-        { "content" => CGI.escapeHTML(@contents),
-          "mode" => @mode,
-          "sender" => @sender,
-          "output_type" => @output_type.to_s,
-          "base_type" => @base_type.to_s,
-          "timestamp" => @timestamp }
+      def output
+        tag_open, tag_close = output_tags
+        # Escape any HTML special characters in the input
+        escaped_content = CGI.escapeHTML(@contents)
+        "#{tag_open}#{output_timestamp}#{output_sender} #{escaped_content}#{tag_close}"
+      end
+
+      def output_timestamp
+        # String used for the timestamp anchors
+        anchor = @timestamp.strftime("%Y-%m-%d_%H:%M:%S")
+        # String used when hovering over timestamps (friendly long-form)
+        title = @timestamp.strftime("%H:%M:%S %B %-d, %Y")
+        # String actually displayed on page
+        display = @timestamp.strftime("%H:%M")
+        "<a name=\"#{anchor}\" title=\"#{title}\" href=\"##{anchor}\">#{display}</a>"
+      end
+
+      def output_sender
+        case @base_type
+        when :rp
+          return "  * #{@sender}"
+        when :ooc
+          return " &lt;#{@mode}#{@sender}&gt;"
+        else
+          # Explode.
+          fail "No known type: #{@base_type}"
+        end
+      end
+
+      def output_tags
+        tag_class =
+          case @output_type
+          when :rp then "rp"
+          when :ooc then "ooc"
+          else # Explode.
+            fail "No known type: #{@output_type}"
+          end
+        tag_open = "<p class=\"#{tag_class}\">"
+        tag_close = "</p>"
+
+        [tag_open, tag_close]
       end
 
       ##
