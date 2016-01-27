@@ -111,49 +111,60 @@ module Jekyll
         # Convert all of the posts to be pretty
         # Also build up our hash of tags
         rp_pages.each do |page|
-          begin
-            # Skip if something goes wrong
-            next unless convert_rp(site, page)
-
-            key = page.canon
-            # Add key for canon/noncanon
-            main_index.data["rps"][key] << page
-            # Add tag for canon/noncanon
-            page[:rp_tags] << (Tag.new key)
-            page[:rp_tags].sort!
-
-            arc_name = page[:arc_name]
-            if arc_name && !arc_name.empty?
-              arc_name.each { |n| arcs[n] << page }
-            else
-              no_arc_rps << page
-            end
-
-            Jekyll.logger.debug "Converted #{page.basename}"
-          rescue
-            # Catch all for any other exception encountered when parsing a page
-            skip_page(site, page, "Error parsing #{page.basename}: #{$ERROR_INFO.inspect}")
-            # Raise exception, so Jekyll prints backtrace if run with --trace
-            raise $ERROR_INFO
-          end
+          convert_page(page, site, main_index, arcs, no_arc_rps)
         end
 
-        Jekyll.logger.info "#{site.collections[rp_key].docs.size} RPs converted."
+        Jekyll.logger.info(
+          "#{site.collections[rp_key].docs.size} RPs converted.")
 
+        sort_arcs(arcs, no_arc_rps, arc_index)
+        sort_chronologically! main_index.data["rps"]["canon"]
+        sort_chronologically! main_index.data["rps"]["noncanon"]
+      end
+
+      def convert_page(page, site, main_index, arcs, no_arc_rps)
+        # Skip if something goes wrong
+        return unless convert_rp(site, page)
+
+        key = page.canon
+        # Add key for canon/noncanon
+        main_index.data["rps"][key] << page
+        # Add tag for canon/noncanon
+        page[:rp_tags] << (Tag.new key)
+        page[:rp_tags].sort!
+
+        arc_name = page[:arc_name]
+        if arc_name && !arc_name.empty?
+          arc_name.each { |n| arcs[n] << page }
+        else
+          no_arc_rps << page
+        end
+
+        Jekyll.logger.debug "Converted #{page.basename}"
+      rescue
+        # Catch all for any other exception encountered when parsing a page
+        skip_page(site, page,
+                  "Error parsing #{page.basename}: #{$ERROR_INFO.inspect}")
+        # Raise exception, so Jekyll prints backtrace if run with --trace
+        raise $ERROR_INFO
+      end
+
+      def sort_arcs(arcs, no_arc_rps, arc_index)
         arcs.each_key { |key| sort_chronologically! arcs[key].rps }
-        combined_rps = no_arc_rps.map { |x| ["rp", x] } + arcs.values.map { |x| ["arc", x] }
-        combined_rps.sort_by! { |type, x|
+        arc_index.data["rps"] = sort_arcs_and_pages(arcs, no_arc_rps)
+      end
+
+      def sort_arcs_and_pages(arcs, no_arc_rps)
+        combined_rps = no_arc_rps.map { |x| ["rp", x] } +
+                       arcs.values.map { |x| ["arc", x] }
+        combined_rps.sort_by! do |type, x|
           case type
           when "rp"
             x[:time_line] || x[:start_date]
           when "arc"
             x.start_date
           end
-        }.reverse!
-        arc_index.data["rps"] = combined_rps
-
-        sort_chronologically! main_index.data["rps"]["canon"]
-        sort_chronologically! main_index.data["rps"]["noncanon"]
+        end.reverse!
       end
 
       def sort_chronologically!(pages)
