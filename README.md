@@ -63,8 +63,7 @@ path/to/your/new/site
 │   ├── footer.html
 │   ├── header.html
 │   ├── head.html
-│   ├── rp.html
-│   └── rp_line.html
+│   └── rp.html
 ├── index.html
 ├── js/
 │   └── toggle_ooc.js
@@ -201,18 +200,23 @@ After checking out the repo, run `bin/setup` to install dependencies.
 
 To install this gem onto your local machine, run `rake install`.
 
-To install the gem and create, then serve a development site to test your changes, run `rake serve`. This will do a bunch of things:
+To install the gem and create a development site to test your changes, run `rake deploy`. This will do a bunch of things:
 
-* Create the `dev_site` directory
-* Populate it with a `Gemfile` and `Rakefile` as mentioned in the installation instructions
-* Run `bundle` and `rake rp_logs:new`
+* Create the `dev_site/` directory
+* Run the same task that `rplogs init` calls, setting up a basic site scaffold
 * Copy test logs from `test/` into the site's `_rps/` directory
-* Run `jekyll serve` to build and host the site at `localhost:4000` so you can see it!
+
+To additionally serve it at the same time, run `rake serve`, which will:
+
+* Run `rake deploy` and do everything mentioned above
+* Run (in `dev_site/`) `bundle exec jekyll serve` to build and host the site at `localhost:4000` so you can see it!
+
+You can of course run `bundle exec jekyll serve` yourself if weird stuff starts happening.
 
 ## Contributing
 
 1. Fork it ( https://github.com/xiagu/jekyll-rp_logs/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
+3. Commit your changes (`git commit -av`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
