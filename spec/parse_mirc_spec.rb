@@ -11,11 +11,13 @@ module Jekyll
         expect(RpLogGenerator.parsers).to include(subject::FORMAT_STR => subject)
       end
 
+      # rubocop:disable Metrics/LineLength
       let(:emote_line) { "06 11 15[22:14] * Alice Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
       let(:join_line)  { "0306 14 15[18:52] * Test (664@244-224-824-22-dolar.sit) has joined #omnis" }
       let(:text_line)  { "06 14 15[18:54] <Alice> (Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.)" }
-      let(:text_mode_line)  { "06 14 15[18:54] <@Alice> (Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.)" }
-      let(:unmatched)  { "lorem" }
+      let(:text_mode_line) { "06 14 15[18:54] <@Alice> (Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.)" }
+      let(:unmatched) { "lorem" }
+      # rubocop:enable Metrics/LineLength
 
       describe ".parse_line" do
         it "parses /join as junk" do

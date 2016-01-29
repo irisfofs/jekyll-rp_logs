@@ -4,6 +4,10 @@ require_relative "rp_tag_implication_handler"
 
 module Jekyll
   module RpLogs
+    ##
+    # A wrapper for Jekyll::Page that provides RpLogs related functionality.
+    #
+    # Handles checking for errors, merging lines, and collecting statistics.
     class Page
       extend Forwardable
       def_delegators :@page, :basename, :content, :content=, :path, :to_liquid
@@ -23,7 +27,8 @@ module Jekyll
         @page = page
 
         # If the tags exist, try to convert them to a list of Tag objects
-        self[:rp_tags] = Tag[self[:rp_tags].split(",")] if self[:rp_tags].is_a?(String)
+        return unless self[:rp_tags].is_a?(String)
+        self[:rp_tags] = Tag[self[:rp_tags].split(",")]
       end
 
       ##
@@ -71,15 +76,9 @@ module Jekyll
       # Returns false if there is no error
       # Returns error_message if there is an error
       def errors?(supported_formats)
-        # Verify that formats are specified
-        if self[:format].nil? || self[:format].empty?
-          return "No formats specified"
-        end
-
-        # Verify that the parser for each format exists
-        self[:format].each do |format|
-          return "Format #{format} does not exist." unless supported_formats[format]
-        end
+        # Check formatting errors
+        format_error = format_errors?(supported_formats)
+        return format_error if format_error
 
         # Verify that tags exist
         return "No tags specified" if self[:rp_tags].nil?
@@ -106,6 +105,20 @@ module Jekyll
       end
 
       private
+
+      def format_errors?(supported_formats)
+        # Verify that formats are specified
+        if self[:format].nil? || self[:format].empty?
+          return "No formats specified"
+        end
+
+        # Verify that the parser for each format exists
+        self[:format].each do |format|
+          return "Format #{format} does not exist." unless supported_formats[format]
+        end
+
+        false
+      end
 
       def convert_all_lines(parsers)
         compiled_lines = []
@@ -137,17 +150,14 @@ module Jekyll
       def merge_lines!(compiled_lines)
         last_line = nil
         compiled_lines.reject! do |line|
-          if last_line.nil?
+          if last_line.nil? || !(last_line.mergeable_with? line)
             last_line = line
             false
-          elsif last_line.mergeable_with? line
+          else
             last_line.merge! line
             # Delete the current line from output and maintain last_line
             # in case we need to merge multiple times.
             true
-          else
-            last_line = line
-            false
           end
         end
       end
@@ -176,7 +186,7 @@ module Jekyll
       def update_page_properties(stats)
         if self[:infer_char_tags]
           # Turn the nicks into characters
-          nick_tags = stats[:nicks].map! { |n| Tag.new("char:" + n) }
+          nick_tags = stats[:nicks].map! { |n| Tag.new("char:#{n}") }
           self[:rp_tags] = (nick_tags.merge self[:rp_tags]).to_a.sort
         end
         update_tags

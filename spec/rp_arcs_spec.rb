@@ -47,7 +47,6 @@ module Jekyll
         Arc.new("Lorem Ipsum")
       end
 
-
       describe "attributes" do
         subject { lorem_arc }
 

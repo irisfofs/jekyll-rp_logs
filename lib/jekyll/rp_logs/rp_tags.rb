@@ -52,19 +52,17 @@ module Jekyll
         name.hash
       end
 
-      def <=>(o)
-        if self.class == o.class && type == o.type
-          name <=> o.name
+      def <=>(other)
+        if self.class == other.class && type == other.type
+          name <=> other.name
         elsif type == :character
           -1
-        elsif o.type == :character
+        elsif other.type == :character
           1
         elsif type == :meta
           -1
-        elsif o.type == :meta
+        elsif other.type == :meta
           1
-        else
-          nil
         end
       end
 

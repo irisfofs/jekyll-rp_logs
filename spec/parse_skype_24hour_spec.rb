@@ -11,10 +11,12 @@ module Jekyll
         expect(RpLogGenerator.parsers).to include(subject::FORMAT_STR => subject)
       end
 
-      let(:emote_line) { "[05.06.15 12:24:18] Bob: Bob Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
-      let(:text_line)  { "[05.06.15 20:34:19] Bob: (Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat)" }
-      let(:text_line_2)  { "[05.06.15 20:34:56] Alice: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." }
-      let(:unmatched)  { "lorem" }
+      # rubocop:disable Metrics/LineLength
+      let(:emote_line)  { "[05.06.15 12:24:18] Bob: Bob Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
+      let(:text_line)   { "[05.06.15 20:34:19] Bob: (Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat)" }
+      let(:text_line_2) { "[05.06.15 20:34:56] Alice: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." }
+      let(:unmatched)   { "lorem" }
+      # rubocop:enable Metrics/LineLength
 
       describe ".parse_line" do
         it "parses /me as RP" do

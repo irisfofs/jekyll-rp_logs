@@ -7,6 +7,9 @@ require_relative "rp_tags"
 module Jekyll
   module RpLogs
     # Consider renaming since it is more of a converter in practice
+    # It can't actually be a subclass of Jekyll::Converter because those work
+    # very differently. Converters convert single files, while a generator can
+    # work with the entire site.
     class RpLogGenerator < Jekyll::Generator
       safe true
       priority :normal
@@ -47,6 +50,8 @@ module Jekyll
         # by modifying the configuration file, which is added onto the `site`
         # liquid variable.
         site.config["rp_logs_version"] = RpLogs::VERSION
+
+        Jekyll.logger.info("RpLogGenerator#generate called")
 
         main_index, arc_index = extract_indexes(site)
 

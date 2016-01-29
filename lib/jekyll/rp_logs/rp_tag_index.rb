@@ -38,9 +38,9 @@ module Jekyll
 
         dir = site.config["rp_tag_dir"]
         tags = rps_by_tag(site)
-        tags.each_pair { |tag, pages|
+        tags.each_pair do |tag, pages|
           site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages)
-        }
+        end
         Jekyll.logger.info "#{tags.size} tag pages generated."
       end
 
@@ -50,7 +50,7 @@ module Jekyll
         site.collections[RpLogGenerator.rp_key].docs.each do |page|
           page.data["rp_tags"].each { |tag| tag_ref[tag] << page }
         end
-        return tag_ref
+        tag_ref
       end
     end
   end

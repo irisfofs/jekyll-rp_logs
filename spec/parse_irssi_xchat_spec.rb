@@ -13,7 +13,7 @@ module Jekyll
       end
 
       # --- Log opened Fri May 23 01:13:27 2014
-      let(:emote_line)     { "01:13                * | Alice lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi voluptatibus, quis ratione sit porro vitae, placeat, quos rem quaerat autem voluptates tempore officiis praesentium ipsum distinctio tempora voluptatum veritatis unde." }
+      let(:emote_line)     { "01:13                * | Alice lorem ipsum dolor sit amet" }
       let(:text_line)      { "01:15 <         Alice> | regular text line" }
       let(:text_mode_line) { "01:15 <@        Alice> | text with a nick mode character" }
       let(:unmatched)      { "lorem" }
@@ -35,5 +35,3 @@ module Jekyll
     end
   end
 end
-
-

@@ -92,6 +92,7 @@ module Jekyll
       let(:bananana_page) { Page.new(valid_page_with("rp_tags" => "bananana")) }
       let(:combo_page) { Page.new(valid_page_with("rp_tags" => "apple,fruit,bananana,banana")) }
 
+      # rubocop:disable Style/WordArray
       let(:implication_set_1) do
         { "tag_implications" =>
             { "apple" => ["fruit", "delicious"],
@@ -109,6 +110,7 @@ module Jekyll
             "fruit" => ["not a fruit"] }
         }
       end
+      # rubocop:enable Style/WordArray
 
       describe "#update_tags" do
         context "when given valid rules" do

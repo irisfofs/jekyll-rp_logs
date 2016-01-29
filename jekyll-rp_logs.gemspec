@@ -1,4 +1,5 @@
 # coding: utf-8
+# rubocop:disable Metrics/LineLength
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "jekyll/rp_logs/version"
@@ -13,7 +14,7 @@ Gem::Specification.new do |spec|
     # spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com' to prevent pushes to rubygems.org, or delete to allow pushes to any server."
   end
 
-  spec.summary       = %q(Jekyll plugin to turn raw IRC RP logs into pretty pages.)
+  spec.summary       = "Jekyll plugin to turn raw IRC RP logs into pretty pages."
   # spec.description   = %q(TODO: Write a longer description or delete this line.)
   spec.homepage      = "https://github.com/xiagu/jekyll-rp_logs"
   spec.license       = "MIT"

@@ -1,2 +1,13 @@
 Style/StringLiterals:
   EnforcedStyle: double_quotes
+
+Metrics/LineLength:
+  Max: 99
+
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+
