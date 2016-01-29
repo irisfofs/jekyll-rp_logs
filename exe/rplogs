@@ -25,7 +25,7 @@ class RpLogsApp
   desc "Update the theme of an existing Jekyll::RpLogs site"
   command :update do |c|
     c.action do
-      Rake::Task["rp_logs:copy_theme"].invoke
+      Rake::Task["rp_logs:update_theme"].invoke
     end
   end
 
