@@ -10,4 +10,3 @@ Style/Documentation:
   Enabled: true
   Exclude:
     - 'spec/**/*'
-

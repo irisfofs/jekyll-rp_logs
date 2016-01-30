@@ -73,9 +73,11 @@ namespace :rp_logs do
 
   task :update_theme do
     if !File.exist?("_config.yml")
-      abort("Didn't install theme.") if ask("No _config.yml found. This may not be a Jekyll site directory. Install theme anyway?") == NO
+      resp = ask("No _config.yml found. This may not be a Jekyll site directory. Install theme anyway?")
+      abort("Didn't install theme.") if resp == NO
     elsif File.exist?("_sass")
-      abort("Kept existing theme.") if ask("A theme is already installed. Overwrite existing non-custom files?") == NO
+      resp = ask("A theme is already installed. Overwrite existing non-custom files?")
+      abort("Kept existing theme.") if resp == NO
     end
     Rake::Task["rp_logs:copy_theme"].invoke
   end

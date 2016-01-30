@@ -105,6 +105,7 @@ end
 
 # Taken from Jekyll's own test helper
 # https://github.com/jekyll/jekyll/blob/ed7fcf6773dc4aa9a9b3852d450dbd67c56617f6/test/helper.rb#L110
+# rubocop:disable Style/GlobalVars
 def capture_stdout
   $old_stdout = $stdout
   $stdout = StringIO.new
@@ -124,3 +125,4 @@ def capture_stderr
 ensure
   $stderr = $old_stderr
 end
+# rubocop:enable Style/GlobalVars

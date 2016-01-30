@@ -24,13 +24,13 @@ module Jekyll
       end
 
       describe "the index page html" do
-          subject { File.read(File.join("dev_site", "_site", "index.html")) }
+        subject { File.read(File.join("dev_site", "_site", "index.html")) }
 
-          # Each one should be linked in the file somewhere
-          dirs = Util::VALID_TEST_NAMES.map { |n| "<a href=\"/#{n}/\">" }
-          dirs.each do |name|
-            it { is_expected.to include(name) }
-          end
+        # Each one should be linked in the file somewhere
+        dirs = Util::VALID_TEST_NAMES.map { |n| "<a href=\"/#{n}/\">" }
+        dirs.each do |name|
+          it { is_expected.to include(name) }
+        end
       end
 
       describe "the tag descriptions" do
@@ -72,7 +72,9 @@ module Jekyll
         end
 
         it "has the right text" do
+          # rubocop:disable Metrics/LineLength
           text = "Alice lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi voluptatibus, quis ratione sit porro vitae, placeat, quos rem quaerat autem voluptates tempore officiis praesentium ipsum distinctio tempora voluptatum veritatis unde."
+          # rubocop:enable Metrics/LineLength
           expect(rp_text.text.rstrip).to eq text
         end
 

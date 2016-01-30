@@ -115,10 +115,11 @@ module Jekyll
         end
 
         def remove_one
-          site.pages.delete_if &Proc.new # block condition
+          site.pages.delete_if(&Proc.new) # block condition
           generator.generate(site)
         end
 
+        # rubocop:disable Lint/HandleExceptions
         context "when missing main index.html" do
           subject { remove_one { |p| p.data["rp_index"] } }
 
@@ -151,6 +152,7 @@ module Jekyll
           end
         end
       end
+      # rubocop:enable Lint/HandleExceptions
 
       describe "#generate's informational messages" do
         context "to stdout" do
