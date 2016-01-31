@@ -1,6 +1,6 @@
 # Jekyll::RpLogs
 
-[![Build Status](https://travis-ci.org/xiagu/web-character-sheets.svg?branch=master)](https://travis-ci.org/xiagu/web-character-sheets)
+[![Build Status](https://travis-ci.org/xiagu/jekyll-rp_logs.svg?branch=master)](https://travis-ci.org/xiagu/jekyll-rp_logs)
 [![Test Coverage](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/coverage.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs/coverage)
 [![Code Climate](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/gpa.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs)
 [![Gem Version](https://badge.fury.io/rb/jekyll-rp_logs.svg)](http://badge.fury.io/rb/jekyll-rp_logs)
