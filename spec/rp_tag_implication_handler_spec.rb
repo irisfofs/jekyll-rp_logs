@@ -5,6 +5,7 @@ require "jekyll/rp_logs/rp_tag_implication_handler"
 module Jekyll
   module RpLogs
     RSpec.describe TagImplicationHandler do
+      # rubocop:disable Style/WordArray
       let(:implication_set_1) do
         { "tag_implications" =>
             { "apple" => ["fruit", "delicious"],
@@ -14,6 +15,7 @@ module Jekyll
           "tag_aliases" => { "bananana" => ["banana"] }
         }
       end
+      # rubocop:enable Style/WordArray
 
       let(:two_elem_alias_loop) do
         { "tag_implications" => {},
@@ -39,11 +41,13 @@ module Jekyll
         }
       end
 
+      # rubocop:disable Style/WordArray
       let(:alias_original_tag) do
         { "tag_implications" => {},
           "tag_aliases" => { "apple" => ["apple", "fruit"] }
         }
       end
+      # rubocop:enable Style/WordArray
 
       let(:imply_aliased_tag) do
         { "tag_implications" => { "apple" => ["tasty"] },
@@ -63,9 +67,11 @@ module Jekyll
         expect { capture_stderr { TagImplicationHandler.new(config) } }
       end
 
+      # rubocop:disable Style/RescueModifier
       def expect_extraction_output(config)
         expect(capture_stderr { TagImplicationHandler.new(config) rescue nil })
       end
+      # rubocop:enable Style/RescueModifier
 
       describe ".extract_settings" do
         context "when given valid rules" do
