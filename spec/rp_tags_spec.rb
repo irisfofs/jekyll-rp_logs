@@ -27,6 +27,38 @@ module Jekyll
           end
         end
       end
+
+      describe "<=>" do
+        def to_tags(list)
+          list.map { |tag| Tag.new(tag) }
+        end
+
+        it "sorts character tags before regular tags" do
+          tag_list = to_tags %w(banana aardvark wet water char:Eve)
+          sorted   = to_tags %w(char:Eve aardvark banana water wet)
+          expect(tag_list.sort).to eql(sorted)
+        end
+
+        it "sorts meta tags before regular tags" do
+          tag_list = to_tags %w(a questionable horse doing safe things)
+          sorted   = to_tags %w(questionable safe a doing horse things)
+          expect(tag_list.sort).to eql(sorted)
+        end
+
+        it "sorts character tags before meta tags" do
+          tag_list = to_tags %w(incomplete char:Alice char:Wilfred complete)
+          sorted   = to_tags %w(char:Alice char:Wilfred complete incomplete)
+          expect(tag_list.sort).to eql(sorted)
+        end
+
+        it "sorts everything together" do
+          tag_list = to_tags %w(while char:Bob buys safe things char:Alice finds them
+                                incomplete but char:Watson likes the explicit stuff)
+          sorted   = to_tags %w(char:Alice char:Bob char:Watson explicit incomplete safe
+                                but buys finds likes stuff the them things while)
+          expect(tag_list.sort).to eql(sorted)
+        end
+      end
     end
   end
 end
