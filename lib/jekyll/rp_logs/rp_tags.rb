@@ -2,12 +2,23 @@
 
 module Jekyll
   module RpLogs
-    # Holds tag information
+    ##
+    # A tag for RPs. Represents a property of the RP; for instance, a character
+    # involved in it, or whether the RP is complete or not, or a rating of the
+    # content.
+    #
+    # Character tags are special in that they are prefixed with `char:`, though
+    # this prefix isn't part of the tag name. So the tags `char:Alice` and
+    # `Alice` can coexist. It'll just be confusing.
+    #
+    # Tags are also mapped to directories; this directory hosts an index of all
+    # RPs with that tag.
     class Tag
       TYPES = [:meta, :character, :general].freeze
       CHAR_FLAG = /^char:(?<char_name>.*)/
       META_TAGS = /(safe|questionable|explicit|canon|noncanon|complete|incomplete)/
 
+      # CSS classes to apply to this tag, when displayed
       TYPE_CLASSES = {
         character: ["rp-tag-character"],
         meta: ["rp-tag-meta"],
@@ -45,7 +56,9 @@ module Jekyll
       end
 
       def eql?(other)
-        self.class.equal?(other.class) && (name == other.name && type == other.type)
+        self.class.equal?(other.class) &&
+          name == other.name &&
+          type == other.type
       end
 
       def hash
@@ -67,7 +80,7 @@ module Jekyll
       end
 
       def inspect
-        self.class.name + "[" + @name + ", " + @dir + "]"
+        "#{self.class.name}[#{@name}, #{@dir}]"
       end
 
       def to_liquid
