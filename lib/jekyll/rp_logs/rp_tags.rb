@@ -14,6 +14,8 @@ module Jekyll
     # Tags are also mapped to directories; this directory hosts an index of all
     # RPs with that tag.
     class Tag
+      include Comparable
+
       TYPES = [:meta, :character, :general].freeze
       CHAR_FLAG = /^char:(?<char_name>.*)/
       META_TAGS = /(safe|questionable|explicit|canon|noncanon|complete|incomplete)/
