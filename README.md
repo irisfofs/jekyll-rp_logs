@@ -198,7 +198,10 @@ tag_descriptions:
 
 After checking out the repo, run `bin/setup` to install dependencies.
 
-To install this gem onto your local machine, run `rake install`.
+To install the gem onto your local machine, run `rake install`.
+
+To run the tests, run `bundle exec rspec`.
+To start [Guard](https://github.com/guard/guard-rspec#readme) and have it run the relevant tests automatically whenever you save a file, run `bundle exec guard`.
 
 To install the gem and create a development site to test your changes, run `rake deploy`. This will do a bunch of things:
 
