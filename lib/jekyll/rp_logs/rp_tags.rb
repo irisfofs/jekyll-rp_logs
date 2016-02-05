@@ -68,18 +68,31 @@ module Jekyll
         to_s.hash
       end
 
+      ##
+      # Compares two tags. Character tags are less than meta tags, and meta
+      # tags are less than general tags. Two tags of the same type are compared
+      # by their names.
       def <=>(other)
-        if self.class == other.class && type == other.type
-          name <=> other.name
-        elsif type == :character
-          -1
-        elsif other.type == :character
-          1
-        elsif type == :meta
-          -1
-        elsif other.type == :meta
-          1
-        end
+        # Assign 'points' to each type of tag. More 'important' tags have
+        # higher point values.
+        type_points = {
+          general: 0,
+          meta: 2,
+          character: 4
+        }
+        # The different in point value between the tag types represents the
+        # difference in sorting order.
+        # - If this tag's type is more important, type_diff <= -2
+        # - If the other's type is more important, type_diff  >= 2
+        # - If the types are the same, the points cancel out: type_diff == 0
+        type_diff = type_points[other.type] -
+                    type_points[type]
+
+        # If the types are different, type_diff will overshadow the name
+        # comparison (which is -1, 0, or 1).
+        comparison = (name <=> other.name) + type_diff
+        # Clamp the result to -1, 0, 1
+        comparison <=> 0
       end
 
       def inspect
