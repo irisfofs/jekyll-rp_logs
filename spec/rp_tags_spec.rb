@@ -28,6 +28,13 @@ module Jekyll
         end
       end
 
+      describe "#hash" do
+        it "has different values for `char:alice` and `alice`" do
+          expect(Tag.new("char:Alice").hash).to_not eq Tag.new("Alice").hash
+          expect(Tag.new("char:alice").hash).to_not eq Tag.new("alice").hash
+        end
+      end
+
       describe "#<=>" do
         # Examples from both sides of the alphabet, to show that ordering
         # isn't just alphabetical

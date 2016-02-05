@@ -64,7 +64,8 @@ module Jekyll
       end
 
       def hash
-        name.hash
+        # Can't be name.hash because then `char:alice` and `alice` collide
+        to_s.hash
       end
 
       def <=>(other)
