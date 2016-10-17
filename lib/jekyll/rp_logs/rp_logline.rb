@@ -74,7 +74,7 @@ module Jekyll
         tag_open, tag_close = output_tags
         # Escape any HTML special characters in the input
         escaped_content = CGI.escapeHTML(@contents)
-        escaped_content = escaped_content.gsub(/\n/,"<br />")
+        escaped_content = escaped_content.gsub(/\n+/,"<br class="msgbreak"/>")
         "#{tag_open}#{output_timestamp}#{output_sender} #{escaped_content}#{tag_close}"
       end
 
