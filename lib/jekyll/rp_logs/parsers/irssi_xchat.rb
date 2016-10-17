@@ -7,6 +7,7 @@ module Jekyll
 
       DATE_REGEXP = /(?<timestamp>\d\d:\d\d)/
       TIMESTAMP_FORMAT = "%H:%M"
+      SPLITTER = /\n(?=#{FLAGS}#{DATE_REGEXP})/
 
       MSG = /(?<msg>[^\n]*)/
 
