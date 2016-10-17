@@ -122,7 +122,8 @@ module Jekyll
 
       def convert_all_lines(parsers)
         compiled_lines = []
-        content.split(/\n(?=\[)/).each  { |raw_line|
+        parse_split = parse_get_split(parsers)
+        content.split(parse_split).each  { |raw_line|
           log_line = parse_line(parsers, raw_line)
           compiled_lines << log_line if log_line
         }
@@ -132,6 +133,21 @@ module Jekyll
         end
 
         compiled_lines
+      end
+     
+      ##
+      # Return the split regex compiled from all parsers or /\n/
+      # there are no matches.
+      def parse_get_split(parsers)
+        self[:format].each do |format|
+            if defined?(parse_split) && defined?(parsers[format]::SPLITTER)
+                parse_split = /#{parse_split}|#{parsers[format]::SPLITTER}/
+            elsif defined?(parsers[format]::SPLITTER) 
+                parse_split = parsers[format]::SPLITTER
+            end
+        end
+        return parse_split if defined?(parse_split)
+        /\n/
       end
 
       ##
