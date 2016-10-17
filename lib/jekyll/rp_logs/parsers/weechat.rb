@@ -10,6 +10,8 @@ module Jekyll
       # Date is repeated in each type of message
       DATE_REGEXP = /(?<timestamp>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d)/
       TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
+      SPLITTER = /\n(?=#{FLAGS}#{DATE_REGEXP})/
+
 
       # Regular expressions for matching each type of line
       JUNK =  /#{DATE_REGEXP}\t<?-->?\t.*$/

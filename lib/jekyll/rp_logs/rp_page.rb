@@ -136,18 +136,20 @@ module Jekyll
       end
      
       ##
-      # Return the split regex compiled from all parsers or /\n/
-      # there are no matches.
+      # Return the split regex compiled from all parsers 
+      #
       def parse_get_split(parsers)
+        parse_split = ""
         self[:format].each do |format|
-            if defined?(parse_split) && defined?(parsers[format]::SPLITTER)
+            if parse_split != ""  # && defined?(parsers[format]::SPLITTER)
                 parse_split = /#{parse_split}|#{parsers[format]::SPLITTER}/
-            elsif defined?(parsers[format]::SPLITTER) 
+            else 
                 parse_split = parsers[format]::SPLITTER
             end
+        #print(count ++)
         end
         return parse_split if defined?(parse_split)
-        /\n/
+        #/\n/
       end
 
       ##
