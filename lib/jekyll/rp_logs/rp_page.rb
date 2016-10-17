@@ -122,10 +122,10 @@ module Jekyll
 
       def convert_all_lines(parsers)
         compiled_lines = []
-        content.each_line do |raw_line|
+        content.split(/\n(?=\[)/).each  { |raw_line|
           log_line = parse_line(parsers, raw_line)
           compiled_lines << log_line if log_line
-        end
+        }
 
         if compiled_lines.length == 0
           throw :skip_page, "No lines were matched by any format."
