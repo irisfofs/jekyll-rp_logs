@@ -145,7 +145,13 @@ module Jekyll
       end
 
       def merge!(next_line)
-        @contents += "#{space_between_lines}#{next_line.contents}"
+        if /\.\.\.\w*$/.match(@contents) && /^\w*\.\.\./.match(next_line.contents)
+            @contents = @contents.sub(/\.\.\.\w*$/,"")
+            nextline = next_line.contents.sub(/^\w*\.\.\./,'')
+            @contents += "#{space_between_lines}#{nextline}"
+        else
+            @contents += "#{space_between_lines}#{next_line.contents}"
+        end
         @last_merged_timestamp = next_line.timestamp
         self
       end
