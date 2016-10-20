@@ -30,6 +30,8 @@ rp_tag_dir: /tags
 rp_tag_index_layout: tag_index
 rp_tag_title_prefix: "RPs tagged "
 
+tag_file: _tags.yml
+
 # The max number of seconds between two mergeable lines. Lines further apart
 # in time than this will not be merged.
 max_seconds_between_posts: 3
@@ -37,28 +39,6 @@ max_seconds_between_posts: 3
 # All characters that can denote the beginning of an OOC line, for the purposes
 # of strict_ooc and automatically converting OOC emotes to OOC text.
 ooc_start_delimiters: "(["
-
-# This allows you to set up implications, where something tagged with one tag
-# will automatically be tagged with other tags, in a list.
-# The implied tags need to be a list, even if there's only one.
-tag_implications:
-  # These are just examples, feel free to delete them!
-  apple: [fruit]
-  lorem ipsum: [dolor, sit amet]
-
-# Tag aliases function just like implications, except the original tag is
-# removed. So they effectively convert one tag into another tag. Or tags.
-tag_aliases:
-  # These are just examples, feel free to delete them!
-  char:John_Smith: ["char:John"] # Needs the quotes because of the :
-  etaoin: [etaoin shrdlu]
-
-# These show up on the page for a tag, for instance:
-# .../rps/tags/Alice/
-# .../rps/tags/test/
-tag_descriptions:
-  char:Alice: "Have some words"
-  test: "More words"
 
 collections:
   # The RPs must be in a directory named exactly this, prefixed by an underscore.

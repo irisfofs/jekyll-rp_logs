@@ -1,5 +1,7 @@
 # Again largely inspired by http://brizzled.clapper.org/blog/2010/12/20/some-jekyll-hacks/
 
+require "yaml"
+
 module Jekyll
   module RpLogs
     class TagIndex < Jekyll::Page
@@ -14,7 +16,7 @@ module Jekyll
         tag_index = (site.config["rp_tag_index_layout"] || "tag_index") + ".html"
         read_yaml(File.join(base, "_layouts"), tag_index)
         data["tag"] = tag # Set which tag this index is for
-        data["description"] = site.config["tag_descriptions"][tag.to_s]
+        data["description"] = YAML.load_file(File.join(site.config['source'],site.config["tag_file"]))["tag_descriptions"][tag.to_s]
 
         # Sort tagged RPs by their start date
         data["pages"] = pages.sort_by { |p| p.data["start_date"] }
