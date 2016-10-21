@@ -1,7 +1,8 @@
+{% include base.html %}
 <li>
   <div class="rp-entry-container">
     <div class="rp-entry">
-      <a href="{{ site.baseurl }}{{ include.rp.url }}">
+      <a href="{{ base }}{{ include.rp.url }}">
         <h4 class="rp-title">{{ include.rp.title }}</h4>
       </a>
     </div>
@@ -16,6 +17,6 @@
     </div>
   </div>
   {% for t in include.rp.rp_tags %}
-    <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+    <a href="{{ base }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
   {% endfor %}
 </li>

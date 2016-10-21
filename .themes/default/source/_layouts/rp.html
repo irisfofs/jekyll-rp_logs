@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-
+{% include base.html %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <div class="post">
@@ -14,7 +14,7 @@ layout: default
     <div id="tag-and-date">
       <div class="tags">
       {% for t in page.rp_tags %}
-        <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+        <a href="{{ base }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
       {% endfor %}
       </div>
 
@@ -37,4 +37,4 @@ layout: default
 
 <a name="bottom"></a>
 
-<script type="text/javascript" src="{{site.baseurl}}/js/toggle_ooc.js"></script>
+<script type="text/javascript" src="{{base}}/js/toggle_ooc.js"></script>
