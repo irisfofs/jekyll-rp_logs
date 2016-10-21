@@ -27,10 +27,11 @@ module Jekyll
         subject { File.read(File.join("dev_site", "_site", "index.html")) }
 
         # Each one should be linked in the file somewhere
-        dirs = Util::VALID_TEST_NAMES.map { |n| "<a href=\"/#{n}/\">" }
+        dirs = Util::VALID_TEST_NAMES.map { |n| "href=\"/#{n}/\">" }
         dirs.each do |name|
           it { is_expected.to include(name) }
         end
+        it { is_expected.to include("a title='Some Description Here' href=") }
       end
 
       describe "the tag descriptions" do
