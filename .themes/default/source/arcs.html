@@ -10,6 +10,11 @@ rp_arcs: true
   {% assign rp = x[1] %}
   {% if type == 'arc' %}
     <h3 class="arc-title"><a name="{{ rp.name | slugify }}" href="#{{ rp.name | slugify }}">{{ rp.name }}</a></h3>
+    <p class="arc-description">
+    {% for arc_rp in rp.rps %}
+      {{ arc_rp.arc_description }}
+    {% endfor %}
+    </p>
     <ul class="arc-rp-list">
     {% for arc_rp in rp.rps %}
       {% include rp.html rp=arc_rp %}
