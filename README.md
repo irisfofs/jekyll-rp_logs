@@ -7,7 +7,7 @@
 
 This plugin provides support for building prettified versions of raw RP logs. Extra noise is stripped out during the building to keep the process as simple as possible: paste in entire log, add title and tags, and go.
 
-The result of building all the test files can be seen here: http://andrew.rs/projects/jekyll-rp_logs/
+The result of building all the test files can be seen here: http://andrew.rs/projects/jekyll-rp_logs/ (may be out of date)
 
 ## Table of Contents
 
@@ -35,6 +35,7 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
 * Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
 * Tagging and a tag implication/alias system
 * Tag descriptions
+* RP descriptions
 
 ## Quick Start
 
@@ -116,6 +117,7 @@ In order to be picked up and parsed by Jekyll, each file needs a [YAML front mat
 
 These are all optional (they have default values, configurable in `_config.yml`):
 
+* `description` - A short description shown under the title on an RP page and while hovering over links on index pages.
 * `arc_name` - YAML list - names of story arcs that the RP belongs to
 * `canon` - true/false - Whether the RP is considered canonical (whatever that means to you). Sorts RPs into one of two categories in the index.
 * `complete` - true/false - Whether the RP is finished, or is still incomplete. Incomplete RPs are flagged as such on the index.
@@ -123,7 +125,6 @@ These are all optional (they have default values, configurable in `_config.yml`)
 * `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
 * `start_date` - Any valid YAML date, such as `YYYY-MM-DD` - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
 * `time_line` - Any valid YAML date, such as `YYYY-MM-DD` - Used to change the order an RP in an Arc is stored in while keeping the displayed `start_date` correct. Useful if story RPs were done out of order.
-* `description` - A short description shown on the RP's page and while hovering on links to it.
 
 There are also some more options you can toggle. Some are needed for giving the parser more information about oddities in posts, so that it can merge split posts correctly.
 
@@ -161,7 +162,7 @@ Optionally, add the `--watch` flag to automatically rebuild if you add more logs
 **Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
 
 ### Tag implications and aliases
-This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with a list of other tags. The implied tags need to be a list, even if there's only one.
+This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with a list of other tags. The implied tags need to be a list, even if there's only one. These can either be in the main `_config.yml` or `_tags.yml`
 
 Example syntax (for your `_tags.yml`):
 

@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.6.0] - 2017-07-16
+## [0.6.0] - 2016-10-22
+### Breaking
+- Parsers can now process messages that span multiple lines. Please update your parsers to include SPLITTER.
+
 ### Added
 - `description` property for RPs that's displayed on the RP page and on hover in lists of RPs. ([#54], [#78])
 - Lines split separated by ellipses (`Lorem...`, `...ipsum`) are now merged and the ellipses removed. ([#74]).
