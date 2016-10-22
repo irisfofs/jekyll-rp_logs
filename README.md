@@ -1,10 +1,5 @@
 # Jekyll::RpLogs
 
-[![Build Status](https://travis-ci.org/xiagu/jekyll-rp_logs.svg?branch=master)](https://travis-ci.org/xiagu/jekyll-rp_logs)
-[![Test Coverage](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/coverage.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs/coverage)
-[![Code Climate](https://codeclimate.com/github/xiagu/jekyll-rp_logs/badges/gpa.svg)](https://codeclimate.com/github/xiagu/jekyll-rp_logs)
-[![Gem Version](https://badge.fury.io/rb/jekyll-rp_logs.svg)](http://badge.fury.io/rb/jekyll-rp_logs)
-
 This plugin provides support for building prettified versions of raw RP logs. Extra noise is stripped out during the building to keep the process as simple as possible: paste in entire log, add title and tags, and go.
 
 The result of building all the test files can be seen here: http://andrew.rs/projects/jekyll-rp_logs/
@@ -35,6 +30,8 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
 * Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
 * Tagging and a tag implication/alias system
 * Tag descriptions
+* RP Descriptions
+* Arc Descriptions
 
 ## Quick Start
 
@@ -48,40 +45,28 @@ Create a new bare-bones Jekyll site to run the RpLogs plugin from:
 
     rplogs init path/to/your/new/site
 
+Then edit the Gemfile.lock to look like
+
+    source "https://rubygems.org"
+    group :jekyll_plugins do
+      gem "jekyll-rp_logs", :git => "git://github.com/tecknojock/jekyll-rp_logs"
+    end
+
+Finally run
+
+    bundle update
+    rplogs update
+
 This will create that directory (it aborts if the given directory is not empty) and set up basic scaffold for your site. After the command finishes running, you should have a structure like this:
 
 ```
-path/to/your/new/site
-├── arcs.html
-├── _config.yml
-├── _config.yml.default
-├── css/
-│   └── main.scss
-├── Gemfile
-├── Gemfile.lock
-├── _includes/
-│   ├── footer.html
-│   ├── header.html
-│   ├── head.html
-│   └── rp.html
-├── index.html
-├── js/
-│   └── toggle_ooc.js
-├── _layouts/
-│   ├── default.html
-│   ├── page.html
-│   ├── post.html
-│   ├── rp.html
-│   └── tag_index.html
-├── _rps/
-└── _sass/
-    ├── _base.scss
-    ├── _custom-rules.scss
-    ├── _custom-vars.scss
-    ├── _layout.scss
-    ├── _rp.scss
-    └── _syntax-highlighting.scss
-```
+path/to/your/new/site   
+
+ main.scss
+
+ _includes/         
+
+ toggle_ooc.js                 ```
 
 Edit `_config.yml` and fill in the needed info for your setup.
 
@@ -116,7 +101,9 @@ In order to be picked up and parsed by Jekyll, each file needs a [YAML front mat
 
 These are all optional (they have default values, configurable in `_config.yml`):
 
+* `description` - Description of the RP. This will show up in the link hover text on index pages, and underneath the title on rp pages.
 * `arc_name` - YAML list - names of story arcs that the RP belongs to
+* `arc_description` - Description of the arc the rp is in. This will show up on the arcs page. Only include in any one RP in an arc.
 * `canon` - true/false - Whether the RP is considered canonical (whatever that means to you). Sorts RPs into one of two categories in the index.
 * `complete` - true/false - Whether the RP is finished, or is still incomplete. Incomplete RPs are flagged as such on the index.
 * `format` - YAML list - What format(s) the logs are in, e.g., `[weechat]`
@@ -161,9 +148,9 @@ Optionally, add the `--watch` flag to automatically rebuild if you add more logs
 **Warning again:** Destination folders are cleaned whenever Jekyll builds the site. Seriously, don't tell Jekyll to output to a directory that has anything useful in it.
 
 ### Tag implications and aliases
-This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with a list of other tags. The implied tags need to be a list, even if there's only one.
+This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with a list of other tags. The implied tags need to be a list, even if there's only one. These can either be in the main `_config.yml` or `_tags.yml` 
 
-Example syntax (for your `_config.yml`):
+Example syntax (for your `_tags.yml`):
 
 ```yaml
 tag_implications:
@@ -173,7 +160,7 @@ tag_implications:
 
 Tag aliases function just like implications, except the original tag is removed. So they effectively convert one tag into another tag. Or tags.
 
-Example syntax (for your `_config.yml`):
+Example syntax (for your `_tags.yml`):
 
 ```yaml
 tag_aliases:
@@ -182,7 +169,7 @@ tag_aliases:
   etaoin: [etaoin shrdlu]
 ```
 
-The [default config file](https://github.com/xiagu/jekyll-rp_logs/blob/1247e4d2cacd7a1cb658828d286bbae049ce2e13/.themes/default/source/_config.yml.default#L41) has these same examples, demonstrating how and where they should be set.
+The [default tags file](https://github.com/tecknojock/jekyll-rp_logs/commit/e8e45539a01c11e23a92b63e12176376078875601) has these same examples, demonstrating how and where they should be set.
 
 ### Tag descriptions
 This feature lets you add a blurb of text on the page for a tag (the one that lists all RPs with that tag).
@@ -219,8 +206,10 @@ You can of course run `bundle exec jekyll serve` yourself if weird stuff starts 
 
 ## Contributing
 
-1. Fork it ( https://github.com/xiagu/jekyll-rp_logs/fork )
+1. Fork it ( https://github.com/tecknojock/jekyll-rp_logs/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -av`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+ 
+
