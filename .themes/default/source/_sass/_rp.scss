@@ -75,9 +75,15 @@ li {
         color: $dark-text-color;
         & a { color: darken($dark-text-color, 20%); }
 
-        white-space: pre-wrap;
+        vertical-align: top;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
         font-family: monospace;
         font-size: 80%;
+
+        display:none;
+
     }
 
     /* timestamps */
@@ -161,6 +167,14 @@ a.rp-tag {
 // Undo a styling for RP and arc titles
 .arc-title>a {
     color: inherit;
+}
+
+.arc-title {
+    margin-bottom: 5px;
+}
+
+.arc-description {
+    color: $dark-text-color;
 }
 
 /* Display for the tags on an RP page */
