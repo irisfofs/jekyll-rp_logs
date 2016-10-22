@@ -126,16 +126,34 @@ module Jekyll
 
       def convert_all_lines(parsers)
         compiled_lines = []
-        content.each_line do |raw_line|
+        parse_split = parse_get_split(parsers)
+        content.split(parse_split).each  { |raw_line|
           log_line = parse_line(parsers, raw_line)
           compiled_lines << log_line if log_line
-        end
+        }
 
         if compiled_lines.length == 0
           throw :skip_page, "No lines were matched by any format."
         end
 
         compiled_lines
+      end
+     
+      ##
+      # Return the split regex compiled from all parsers 
+      #
+      def parse_get_split(parsers)
+        parse_split = ""
+        self[:format].each do |format|
+            if parse_split != ""  # && defined?(parsers[format]::SPLITTER)
+                parse_split = /#{parse_split}|#{parsers[format]::SPLITTER}/
+            else 
+                parse_split = parsers[format]::SPLITTER
+            end
+        #print(count ++)
+        end
+        return parse_split if defined?(parse_split)
+        #/\n/
       end
 
       ##
