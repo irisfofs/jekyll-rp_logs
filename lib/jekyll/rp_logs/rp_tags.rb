@@ -49,6 +49,10 @@ module Jekyll
         @dir = name_to_dir(@name)
       end
 
+      def tag_type
+        @type.to_s
+      end
+
       def to_s
         if type == :character
           "char:#{name}"

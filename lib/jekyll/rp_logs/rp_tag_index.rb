@@ -38,6 +38,7 @@ module Jekyll
 
         dir = site.config["rp_tag_dir"]
         tags = rps_by_tag(site)
+
         tags.each_pair do |tag, pages|
           site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages)
         end
