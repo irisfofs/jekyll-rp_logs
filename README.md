@@ -32,12 +32,19 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
 * Tag descriptions
 * RP Descriptions
 * Arc Descriptions
+* Tag Cloud
 
 ## Quick Start
 
+First you need specific_install in order to use this fork.
+
+Install that with
+
+    gem install specific_install
+
 Install the gem with
 
-    gem install jekyll-rp_logs
+    gem specific_install https://github.com/tecknojock/jekyll-rp_logs.git
 
 (Installing on Windows will require the [Ruby DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit) to build some of the dependencies.)
 
@@ -51,11 +58,6 @@ Then edit the Gemfile.lock to look like
     group :jekyll_plugins do
       gem "jekyll-rp_logs", :git => "git://github.com/tecknojock/jekyll-rp_logs"
     end
-
-Finally run
-
-    bundle update
-    rplogs update
 
 This will create that directory (it aborts if the given directory is not empty) and set up basic scaffold for your site. After the command finishes running, you should have a structure like this:
 
