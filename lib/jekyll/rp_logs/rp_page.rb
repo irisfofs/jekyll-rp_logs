@@ -148,16 +148,16 @@ module Jekyll
 
         compiled_lines
       end
-     
+
       ##
-      # Return the split regex compiled from all parsers 
+      # Return the split regex compiled from all parsers
       #
       def parse_get_split(parsers)
         parse_split = ""
         self[:format].each do |format|
             if parse_split != ""  # && defined?(parsers[format]::SPLITTER)
                 parse_split = /#{parse_split}|#{parsers[format]::SPLITTER}/
-            else 
+            else
                 parse_split = parsers[format]::SPLITTER
             end
         #print(count ++)
