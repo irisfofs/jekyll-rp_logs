@@ -284,14 +284,14 @@ module Jekyll
             size_ind = tag_size_array.index(tag_groups[ind-1])
             size_div = (((ind+2)*tag_div-size_ind)/2).ceil
             while val <= tag_groups[ind-1]
-              #short ciruit if the next value is also the same
+              #short circuit if the next value is also the same
               if val >= tag_groups[ind+1]-1 || tag_groups[ind-1] >= tag_groups[ind+1]-1
                 val += 1
               else
+                if size_div ==0; raise "Inf Loop"; end
                 size_ind += size_div
                 size_div = (size_div/2).ceil
                 val = tag_size_array[size_ind]
-                if size_div ==0; raise "Inf Loop"; end
               end
             end
             tag_groups[ind] = val
