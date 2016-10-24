@@ -1,11 +1,9 @@
 # Again largely inspired by http://brizzled.clapper.org/blog/2010/12/20/some-jekyll-hacks/
 
-require "yaml"
-
 module Jekyll
   module RpLogs
     class TagIndex < Jekyll::Page
-      def initialize(site, base, dir, tag, pages)
+      def initialize(site, base, dir, tag, pages, tags)
         @site = site
         @base = base
         @dir = dir
@@ -16,22 +14,17 @@ module Jekyll
         tag_index = (site.config["rp_tag_index_layout"] || "tag_index") + ".html"
         read_yaml(File.join(base, "_layouts"), tag_index)
         data["tag"] = tag # Set which tag this index is for
-        def self.tag_config(config)
-          if config['source'] && config["tag_file"]
-             if File.exists?(File.join(config['source'],config["tag_file"]))
-                @tag_config = YAML.load_file(File.join(config['source'],config["tag_file"]))
-             else
-                @tag_config = config
-             end
-          else
-             @tag_config = config
-          end
-        end
-        data["description"] = self.tag_config(site.config)["tag_descriptions"][tag.to_s]
+        data["description"] = site.config["tag_descriptions"][tag.to_s]
 
         # Sort tagged RPs by their start date
         data["pages"] = pages.sort_by { |p| p.data["start_date"] }
         data["count"] = data["pages"].length
+
+        data["implies"] = site.config["tag_implications"][tag.to_s]
+        if data["implies"]; then data["implies"].map! {|t| tags.keys.find{|k| k.to_s == t} || t} end
+        data["implied_by"] = site.config["tag_implied_by"][tag.to_s]
+        if data["implied_by"]; then data["implied_by"].map! {|t| tags.keys.find{|k| k.to_s == t} || t} end
+        data["aliased_by"] = site.config["tag_aliased_by"][tag.to_s]
         tag_title_prefix = site.config["rp_tag_title_prefix"] || "Tag: "
         data["title"] = "#{tag_title_prefix}#{tag.name}"
       end
@@ -52,9 +45,11 @@ module Jekyll
 
         dir = site.config["rp_tag_dir"]
         tags = rps_by_tag(site)
-
+        tag_list = Hash.new
+        tag_list.merge! (tags)
+        
         tags.each_pair do |tag, pages|
-          site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages)
+          site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages,tag_list)
         end
         Jekyll.logger.info "#{tags.size} tag pages generated."
       end

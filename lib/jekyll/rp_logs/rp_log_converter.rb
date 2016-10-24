@@ -3,6 +3,7 @@ require_relative "rp_logline"
 require_relative "rp_page"
 require_relative "rp_arcs"
 require_relative "rp_tags"
+require "yaml"
 
 module Jekyll
   module RpLogs
@@ -35,12 +36,37 @@ module Jekyll
       def initialize(config)
         # Should actually probably complain if things are undefined or missing
         config["rp_convert"] = true unless config.key? "rp_convert"
+        config.merge! self.tag_config(config)
+        config["tag_implied_by"] = Hash.new()
+        config["tag_aliased_by"] = Hash.new()
+
+        config["tag_implications"].each_with_object({}) do |(key,values),out|
+          values.each{|value|
+            config["tag_implied_by"][value] ||= []
+            config["tag_implied_by"][value] << key
+          }
+        end
+
+        config["tag_aliases"].each_with_object({}) do |(key,values),out|
+          values.each{|value|                                                                                                                                                             
+            config["tag_aliased_by"][value] ||= []                                                                                                                                        
+            config["tag_aliased_by"][value] << key                                                                                                                                        
+          }    
+        end    
 
         RpLogGenerator.extract_settings(config)
         LogLine.extract_settings(config)
         Page.extract_settings(config)
 
         Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
+      end
+
+      def tag_config(config)
+        if config['source'] && config["tag_file"]
+           if File.exists?(File.join(config['source'],config["tag_file"]))
+              @tag_config = YAML.load_file(File.join(config['source'],config["tag_file"]))
+           end 
+        end
       end
 
       def generate(site)
