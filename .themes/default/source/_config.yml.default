@@ -36,8 +36,8 @@ tag_file: _tags.yml
 #   none - leaves name capitalizations as they are:eg 'drew mcArthur'
 #   upcase - Uppercases all character names: eg. 'DREW MCARTHUR'
 #   downcase - Lowercases all character names: eg 'drew mcarthur'
-#   captitalize - Capitalizes the first letter of each word: eg 'Drew Mcarthur'
-#   captitalize_preserve - Capitalizes the first letter of each word but
+#   capitalize - Capitalizes the first letter of each word: eg 'Drew Mcarthur'
+#   capitalize_preserve - Capitalizes the first letter of each word but
 #       preserves other case: eg 'Drew McArthur'
 # Only upcase, downcase, and capitalize are safe on case insensitive file systems.
 # such as windows.
