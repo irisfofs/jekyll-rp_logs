@@ -20,6 +20,7 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
       * [Formatting the logs](#formatting-the-logs)
     * [Building the site](#building-the-site)
     * [Tag implications and aliases](#tag-implications-and-aliases)
+      * [A note about tags:](#a-note-about-tags)
     * [Tag descriptions](#tag-descriptions)
   * [Development](#development)
   * [Contributing](#contributing)
@@ -34,8 +35,9 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
 * Infers characters involved in each RP by the nicks speaking
 * Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
 * Tagging and a tag implication/alias system
-* Tag descriptions
+* Tag descriptions and statistics
 * RP descriptions
+* Tag cloud
 
 ## Quick Start
 
@@ -184,6 +186,9 @@ tag_aliases:
 ```
 
 The [default tags file](https://github.com/xiagu/jekyll-rp_logs/blob/master/.themes/default/source/_tags.yml.default) has these same examples, demonstrating how and where they should be set.
+
+#### A note about tags
+If your tag contains any special characters, the directory structure will replace them with _ such as ~ or \`. As such, there can be tag collisions such as in the case of ``Julian`Grey`` and `Julian~Grey` where both would write to the folder `Julian_Grey` so please be mindful of that. In the case of a unavoidable tag collision, please alias one of the tags to a unique name such as ``Julian`Grey_``.
 
 ### Tag descriptions
 This feature lets you add a blurb of text on the page for a tag (the one that lists all RPs with that tag).
