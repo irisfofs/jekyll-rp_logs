@@ -32,6 +32,17 @@ rp_tag_title_prefix: "RPs tagged "
 
 tag_file: _tags.yml
 
+# Applies a universal formatting to character tags. Options are as follows:
+#   none - leaves name capitalizations as they are:eg 'drew mcArthur'
+#   upcase - Uppercases all character names: eg. 'DREW MCARTHUR'
+#   downcase - Lowercases all character names: eg 'drew mcarthur'
+#   captitalize - Capitalizes the first letter of each word: eg 'Drew Mcarthur'
+#   captitalize_preserve - Capitalizes the first letter of each word but 
+#       preserves other case: eg 'Drew McArthur'
+# Only upcase, downcase, and capitalize are safe on case insensitive file systems.
+# such as windows.
+char_tag_format: none
+
 # The max number of seconds between two mergeable lines. Lines further apart
 # in time than this will not be merged.
 max_seconds_between_posts: 3
