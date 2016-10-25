@@ -29,7 +29,7 @@ The result of building all the test files can be seen here: http://andrew.rs/pro
 * Infers characters involved in each RP by the nicks speaking
 * Generates a static site that can be hosted anywhere, without needing to run anything more than a web server
 * Tagging and a tag implication/alias system
-* Tag descriptions
+* Tag descriptions and statistics
 * RP Descriptions
 * Arc Descriptions
 * Tag Cloud
@@ -68,7 +68,8 @@ path/to/your/new/site
 
  _includes/         
 
- toggle_ooc.js                 ```
+ toggle_ooc.js                 
+ ```
 
 Edit `_config.yml` and fill in the needed info for your setup.
 
@@ -172,6 +173,9 @@ tag_aliases:
 ```
 
 The [default tags file](https://github.com/tecknojock/jekyll-rp_logs/commit/e8e45539a01c11e23a92b63e12176376078875601) has these same examples, demonstrating how and where they should be set.
+
+###A note about tags: 
+If your tag contains any special characters, the directory structure will replace them with _ such as ~ or \`. As such, there can be tag collisions such as in the case of `Julian\`Grey` and `Julian~Grey` where both would write to the folder `Julian_Grey` so please be mindful of that. In the case of a unavoidable tag collision, please alias one of the tags to a unique name such as `Julian`Grey_`.
 
 ### Tag descriptions
 This feature lets you add a blurb of text on the page for a tag (the one that lists all RPs with that tag).
