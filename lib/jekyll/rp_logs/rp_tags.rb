@@ -17,7 +17,7 @@ module Jekyll
       include Comparable
 
       TYPES = [:meta, :character, :general].freeze
-      CHAR_FLAG = /^char:(?<char_name>.*)/
+      CHAR_FLAG = /^(char:|char-)(?<char_name>.*)/
       META_TAGS = /(safe|questionable|explicit|canon|noncanon|complete|incomplete)/
 
       # CSS classes to apply to this tag, when displayed
@@ -31,22 +31,28 @@ module Jekyll
 
       ##
       # Inspired by Hash, convert a list of strings to a list of Tags.
-      def self.[](*args)
-        args[0].map { |t| Tag.new t }
+      def self.[](config, *args)
+        args[0].map { |t| Tag.new(t,config) }
       end
 
-      def initialize(name)
+      def initialize(name,config={"char_tag_format"=>"none"} )
         # inspect types
         my_name = name.strip
         if CHAR_FLAG =~ my_name
-          @name = $LAST_MATCH_INFO[:char_name]
+          case (config["char_tag_format"] || "").downcase
+            when "upcase"; @name = $LAST_MATCH_INFO[:char_name].upcase
+            when "downcase"; @name = $LAST_MATCH_INFO[:char_name].downcase
+            when "capitalize_preserve"; @name = $LAST_MATCH_INFO[:char_name].gsub(/([a-zA-Z])[a-zA-Z]*/){|s|s.capitalize}
+            when "capitalize"; $LAST_MATCH_INFO[:char_name].gsub(/([a-zA-Z]+)/){|s|s.capitalize}
+            else @name = $LAST_MATCH_INFO[:char_name]
+           end
+          @dir = name_to_dir("char-#{@name}")
           @type = :character
         else
           @name = my_name.downcase
           @type = @name =~ META_TAGS ? :meta : :general
+          @dir = name_to_dir(@name)
         end
-
-        @dir = name_to_dir(@name)
       end
 
       def tag_type
