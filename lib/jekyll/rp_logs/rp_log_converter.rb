@@ -57,6 +57,7 @@ module Jekyll
       def generate(site)
         return unless site.config["rp_convert"]
         tag_info(site.config)
+        Page.extract_settings(site.config)
         # There doesn't seem to be a better way to add this to all pages than
         # by modifying the configuration file, which is added onto the `site`
         # liquid variable.
