@@ -36,23 +36,8 @@ module Jekyll
       def initialize(config)
         # Should actually probably complain if things are undefined or missing
         config["rp_convert"] = true unless config.key? "rp_convert"
-        config.merge! self.tag_config(config)
-        config["tag_implied_by"] = Hash.new()
-        config["tag_aliased_by"] = Hash.new()
-
-        config["tag_implications"].each_with_object({}) do |(key,values),out|
-          values.each{|value|
-            config["tag_implied_by"][value] ||= []
-            config["tag_implied_by"][value] << key
-          }
-        end
-
-        config["tag_aliases"].each_with_object({}) do |(key,values),out|
-          values.each{|value|                                                                                                                                                             
-            config["tag_aliased_by"][value] ||= []                                                                                                                                        
-            config["tag_aliased_by"][value] << key                                                                                                                                        
-          }    
-        end    
+        
+        tag_info(config)
 
         RpLogGenerator.extract_settings(config)
         LogLine.extract_settings(config)
@@ -71,7 +56,8 @@ module Jekyll
 
       def generate(site)
         return unless site.config["rp_convert"]
-
+        tag_info(site.config)
+        Page.extract_settings(site.config)
         # There doesn't seem to be a better way to add this to all pages than
         # by modifying the configuration file, which is added onto the `site`
         # liquid variable.
@@ -317,6 +303,28 @@ module Jekyll
           end      
           tag_pair[1] = "tag_group_#{group}"
         }
+      end 
+    
+       ## 
+       # Generate all the info from the tag file
+       def tag_info(config)
+        config.merge! self.tag_config(config)
+        config["tag_implied_by"] = Hash.new()
+        config["tag_aliased_by"] = Hash.new()
+
+        config["tag_implications"].each_with_object({}) do |(key,values),out|
+          values.each{|value|
+            config["tag_implied_by"][value] ||= []
+            config["tag_implied_by"][value] << key
+          }
+        end
+
+        config["tag_aliases"].each_with_object({}) do |(key,values),out|
+          values.each{|value|                                                                                                                                                             
+            config["tag_aliased_by"][value] ||= []                                                                                                                                        
+            config["tag_aliased_by"][value] << key                                                                                                                                        
+          }    
+        end    
       end
 
     end
