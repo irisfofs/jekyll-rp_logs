@@ -24,12 +24,12 @@ module Jekyll
         end
       end
 
-      def initialize(page,config)
+      def initialize(page)
         @page = page
 
         # If the tags exist, try to convert them to a list of Tag objects
         return unless self[:rp_tags].is_a?(String)
-        self[:rp_tags] = Tag[config, self[:rp_tags].split(",")]
+        self[:rp_tags] = Tag[self[:rp_tags].split(",")]
       end
 
       ##
@@ -51,6 +51,28 @@ module Jekyll
         tags.map(&:to_s)
       end
 
+      def tag_set
+        if tags.uniq.length == tags.length
+          tags.to_set
+        else
+          tags.group_by{|i|i.to_s}.each_with_object([]){|(_,v),o|
+            if v.length == 1
+              o << v[0]
+            else
+              tag = nil
+              v.each_with_object{|t|
+                if tag
+                  tag.update_stats! t.stats
+                else
+                  tag = t
+                end
+              }
+              o << tag
+            end
+          }.to_set 
+        end
+      end
+
       def arc_description
         self[:arc_description]
       end
@@ -63,7 +85,7 @@ module Jekyll
          self[:description]
       end
 
-      def convert_rp(parsers, config)
+      def convert_rp(parsers)
         compiled_lines = convert_all_lines(parsers)
 
         merge_lines! compiled_lines
@@ -73,7 +95,7 @@ module Jekyll
         split_output = compiled_lines.map(&:output)
         page.content = split_output.join("\n")
 
-        update_page_properties(stats, config)
+        update_page_properties(stats)
 
         true
       end
@@ -108,8 +130,8 @@ module Jekyll
 
       ##
       # Updates tags with implications and aliases.
-      def update_tags(config)
-        self[:rp_tags] = Tag[config, self.class.tag_implication_handler.update_tags(tag_strings.to_set)]
+      def update_tags
+        self[:rp_tags] = self.class.tag_implication_handler.update_tags(tag_set).to_a
         self
       end
 
@@ -210,13 +232,13 @@ module Jekyll
       # - Adds tags based on nicks involved, if the infer_char_tags option is
       #   set to true.
       # - Updated end and start date.
-      def update_page_properties(stats, config)
+      def update_page_properties(stats)
         if self[:infer_char_tags]
           # Turn the nicks into characters
-          nick_tags = stats[:nicks].map! { |n| Tag.new("char:#{n}",config) }
+          nick_tags = stats[:nicks].map! { |n| Tag.new("char:#{n}") }
           self[:rp_tags] = (nick_tags.merge self[:rp_tags]).to_a.sort
         end
-        update_tags(config)
+        update_tags
 
         self[:end_date] = stats[:end_date]
         self[:start_date] ||= stats[:start_date]

@@ -16,6 +16,14 @@ module Jekyll
     class Tag
       include Comparable
 
+      class << self
+        attr_reader :char_tag_format
+     
+        def extract_settings(config)
+          @char_tag_format = (config["char_tag_format"] || "").downcase.freeze
+        end
+      end
+
       TYPES = [:meta, :character, :general].freeze
       CHAR_FLAG = /^(char:|char-)(?<char_name>.*)/
       META_TAGS = /(safe|questionable|explicit|canon|noncanon|complete|incomplete)/
@@ -31,15 +39,15 @@ module Jekyll
 
       ##
       # Inspired by Hash, convert a list of strings to a list of Tags.
-      def self.[](config, *args)
-        args[0].map { |t| Tag.new(t,config) }
+      def self.[](*args)
+        args[0].map { |t| Tag.new(t) }
       end
 
-      def initialize(name,config={"char_tag_format"=>"none"} )
+      def initialize(name)
         # inspect types
         my_name = name.strip
         if CHAR_FLAG =~ my_name
-          case (config["char_tag_format"] || "").downcase
+          case @char_tag_format
             when "upcase"; @name = $LAST_MATCH_INFO[:char_name].upcase
             when "downcase"; @name = $LAST_MATCH_INFO[:char_name].downcase
             when "capitalize_preserve"; @name = $LAST_MATCH_INFO[:char_name].gsub(/(?<![a-zA-Z])[a-zA-Z]/){|s|s.capitalize}
@@ -76,6 +84,22 @@ module Jekyll
       def hash
         # Can't be name.hash because then `char:alice` and `alice` collide
         to_s.hash
+      end
+
+      def stats
+        @stats
+      end
+ 
+      ##
+      # Update tag stats
+      def update_stats!(newstats)
+        if newstats
+          if @stats
+            @stats.merge(newstats) {|k,v1,v2|v1+v2}
+          else newstats
+          @stats = newstats
+          end
+        end
       end
 
       ##
