@@ -222,12 +222,27 @@ module Jekyll
       # - end_date: The timestamp of the last post
       # - start_date: The timestamp of the first post
       def extract_stats(compiled_lines)
-        nicks = Set.new
+        nicks = Hash.new({})
+        last_time = 0
         compiled_lines.each do |line|
-          nicks << line.sender if line.output_type == :rp
+          if line.output_type == :rp
+            sender = "char:#{line.sender}"
+            if nicks.has_key? sender
+              nicks[sender][:lines] ++
+              nicks[sender][:wordcount] += line.contents.split.count
+              nicks
+            else
+              nicks[sender] = { :lines=>1, :wordcount=>line.contents.split.count,
+                  :characters=>line.contents.length, :timelines =>0, :time=>0}
+            end
+            if line.timestamp.to_time.to_i  - last_time <= 30*60
+              nicks[sender][:timelines] ++
+              nicks[sender][:time] += last_time-line.timestamp.to_time.to_i 
+            end
+            last_time = line.timestamp.to_time.to_i
+          end
         end
-
-        { nicks: nicks,
+          { nicks: nicks,
           end_date: compiled_lines[-1].timestamp,
           start_date: compiled_lines[0].timestamp }
       end
@@ -240,8 +255,9 @@ module Jekyll
       def update_page_properties(stats)
         if self[:infer_char_tags]
           # Turn the nicks into characters
-          nick_tags = stats[:nicks].map! { |n| Tag.new("char:#{n}") }
-          self[:rp_tags] = (nick_tags.merge self[:rp_tags]).to_a.sort
+          nick_tags = stats[:nicks].keys.map! { |n| Tag.new(n) }
+          nick_tags.each{|n| n.update_stats! stats[:nicks][n.to_s]}
+          self[:rp_tags] = (nick_tags.to_set.merge self[:rp_tags]).to_a.sort
         end
         update_tags
 
