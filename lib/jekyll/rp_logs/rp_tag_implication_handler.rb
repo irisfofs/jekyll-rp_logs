@@ -24,13 +24,13 @@ module Jekyll
       def update_tags(tag_set, verbose: false)
         removed_tags = Set.new
         loop do
-          previous_tags = tag_set.clone
+          previous_tags = tag_set.map{|t|t.to_s}
 
           implicate_tags(tag_set, removed_tags, verbose)
           alias_tags(tag_set, removed_tags)
 
           # Break when there is no change in tags.
-          return tag_set if tag_set == previous_tags
+          return tag_set if tag_set.map{|t|t.to_s} == previous_tags
         end
       end
 
@@ -50,7 +50,7 @@ module Jekyll
         error_for_aliases_that_should_be_implications
 
         # Check for loooops.
-        starter_tags = @tag_implications.keys.to_set.merge @tag_aliases.keys
+        starter_tags = Tag[@tag_implications.keys].to_set.merge Tag[@tag_aliases.keys]
         update_tags(starter_tags, verbose: true)
       end
 
@@ -61,7 +61,7 @@ module Jekyll
       # They can't remove tags.
       def implicate_tags(tag_set, removed_tags, verbose)
         until_tags_stabilize(tag_set) do |tag, to_add|
-          imply = @tag_implications.fetch(tag, [])
+          imply = @tag_implications.fetch(tag.to_s, [])
 
           removed, imply = imply.partition { |t| removed_tags.include? t }
           # It's okay if we want to imply a removed tag. Maybe?
@@ -70,7 +70,9 @@ module Jekyll
             Jekyll.logger.warn "#{tag} implies #{removed}, which #{string}. Consider implying "\
                                "the alised tag directly."
           end
-
+          
+          imply = Tag[imply]
+          imply.each{|t| t.update_stats! tag.stats}
           to_add.merge imply
         end
       end
@@ -79,18 +81,21 @@ module Jekyll
       # Iteratively apply tag aliases until no more can be applied
       def alias_tags(tag_set, removed_tags)
         until_tags_stabilize(tag_set) do |tag, to_add|
-          next unless @tag_aliases.key? tag
-          aliased = @tag_aliases[tag]
+          next unless @tag_aliases.key? tag.to_s
+          aliased = @tag_aliases[tag.to_s]
 
           # If we are trying to alias back a tag already removed, there is a
           # cycle in the tag aliases and implications.
           removed = aliased.find { |t| removed_tags.include? t }
-          error_for_cyclical_tags(tag, removed) if removed
+          error_for_cyclical_tags(tag.to_s, removed) if removed
 
           # if it's already in the set, something weird happened
-          removed_tags << tag
+          removed_tags << tag.to_s
           tag_set.delete tag
+          aliased = Tag[aliased]
+          aliased.each{|t| t.update_stats! tag.stats}
           to_add.merge aliased
+          alias_loop = true
         end
       end
 
@@ -107,6 +112,7 @@ module Jekyll
       # implications to add.
       def until_tags_stabilize(tag_set)
         tags_to_check = tag_set
+        alias_loop = false
         loop do
           # Because we use this set again as the tags to check we don't want
           # to clear it.
@@ -116,6 +122,16 @@ module Jekyll
           end
 
           break if to_add.empty?
+          if alias_loop
+            tag_set = tag_set.to_a
+            to_add.each{|t|
+              index = tag_set.find_index{|v|v.eql? t}
+              if index
+                tag_set[index].update_stats t
+              end
+            }
+            tag_set = tag_set.to_set
+          end
           tag_set.merge to_add
           tags_to_check = to_add
         end
