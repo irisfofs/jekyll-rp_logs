@@ -1,29 +1,40 @@
 ---
 layout: default
 ---
-
+{% include base.html %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <div class="post">
 
   <header class="post-header">
     <h1 class="post-title">{{ page.title }}</h1>
+    <p class="post-description">{{ page["description"] }}</p>
   </header>
-
   <article class="post-content">
     <div id="tag-and-date">
       <div class="tags">
       {% for t in page.rp_tags %}
-        <a href="{{ site.baseurl }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+        <a href="{{ base }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
       {% endfor %}
       </div>
-
       {% if page.start_date %}<p class="start-date"><span class="fa fa-calendar-o"></span> {{ page.start_date | date: "%-d %B %Y" }}</p>{% endif %}
     </div>
-
-
+    <div id="stats" class="ooc">
+      {% if page.stats.stats.lines %}
+        <h3 style="margin-bottom:-2px">Stats</h3>
+        The RP has a total of <b>{{page.stats.stats.lines}} line{% if paste.stats.stats.lines > 1 }%}s{%endif%}, {{page.stats.stats.wordcount}} word{% if paste.stats.stats.wordcount > 1 }%}s{%endif%}, and {{page.stats.stats.characters}} character{% if paste.stats.stats.characters > 1 }%}s{%endif%}.</b> <br />
+        The average line consists of<b> {{page.stats.stats.wordcount | divided_by: page.stats.stats.lines | round: 2}} words</b> that themselves average <b>{{page.stats.stats.characters | minus: page.stats.stats.wordcount | divided_by: page.stats.stats.wordcount | round: 2}} characters{% if page.stats.stats.timelines > 0 %}</b> taking about<b> {{page.stats.stats.time | divided_by: page.stats.stats.timelines | divided_by: 60 }} minutes, {{page.stats.stats.time | divided_by: page.stats.stats.timelines | modulo: 60}} seconds.{% endif %}</b> <br />
+        {% for t in page.rp_tags %}
+          {% if t.stats.lines > 0 %}
+            {{t.name}} said a total of <b>{{t.stats.lines}} line{% if t.stats.lines > 1 }%}s{%endif%}, {{t.stats.wordcount}} words, and {{t.stats.characters}} characters.</b> <br />
+            {{t.name}}'s average line consists of<b> {{t.stats.wordcount | divided_by: t.stats.lines | round: 2}} words</b> that themselves average <b>{{t.stats.characters | minus: t.stats.wordcount | divided_by: t.stats.wordcount | round: 2}} characters{% if t.stats.timelines > 0 %}</b> taking about<b> {{t.stats.time | divided_by: t.stats.timelines | divided_by: 60 | round:2}} minutes, {{t.stats.time | divided_by: t.stats.timelines | modulo: 60 }} seconds{% endif %}.</b> <br />
+          {% endif %}
+        {% endfor %}
+      <br />
+      {% endif %}
+    </div>
     <nav id="fixed_menu" class="scroll-nav">
-      <label id="ooc_label"><input type="checkbox" id="ooc_toggle" checked>Show OOC</input></label>
+      <label id="ooc_label"><input type="checkbox" id="ooc_toggle">Show OOC & Stats</input></label>
       <a href="#bottom">Bottom</a>
       <a href="#">Top</a>
     </nav>
@@ -37,4 +48,4 @@ layout: default
 
 <a name="bottom"></a>
 
-<script type="text/javascript" src="{{site.baseurl}}/js/toggle_ooc.js"></script>
+<script type="text/javascript" src="{{base}}/js/toggle_ooc.js"></script>

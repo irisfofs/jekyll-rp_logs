@@ -3,6 +3,7 @@ require_relative "rp_logline"
 require_relative "rp_page"
 require_relative "rp_arcs"
 require_relative "rp_tags"
+require "yaml"
 
 module Jekyll
   module RpLogs
@@ -35,17 +36,29 @@ module Jekyll
       def initialize(config)
         # Should actually probably complain if things are undefined or missing
         config["rp_convert"] = true unless config.key? "rp_convert"
+        
+        tag_info(config)
 
         RpLogGenerator.extract_settings(config)
         LogLine.extract_settings(config)
         Page.extract_settings(config)
+        Tag.extract_settings(config)
 
         Jekyll.logger.info "Loaded jekyll-rp_logs #{RpLogs::VERSION}"
       end
 
+      def tag_config(config)
+        if config['source'] && config["tag_file"]
+           if File.exists?(File.join(config['source'],config["tag_file"]))
+              @tag_config = YAML.load_file(File.join(config['source'],config["tag_file"]))
+           end 
+        end
+      end
+
       def generate(site)
         return unless site.config["rp_convert"]
-
+        tag_info(site.config)
+        Page.extract_settings(site.config)
         # There doesn't seem to be a better way to add this to all pages than
         # by modifying the configuration file, which is added onto the `site`
         # liquid variable.
@@ -53,13 +66,15 @@ module Jekyll
 
         Jekyll.logger.info("RpLogGenerator#generate called")
 
-        main_index, arc_index = extract_indexes(site)
+        main_index, arc_index, tag_cloud_index  = extract_indexes(site)
 
         disable_liquid_rendering(site)
         # Pull out all the pages that are error-free
         rp_pages = extract_valid_rps(site)
 
-        convert_all_pages(site, main_index, arc_index, rp_pages)
+        convert_all_pages(site, main_index, arc_index, rp_pages, tag_cloud_index)
+        rp_pages.each{|page| page.tags.each{|tag| 
+        }}
       end
 
       private
@@ -82,7 +97,12 @@ module Jekyll
         arc_index = find_index(site, "rp_arcs")
         Jekyll.logger.abort_with "Arc index page missing" if arc_index.nil?
 
-        site.data["menu_pages"] = [main_index, arc_index]
+        # Tag Cloud directory
+        tag_cloud_index = find_index(site, "tag_cloud")
+        Jekyll.logger.abort_with "Tag cloud page missing" if tag_cloud_index.nil?
+        tag_cloud_index.data["tags"] = { "character" => [], "meta" => [], "general" => [] }
+
+        site.data["menu_pages"] = [main_index, arc_index, tag_cloud_index]
       end
 
       def find_index(site, key)
@@ -113,7 +133,7 @@ module Jekyll
           end
       end
 
-      def convert_all_pages(site, main_index, arc_index, rp_pages)
+      def convert_all_pages(site, main_index, arc_index, rp_pages, tag_cloud_index)
         arcs = Hash.new { |hash, key| hash[key] = Arc.new(key) }
         no_arc_rps = []
 
@@ -129,6 +149,11 @@ module Jekyll
         sort_arcs(arcs, no_arc_rps, arc_index)
         sort_chronologically! main_index.data["rps"]["canon"]
         sort_chronologically! main_index.data["rps"]["noncanon"]
+
+
+        convert_tag_cloud( rp_pages, tag_cloud_index)
+
+
       end
 
       def convert_page(page, site, main_index, arcs, no_arc_rps)
@@ -139,7 +164,7 @@ module Jekyll
         # Add key for canon/noncanon
         main_index.data["rps"][key] << page
         # Add tag for canon/noncanon
-        page[:rp_tags] << (Tag.new key)
+        page[:rp_tags] << (Tag.new(key))
         page[:rp_tags].sort!
 
         arc_name = page[:arc_name]
@@ -204,6 +229,107 @@ module Jekyll
         site.collections[rp_key].docs.delete page.page
         Jekyll.logger.warn "Skipping #{page.basename}: #{message}"
       end
+
+      ##
+      # Creates the tag cloud logic
+      def convert_tag_cloud(rp_pages, tag_cloud_index)
+        tag_cloud = Hash.new(0).tap { |h| rp_pages.each { 
+          |rp_page| rp_page[:rp_tags].each { 
+            |tag| h[tag] += 1 
+          } 
+        }}        
+       
+        tag_cloud.each do |tag|
+          key = tag[0].tag_type
+          tag_cloud_index.data["tags"][key] << tag
+        end
+        sort_tags! tag_cloud_index["tags"]["character"]
+        sort_tags! tag_cloud_index["tags"]["general"] 
+        tag_size! tag_cloud_index["tags"]["character"]
+        tag_size! tag_cloud_index["tags"]["general"]
+      end
+
+      ##
+      # Sorts tags in Alphabetical Order 
+      def sort_tags!(tags)
+        tags.sort_by! { |tag_pair| tag_pair[0].to_s.downcase }
+      end
+      
+      ##
+      # Sets Tag Size in tag cloud pate
+      def tag_size!(tags)
+        tag_size_array = tags.map{|tag_pair| tag_pair[1]}.sort
+        tag_div = tag_size_array.length / 10
+
+        # Get each dectile for tag cloud
+        tag_groups = [1,2,3,4,5,6,7,8,9,10].map{ |val| 
+          tag_size_array[(val*tag_div).floor]
+        }
+  
+        # If one group equals another then further fine tune ranges
+        begin
+        tag_groups.each_with_index { |val, ind|
+          if ind > 0 && ind < 9
+            size_ind = tag_size_array.index(tag_groups[ind-1])
+            size_div = (((ind+2)*tag_div-size_ind)/2).ceil
+            while val <= tag_groups[ind-1]
+              #short circuit if the next value is also the same
+              if val >= tag_groups[ind+1]-1 || tag_groups[ind-1] >= tag_groups[ind+1]-1
+                val += 1
+              else
+                if size_div ==0; raise "Inf Loop"; end
+                size_ind += size_div
+                size_div = (size_div/2).ceil
+                val = tag_size_array[size_ind]
+              end
+            end
+            tag_groups[ind] = val
+          end
+        }
+        # If the tag variation is too tight, there wont be 10 valid positions
+        # In this case, tag_groups will be fully defined when it type errors
+        rescue TypeError
+        end
+   
+        tags = tags.each{ |tag_pair|
+          case tag_pair[1] 
+            when 0..tag_groups[0]; group = 1
+            when 0..tag_groups[1]; group = 3
+            when 0..tag_groups[2]; group = 4
+            when 0..tag_groups[3]; group = 5
+            when 0..tag_groups[4]; group = 6
+            when 0..tag_groups[5]; group = 2
+            when 0..tag_groups[6]; group = 7
+            when 0..tag_groups[7]; group = 8
+            when 0..tag_groups[8]; group = 9
+            else group = 10
+          end      
+          tag_pair[1] = "tag_group_#{group}"
+        }
+      end 
+    
+       ## 
+       # Generate all the info from the tag file
+       def tag_info(config)
+        config.merge! self.tag_config(config)
+        config["tag_implied_by"] = Hash.new()
+        config["tag_aliased_by"] = Hash.new()
+
+        config["tag_implications"].each_with_object({}) do |(key,values),out|
+          values.each{|value|
+            config["tag_implied_by"][value] ||= []
+            config["tag_implied_by"][value] << key
+          }
+        end
+
+        config["tag_aliases"].each_with_object({}) do |(key,values),out|
+          values.each{|value|                                                                                                                                                             
+            config["tag_aliased_by"][value] ||= []                                                                                                                                        
+            config["tag_aliased_by"][value] << key                                                                                                                                        
+          }    
+        end    
+      end
+
     end
   end
 end

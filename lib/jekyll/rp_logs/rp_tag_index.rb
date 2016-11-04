@@ -3,7 +3,7 @@
 module Jekyll
   module RpLogs
     class TagIndex < Jekyll::Page
-      def initialize(site, base, dir, tag, pages)
+      def initialize(site, base, dir, tag, pages, tags)
         @site = site
         @base = base
         @dir = dir
@@ -18,6 +18,13 @@ module Jekyll
 
         # Sort tagged RPs by their start date
         data["pages"] = pages.sort_by { |p| p.data["start_date"] }
+        data["count"] = data["pages"].length
+
+        data["implies"] = site.config["tag_implications"][tag.to_s]
+        if data["implies"]; then data["implies"].map! {|t| tags.keys.find{|k| k.to_s == t} || t} end
+        data["implied_by"] = site.config["tag_implied_by"][tag.to_s]
+        if data["implied_by"]; then data["implied_by"].map! {|t| tags.keys.find{|k| k.to_s == t} || t} end
+        data["aliased_by"] = site.config["tag_aliased_by"][tag.to_s]
         tag_title_prefix = site.config["rp_tag_title_prefix"] || "Tag: "
         data["title"] = "#{tag_title_prefix}#{tag.name}"
       end
@@ -38,10 +45,23 @@ module Jekyll
 
         dir = site.config["rp_tag_dir"]
         tags = rps_by_tag(site)
+        tag_list = Hash.new
+        tag_list.merge! (tags)
+        page_stats(tag_list)
+
         tags.each_pair do |tag, pages|
-          site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages)
+          site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages,tag_list)
         end
         Jekyll.logger.info "#{tags.size} tag pages generated."
+      end
+
+      def page_stats(tags)
+        tags.each_pair{|tag, pages|
+          tag.clear_stats!
+          pages.each{|page| 
+            tag.update_stats! page.data["rp_tags"][page.data["rp_tags"].find_index{tag}].stats
+          }
+        }
       end
 
       # Returns a hash of tags => [pages with tag]

@@ -2,20 +2,32 @@
 layout: page
 title: Arc Index
 rp_arcs: true
----
-
+--- 
+    
 <ul class="rp-list">
 {% for x in page['rps'] %}
   {% assign type = x[0] %}
   {% assign rp = x[1] %}
   {% if type == 'arc' %}
     <h3 class="arc-title"><a name="{{ rp.name | slugify }}" href="#{{ rp.name | slugify }}">{{ rp.name }}</a></h3>
+    <p class="arc-description">
+    {% for arc_rp in rp.rps %}
+      {{ arc_rp.arc_description }}
+    {% endfor %}
+    </p>
     <ul class="arc-rp-list">
     {% for arc_rp in rp.rps %}
       {% include rp.html rp=arc_rp %}
     {% endfor %}
     </ul>
-  {% else %}
+  {% endif %}
+{% endfor %}
+<h3 class="arc-title"><a name="Non-Arc-RPs" href="#Non-Arc-RPs">Non Arc RPs</a></h3>
+<ul class="arc-rp-list">
+{% for x in page['rps'] %}  
+  {% assign type = x[0] %}
+  {% assign rp = x[1] %}
+  {% if type != 'arc' %}
     {% include rp.html rp=rp %}
   {% endif %}
 {% endfor %}

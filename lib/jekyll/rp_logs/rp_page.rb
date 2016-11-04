@@ -1,3 +1,4 @@
+require "yaml"
 require "forwardable"
 require_relative "rp_tags"
 require_relative "rp_tag_implication_handler"
@@ -31,6 +32,10 @@ module Jekyll
         self[:rp_tags] = Tag[self[:rp_tags].split(",")]
       end
 
+      def stats
+        self[:stats].stat
+      end
+
       ##
       # Pass the request along to the page's data hash, and allow symbols to be
       # used by converting them to strings first.
@@ -50,8 +55,38 @@ module Jekyll
         tags.map(&:to_s)
       end
 
+      def tag_set
+        if tags.uniq.length == tags.length
+          tags.to_set
+        else
+          tags.group_by{|i|i.to_s}.each_with_object([]){|(_,v),o|
+            if v.length == 1
+              o << v[0]
+            else
+              tag = nil
+              v.each_with_object{|t|
+                if tag
+                  tag.update_stats! t.stats
+                else
+                  tag = t
+                end
+              }
+              o << tag
+            end
+          }.to_set 
+        end
+      end
+
+      def arc_description
+        self[:arc_description]
+      end
+
       def canon
         self[:canon] ? "canon" : "noncanon"
+      end
+ 
+      def description
+         self[:description]
       end
 
       def convert_rp(parsers)
@@ -100,7 +135,7 @@ module Jekyll
       ##
       # Updates tags with implications and aliases.
       def update_tags
-        self[:rp_tags] = Tag[self.class.tag_implication_handler.update_tags(tag_strings.to_set)]
+        self[:rp_tags] = self.class.tag_implication_handler.update_tags(tag_set).to_a
         self
       end
 
@@ -122,16 +157,34 @@ module Jekyll
 
       def convert_all_lines(parsers)
         compiled_lines = []
-        content.each_line do |raw_line|
+        parse_split = parse_get_split(parsers)
+        content.split(parse_split).each  { |raw_line|
           log_line = parse_line(parsers, raw_line)
           compiled_lines << log_line if log_line
-        end
+        }
 
         if compiled_lines.length == 0
           throw :skip_page, "No lines were matched by any format."
         end
 
         compiled_lines
+      end
+     
+      ##
+      # Return the split regex compiled from all parsers 
+      #
+      def parse_get_split(parsers)
+        parse_split = ""
+        self[:format].each do |format|
+            if parse_split != ""  # && defined?(parsers[format]::SPLITTER)
+                parse_split = /#{parse_split}|#{parsers[format]::SPLITTER}/
+            else 
+                parse_split = parsers[format]::SPLITTER
+            end
+        #print(count ++)
+        end
+        return parse_split if defined?(parse_split)
+        #/\n/
       end
 
       ##
@@ -168,12 +221,27 @@ module Jekyll
       # - end_date: The timestamp of the last post
       # - start_date: The timestamp of the first post
       def extract_stats(compiled_lines)
-        nicks = Set.new
+        nicks = Hash.new({})
+        last_time = 0
         compiled_lines.each do |line|
-          nicks << line.sender if line.output_type == :rp
+          if line.output_type == :rp
+            sender = "char:#{line.sender}"
+            if nicks.has_key? sender
+              nicks[sender]["lines"] += 1
+              nicks[sender]["wordcount"] += line.contents.split.count
+              nicks[sender]["characters"] += line.contents.length
+            else
+              nicks[sender] = { "lines"=>1, "wordcount"=>line.contents.split.count,
+                  "characters"=>line.contents.length, "timelines" =>0, "time"=>0}
+            end
+            if line.timestamp.to_time.to_i  - last_time <= 30*60
+              nicks[sender]["timelines"] += 1
+              nicks[sender]["time"] += line.timestamp.to_time.to_i  - last_time
+            end
+            last_time = line.timestamp.to_time.to_i
+          end
         end
-
-        { nicks: nicks,
+          { nicks: nicks,
           end_date: compiled_lines[-1].timestamp,
           start_date: compiled_lines[0].timestamp }
       end
@@ -186,13 +254,19 @@ module Jekyll
       def update_page_properties(stats)
         if self[:infer_char_tags]
           # Turn the nicks into characters
-          nick_tags = stats[:nicks].map! { |n| Tag.new("char:#{n}") }
-          self[:rp_tags] = (nick_tags.merge self[:rp_tags]).to_a.sort
+          nick_tags = stats[:nicks].keys.map! { |n| Tag.new(n) }
+          nick_tags.each{|n| n.update_stats! stats[:nicks][n.to_s]}
+          self[:rp_tags] = (nick_tags.to_set.merge self[:rp_tags]).to_a.sort
         end
         update_tags
 
         self[:end_date] = stats[:end_date]
         self[:start_date] ||= stats[:start_date]
+
+        self[:stats] = Tag.new("page_stats")
+        self[:rp_tags].each{|tag|
+          self[:stats].update_stats! tag.stats if tag.tag_type == "character"
+        }
       end
     end
   end

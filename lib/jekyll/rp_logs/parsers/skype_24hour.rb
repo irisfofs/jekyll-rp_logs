@@ -11,6 +11,8 @@ module Jekyll
       TIMESTAMP_FORMAT = "[%d.%m.%y %H:%M:%S]"
       MSG = /(?<msg>[^\n]*)/
       BAD_STUFF = /[^a-zA-Z\-\_]/
+      SPLITTER = /\n(?=#{FLAGS}#{DATE_REGEXP})/
+
 
       EMOTE = /^#{FLAGS}#{DATE_REGEXP}\s#{NICK}:\s\k<nick>#{MSG}$/
       TEXT  = /^#{FLAGS}#{DATE_REGEXP}\s#{NICK}:\s#{MSG}$/

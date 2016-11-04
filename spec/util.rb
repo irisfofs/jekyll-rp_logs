@@ -21,7 +21,8 @@ module Jekyll
       VALID_TEST_NAMES =
         %w(test test_arc_name test_extension test_infer_char_tags test_options
            test_disable_liquid test_tag_implication
-           test_mirc test_skype12 test_skype24).freeze
+           test_mirc test_skype12 test_skype24 test_description
+           test_ellipsis).freeze
 
       EXISTING_TAGS =
         %w(_developer_s_quote_test_ test John dolor lorem_ipsum noncanon Eve

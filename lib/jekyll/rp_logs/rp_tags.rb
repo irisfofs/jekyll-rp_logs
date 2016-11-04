@@ -16,8 +16,16 @@ module Jekyll
     class Tag
       include Comparable
 
+      class << self
+        attr_reader :char_tag_format
+     
+        def extract_settings(config)
+          @char_tag_format = (config["char_tag_format"] || "").downcase.freeze
+        end
+      end
+
       TYPES = [:meta, :character, :general].freeze
-      CHAR_FLAG = /^char:(?<char_name>.*)/
+      CHAR_FLAG = /^(char:|char-)(?<char_name>.*)/
       META_TAGS = /(safe|questionable|explicit|canon|noncanon|complete|incomplete)/
 
       # CSS classes to apply to this tag, when displayed
@@ -32,21 +40,31 @@ module Jekyll
       ##
       # Inspired by Hash, convert a list of strings to a list of Tags.
       def self.[](*args)
-        args[0].map { |t| Tag.new t }
+        args[0].map { |t| Tag.new(t) }
       end
 
       def initialize(name)
         # inspect types
         my_name = name.strip
         if CHAR_FLAG =~ my_name
-          @name = $LAST_MATCH_INFO[:char_name]
+          case @char_tag_format
+            when "upcase"; @name = $LAST_MATCH_INFO[:char_name].upcase
+            when "downcase"; @name = $LAST_MATCH_INFO[:char_name].downcase
+            when "capitalize_preserve"; @name = $LAST_MATCH_INFO[:char_name].gsub(/(?<![a-zA-Z])[a-zA-Z]/){|s|s.capitalize}
+            when "capitalize"; $LAST_MATCH_INFO[:char_name].gsub(/([a-zA-Z]+)/){|s|s.capitalize}
+            else @name = $LAST_MATCH_INFO[:char_name]
+           end
+          @dir = name_to_dir("char-#{@name}")
           @type = :character
         else
           @name = my_name.downcase
           @type = @name =~ META_TAGS ? :meta : :general
+          @dir = name_to_dir(@name)
         end
+      end
 
-        @dir = name_to_dir(@name)
+      def tag_type
+        @type.to_s
       end
 
       def to_s
@@ -66,6 +84,26 @@ module Jekyll
       def hash
         # Can't be name.hash because then `char:alice` and `alice` collide
         to_s.hash
+      end
+
+      def stats
+        @stats
+      end
+ 
+      ##
+      # Update tag stats
+      def update_stats!(newstats)
+        if newstats
+          if @stats
+            @stats.merge!(newstats) {|k,v1,v2|v1+v2}
+          else newstats
+          @stats = newstats.clone
+          end
+        end
+      end
+
+      def clear_stats!
+        @stats = nil
       end
 
       ##
@@ -101,7 +139,7 @@ module Jekyll
 
       def to_liquid
         # Liquid wants a hash, not an object.
-        { "name" => @name, "dir" => @dir, "classes" => classes }
+        { "name" => @name, "dir" => @dir, "classes" => classes, "stats" => @stats }
       end
 
       def classes
