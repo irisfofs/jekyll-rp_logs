@@ -95,9 +95,9 @@ module Jekyll
       def update_stats!(newstats)
         if newstats
           if @stats
-            @stats.merge(newstats) {|k,v1,v2|v1+v2}
+            @stats.merge!(newstats) {|k,v1,v2|v1+v2}
           else newstats
-          @stats = newstats
+          @stats = newstats.clone
           end
         end
       end
@@ -135,7 +135,7 @@ module Jekyll
 
       def to_liquid
         # Liquid wants a hash, not an object.
-        { "name" => @name, "dir" => @dir, "classes" => classes }
+        { "name" => @name, "dir" => @dir, "classes" => classes, "stats" => @stats }
       end
 
       def classes

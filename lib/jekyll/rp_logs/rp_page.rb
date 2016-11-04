@@ -32,6 +32,10 @@ module Jekyll
         self[:rp_tags] = Tag[self[:rp_tags].split(",")]
       end
 
+      def stats
+        self[:stats].stat
+      end
+
       ##
       # Pass the request along to the page's data hash, and allow symbols to be
       # used by converting them to strings first.
@@ -223,16 +227,16 @@ module Jekyll
           if line.output_type == :rp
             sender = "char:#{line.sender}"
             if nicks.has_key? sender
-              nicks[sender][:lines] ++
-              nicks[sender][:wordcount] += line.contents.split.count
-              nicks
+              nicks[sender]["lines"] += 1
+              nicks[sender]["wordcount"] += line.contents.split.count
+              nicks[sender]["characters"] += line.contents.length
             else
-              nicks[sender] = { :lines=>1, :wordcount=>line.contents.split.count,
-                  :characters=>line.contents.length, :timelines =>0, :time=>0}
+              nicks[sender] = { "lines"=>1, "wordcount"=>line.contents.split.count,
+                  "characters"=>line.contents.length, "timelines" =>0, "time"=>0}
             end
             if line.timestamp.to_time.to_i  - last_time <= 30*60
-              nicks[sender][:timelines] ++
-              nicks[sender][:time] += last_time-line.timestamp.to_time.to_i 
+              nicks[sender]["timelines"] += 1
+              nicks[sender]["time"] += line.timestamp.to_time.to_i  - last_time
             end
             last_time = line.timestamp.to_time.to_i
           end
@@ -258,6 +262,11 @@ module Jekyll
 
         self[:end_date] = stats[:end_date]
         self[:start_date] ||= stats[:start_date]
+
+        self[:stats] = Tag.new("page_stats")
+        self[:rp_tags].each{|tag|
+          self[:stats].update_stats! tag.stats if tag.tag_type == "character"
+        }
       end
     end
   end

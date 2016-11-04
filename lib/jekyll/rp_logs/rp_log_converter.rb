@@ -73,6 +73,8 @@ module Jekyll
         rp_pages = extract_valid_rps(site)
 
         convert_all_pages(site, main_index, arc_index, rp_pages, tag_cloud_index)
+        rp_pages.each{|page| page.tags.each{|tag| 
+        }}
       end
 
       private
