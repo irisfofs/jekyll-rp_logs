@@ -29,7 +29,7 @@ module Jekyll
         # The rp directory and collection name is pulled out; it must be the
         # first collection defined.
         def extract_settings(config)
-          @rp_key = config["collections"].keys[0].freeze
+          @rp_key = config["rp_key"].freeze
         end
       end
 
@@ -63,7 +63,6 @@ module Jekyll
         # by modifying the configuration file, which is added onto the `site`
         # liquid variable.
         site.config["rp_logs_version"] = RpLogs::VERSION
-
         Jekyll.logger.info("RpLogGenerator#generate called")
 
         main_index, arc_index, tag_cloud_index  = extract_indexes(site)

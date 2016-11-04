@@ -51,6 +51,8 @@ max_seconds_between_posts: 3
 # of strict_ooc and automatically converting OOC emotes to OOC text.
 ooc_start_delimiters: "(["
 
+rp_key: rps #this must be the same as the collection below
+
 collections:
   # The RPs must be in a directory named exactly this, prefixed by an underscore.
   # So by default: _rps/

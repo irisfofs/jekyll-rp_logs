@@ -11,7 +11,7 @@ tag_cloud: true
   </header>
         
   <article class="post-content">
-{% if page['tags']['character'].size > 0 then %}
+{% if page['tags']['character'].size > 0 %}
 <h2 class="arc-title"><a name="Character Tags" href="#character">Character Tags</a></h2>
 <ul class="tag-list">
 {% for tag in page['tags']['character'] %}
@@ -20,7 +20,7 @@ tag_cloud: true
 </ul>
 {% endif %}
 
-{% if page['tags']['general'].size > 0 then %}
+{% if page['tags']['general'].size > 0 %}
 
 <br /><br />
 <h2 class="arc-title"><a name="Other Tags" href="#other">Other Tags</a></h2>

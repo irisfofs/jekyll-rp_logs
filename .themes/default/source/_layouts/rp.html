@@ -23,11 +23,11 @@ layout: default
     <div id="stats" class="ooc">
       {% if page.stats.stats.lines %}
         <h3 style="margin-bottom:-2px">Stats</h3>
-        The RP has a total of <b>{{page.stats.stats.lines}} line{% if paste.stats.stats.lines > 1 }%}s{%endif%}, {{page.stats.stats.wordcount}} word{% if paste.stats.stats.wordcount > 1 }%}s{%endif%}, and {{page.stats.stats.characters}} character{% if paste.stats.stats.characters > 1 }%}s{%endif%}.</b> <br />
+        The RP has a total of <b>{{page.stats.stats.lines}} line{% if page.stats.stats.lines > 1 %}s{%endif%}, {{page.stats.stats.wordcount}} word{% if page.stats.stats.wordcount > 1 %}s{%endif%}, and {{page.stats.stats.characters}} character{% if page.stats.stats.characters > 1 %}s{%endif%}.</b> <br />
         The average line consists of<b> {{page.stats.stats.wordcount | divided_by: page.stats.stats.lines | round: 2}} words</b> that themselves average <b>{{page.stats.stats.characters | minus: page.stats.stats.wordcount | divided_by: page.stats.stats.wordcount | round: 2}} characters{% if page.stats.stats.timelines > 0 %}</b> taking about<b> {{page.stats.stats.time | divided_by: page.stats.stats.timelines | divided_by: 60 }} minutes, {{page.stats.stats.time | divided_by: page.stats.stats.timelines | modulo: 60}} seconds.{% endif %}</b> <br />
         {% for t in page.rp_tags %}
           {% if t.stats.lines > 0 %}
-            {{t.name}} said a total of <b>{{t.stats.lines}} line{% if t.stats.lines > 1 }%}s{%endif%}, {{t.stats.wordcount}} words, and {{t.stats.characters}} characters.</b> <br />
+            {{t.name}} said a total of <b>{{t.stats.lines}} line{% if t.stats.lines > 1 %}s{%endif%}, {{t.stats.wordcount}} words, and {{t.stats.characters}} characters.</b> <br />
             {{t.name}}'s average line consists of<b> {{t.stats.wordcount | divided_by: t.stats.lines | round: 2}} words</b> that themselves average <b>{{t.stats.characters | minus: t.stats.wordcount | divided_by: t.stats.wordcount | round: 2}} characters{% if t.stats.timelines > 0 %}</b> taking about<b> {{t.stats.time | divided_by: t.stats.timelines | divided_by: 60 | round:2}} minutes, {{t.stats.time | divided_by: t.stats.timelines | modulo: 60 }} seconds{% endif %}.</b> <br />
           {% endif %}
         {% endfor %}
