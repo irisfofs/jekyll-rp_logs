@@ -15,7 +15,7 @@ module Jekyll
       def initialize(config)
         @tag_implications = (config["tag_implications"] || {}).freeze
         @tag_aliases = (config["tag_aliases"] || {}).freeze
-        validate_tag_rules
+       # validate_tag_rules #Temp Fix till big validations can be handled properly
       end
 
       ##
@@ -72,7 +72,6 @@ module Jekyll
           end
           
           imply = Tag[imply]
-          imply.each{|t| t.update_stats! tag.stats}
           to_add.merge imply
         end
       end
