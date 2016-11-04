@@ -102,6 +102,10 @@ module Jekyll
         end
       end
 
+      def clear_stats!
+        @stats = nil
+      end
+
       ##
       # Compares two tags. Character tags are less than meta tags, and meta
       # tags are less than general tags. Two tags of the same type are compared
