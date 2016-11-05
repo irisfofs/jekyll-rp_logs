@@ -34,7 +34,7 @@ There are {{ page["count"] }} {{ page["title"]}}.
 {% if page["tag"].stats.lines > 0 %}
   <p class="stats">
   {{page["tag"].name}} said a total of <b>{{page["tag"].stats.lines}} line{% if page["tag"].stats.lines > 1 %}s{%endif%}, {{page["tag"].stats.wordcount}} words, and {{page["tag"].stats.characters}} characters.</b> <br />
-  {{page["tag"].name}}'s average line consists of<b> {{page["tag"].stats.wordcount | divided_by: page["tag"].stats.lines | round: 2}} words</b> that themselves average <b>{{page["tag"].stats.characters | minus: page["tag"].stats.wordcount | divided_by: page["tag"].stats.wordcount | round: 2}} characters{% if page["tag"].stats.timelines > 0 %}</b> taking about<b> {{page["tag"].stats.time | divided_by: page["tag"].stats.timelines | divided_by: 60 | round:2}} minutes, {{page["tag"].stats.time | divided_by: page["tag"].stats.timelines | modulo: 60 }} seconds{% endif %}.</b> <br />
+  {{page["tag"].name}}'s average line consists of<b> {{page["tag"].stats.wordcount | divided_by: page["tag"].stats.lines | round: 2}} words</b> that themselves average <b>{{page["tag"].stats.characters | minus: page["tag"].stats.wordcount | divided_by: page["tag"].stats.wordcount | round: 2}} characters{% if page["tag"].stats.timelines > 0 %}</b> taking about<b> {{page["tag"].stats.time | divided_by: page["tag"].stats.timelines | divided_by: 60 | floor}} minutes, {{page["tag"].stats.time | divided_by: page["tag"].stats.timelines | modulo: 60 }} seconds{% endif %}.</b> <br />
   </p > {% endif %}
 
 

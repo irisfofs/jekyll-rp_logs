@@ -15,7 +15,7 @@ module Jekyll
       def initialize(config)
         @tag_implications = (config["tag_implications"] || {}).freeze
         @tag_aliases = (config["tag_aliases"] || {}).freeze
-       # validate_tag_rules #Temp Fix till big validations can be handled properly
+        validate_tag_rules #Temp Fix till big validations can be handled properly
       end
 
       ##
@@ -50,7 +50,7 @@ module Jekyll
         error_for_aliases_that_should_be_implications
 
         # Check for loooops.
-        starter_tags = Tag[@tag_implications.keys].to_set.merge Tag[@tag_aliases.keys]
+        starter_tags = Tag[@tag_implications.keys].to_set.merge Tag[@tag_aliases.keys].to_set
         update_tags(starter_tags, verbose: true)
       end
 
@@ -81,18 +81,16 @@ module Jekyll
       def alias_tags(tag_set, removed_tags)
         until_tags_stabilize(tag_set) do |tag, to_add|
           next unless @tag_aliases.key? tag.to_s
-          aliased = @tag_aliases[tag.to_s]
+          aliased = Tag[@tag_aliases[tag.to_s]]
 
           # If we are trying to alias back a tag already removed, there is a
           # cycle in the tag aliases and implications.
-          removed = aliased.find { |t| removed_tags.include? t }
+          removed = aliased.find { |t| removed_tags.include? t.to_s }
           error_for_cyclical_tags(tag.to_s, removed) if removed
 
           # if it's already in the set, something weird happened
           removed_tags << tag.to_s
           tag_set.delete tag
-          aliased = Tag[aliased]
-          aliased.each{|t| t.update_stats! tag.stats}
           to_add.merge aliased
           alias_loop = true
         end
