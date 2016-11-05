@@ -70,7 +70,7 @@ module Jekyll
             Jekyll.logger.warn "#{tag} implies #{removed}, which #{string}. Consider implying "\
                                "the alised tag directly."
           end
-          
+
           imply = Tag[imply]
           to_add.merge imply
         end
@@ -83,6 +83,7 @@ module Jekyll
           next unless @tag_aliases.key? tag.to_s
           aliased = Tag[@tag_aliases[tag.to_s]]
           aliased.each{|t| t.update_stats! tag.stats}
+
           # If we are trying to alias back a tag already removed, there is a
           # cycle in the tag aliases and implications.
           removed = aliased.find { |t| removed_tags.include? t.to_s }
@@ -91,7 +92,7 @@ module Jekyll
           # if it's already in the set, something weird happened
           removed_tags << tag.to_s
           tag_set.delete tag
- 
+
           to_add.merge aliased
           alias_loop = true
         end
