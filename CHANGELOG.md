@@ -9,11 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Please add rp_key to your config file. Default value is rp_key: rps
 
 ## Added
-- Stats on RP pages and Character tag pages
-- Added options for character tag case homogination to the config file
+- Stats on RP pages and character tag pages ([#34], [#18t])
 
 ## Changed
-- Migrated to Jekyll 3
+- Migrated to Jekyll 3 ([#66])
 
 ## [0.6.1] - 2016-10-25
 ## Notes
@@ -175,3 +174,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#54]: https://github.com/xiagu/jekyll-rp_logs/issues/54
 [#78]: https://github.com/xiagu/jekyll-rp_logs/issues/78
 [#20t]: https://github.com/tecknojock/jekyll-rp_logs/issues/20
+[#34]: https://github.com/xiagu/jekyll-rp_logs/issues/34
+[#66]: https://github.com/xiagu/jekyll-rp_logs/issues/66
+[#18t]: https://github.com/tecknojock/jekyll-rp_logs/issues/18
