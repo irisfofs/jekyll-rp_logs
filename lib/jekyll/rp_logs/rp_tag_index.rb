@@ -67,6 +67,7 @@ module Jekyll
 
       def page_stats(tags)
         tags.each_pair{|tag, pages|
+          tag = tag.clone
           tag.clear_stats!
           pages.each{|page|
             tag.update_stats! page.data["rp_tags"][page.data["rp_tags"].find_index{tag}].stats
