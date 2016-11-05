@@ -53,7 +53,7 @@ namespace :rp_logs do
         |source "https://rubygems.org"
         |
         |group :jekyll_plugins do
-        |  gem "jekyll-rp_logs"
+        |  gem "jekyll-rp_logs", :git => "git://github.com/tecknojock/jekyll-rp_logs"
         |end
       END
     end

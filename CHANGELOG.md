@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [0.7.0] - 2016-11-04
+## Notes
+- Please update your theme with rplogs update for this update to work.
+- Please add rp_key to your config file. Default value is rp_key: rps
+
+## Added
+- Stats on RP pages and Character tag pages
+- Added options for character tag case homogination to the config file
+
+## Changed
+- Migrated to Jekyll 3
+
 ## [0.6.1] - 2016-10-25
 ## Notes
 - Please update your theme with `rplogs update` for this update to work.
