@@ -9,6 +9,7 @@
 /spec/examples.txt
 /spec/reports/
 /tmp/
+/lib/tasks
 
 ## Sublime
 jekyll-rp_logs.sublime-project
