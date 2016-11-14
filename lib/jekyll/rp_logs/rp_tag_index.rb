@@ -55,24 +55,26 @@ module Jekyll
 
         dir = site.config["rp_tag_dir"]
         tags = rps_by_tag(site)
-        tag_list = Hash.new
-        tag_list.merge! (tags)
-        page_stats(tag_list)
-
+        tags = page_stats(tags)
         tags.each_pair do |tag, pages|
-          site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages,tag_list)
+          site.pages << TagIndex.new(site, site.source, File.join(dir, tag.dir), tag, pages,tags)
         end
         Jekyll.logger.info "#{tags.size} tag pages generated."
       end
 
       def page_stats(tags)
-        tags.each_pair{|tag, pages|
+        tag_stats = tags.each_with_object(Hash.new()){|(tag, pages),tag_stats |
           tag = tag.clone
           tag.clear_stats!
           pages.each{|page|
-            tag.update_stats! page.data["rp_tags"][page.data["rp_tags"].find_index{tag}].stats
+            index = page.data["rp_tags"].find_index(tag)
+            if index
+              tag.update_stats! page.data["rp_tags"][index].stats
+            end
           }
+          tag_stats.merge!({tag => pages})
         }
+        return tag_stats
       end
 
       # Returns a hash of tags => [pages with tag]
@@ -81,7 +83,7 @@ module Jekyll
         site.collections[RpLogGenerator.rp_key].docs.each do |page|
           page.data["rp_tags"].each { |tag| tag_ref[tag] << page }
         end
-        tag_ref
+        return tag_ref
       end
     end
   end
