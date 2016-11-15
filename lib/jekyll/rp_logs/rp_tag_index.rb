@@ -21,7 +21,15 @@ module Jekyll
         data["count"] = data["pages"].length
 
         data["implies"] = site.config["tag_implications"][tag.to_s]
-        if data["implies"]; then data["implies"].map! {|t| tags.keys.find{|k| k.to_s == t} || t} end
+        if data["implies"]
+          data["implies"].map! {|t| tags.keys.find{|k|k.to_s == t} || 
+            if /^char:/.match(t)
+              t
+            else
+              t.downcase
+            end
+          }
+        end 
         data["implied_by"] = site.config["tag_implied_by"][tag.to_s]
         if data["implied_by"]; then data["implied_by"].map! {|t| tags.keys.find{|k| k.to_s == t} || t} end
         data["aliased_by"] = site.config["tag_aliased_by"][tag.to_s]

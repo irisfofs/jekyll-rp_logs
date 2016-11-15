@@ -47,11 +47,11 @@ module Jekyll
         # inspect types
         my_name = name.strip
         if CHAR_FLAG =~ my_name
-          case @char_tag_format
+          case self.class.char_tag_format
             when "upcase"; @name = $LAST_MATCH_INFO[:char_name].upcase
             when "downcase"; @name = $LAST_MATCH_INFO[:char_name].downcase
             when "capitalize_preserve"; @name = $LAST_MATCH_INFO[:char_name].gsub(/(?<![a-zA-Z])[a-zA-Z]/){|s|s.capitalize}
-            when "capitalize"; $LAST_MATCH_INFO[:char_name].gsub(/([a-zA-Z]+)/){|s|s.capitalize}
+            when "capitalize"; @name = $LAST_MATCH_INFO[:char_name].gsub(/([a-zA-Z]+)/){|s|s.capitalize}
             else @name = $LAST_MATCH_INFO[:char_name]
            end
           @dir = name_to_dir("char-#{@name}")
