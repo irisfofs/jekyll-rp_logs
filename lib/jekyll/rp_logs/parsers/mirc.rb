@@ -12,6 +12,8 @@ module Jekyll
       # Also make sure to change this - http://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html
       # If you are using the default mirc format, this should be "[%H:%M]"
       TIMESTAMP_FORMAT = "%m %d %y[%H:%M]"
+      SPLITTER = /\n(?=#{FLAGS}(^C)?((?=\d{4})(\d\d))?#{DATE_REGEXP})/
+
 
       # Crappy but works
       USER_AT_HOST = /\(\w+@[^)]+\)/
