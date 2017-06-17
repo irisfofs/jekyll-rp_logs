@@ -258,22 +258,20 @@ module Jekyll
       # Sets Tag Size in tag cloud pate
       def tag_size!(tags)
         tag_size_array = tags.map{|tag_pair| tag_pair[1]}.sort
-        Jekyll.logger.warn tag_size_array
-        tag_div = tag_size_array.length / 10
+        tag_div = tag_size_array.length / 10.0
 
         # Get each dectile for tag cloud
-        tag_groups = [1,2,3,4,5,6,7,8,9,10].map{ |val| 
+        tag_groups = [1,2,3,4,5,6,7,8,9].map{ |val| 
           tag_size_array[(val*tag_div).floor]
         }
   
-       Jekyll.logger.warn tag_groups
 
         # If one group equals another then further fine tune ranges
         begin
         tag_groups.each_with_index { |val, ind|
-          if ind > 0 && ind < 9
+          if ind > 0 && ind < 8
             size_ind = tag_size_array.index(tag_groups[ind-1])
-            size_div = (((ind+2)*tag_div-size_ind)/2).ceil
+            size_div = (((ind+2)*tag_div-size_ind)/2.0).ceil
             while val <= tag_groups[ind-1]
               #short circuit if the next value is also the same
               if val >= tag_groups[ind+1]-1 || tag_groups[ind-1] >= tag_groups[ind+1]-1
@@ -281,7 +279,7 @@ module Jekyll
               else
                 if size_div ==0; raise "Inf Loop"; end
                 size_ind += size_div
-                size_div = (size_div/2).ceil
+                size_div = (size_div/2.0).ceil
                 val = tag_size_array[size_ind]
               end
             end
