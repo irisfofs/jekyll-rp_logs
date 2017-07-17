@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Lines split separated by ellipses (`Lorem...`, `...ipsum`) are now merged and the ellipses removed. ([#74]).
 
 ### Changed
+- OOC changed from shown by default to hidden by default. ([#61], [#77])
 - Tag implications and descriptions moved to their own file (default: `_tags.yml`). This allows changes to tag info without needing to restart jekyll. ([#76])
 
 ## [0.5.0] - 2016-01-29
@@ -136,3 +137,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#60]: https://github.com/xiagu/jekyll-rp_logs/issues/60
 [#67]: https://github.com/xiagu/jekyll-rp_logs/issues/67
 [#69]: https://github.com/xiagu/jekyll-rp_logs/issues/69
+[#77]: https://github.com/xiagu/jekyll-rp_logs/issues/77
+[#74]: https://github.com/xiagu/jekyll-rp_logs/issues/74
+[#61]: https://github.com/xiagu/jekyll-rp_logs/issues/61
+[#76]: https://github.com/xiagu/jekyll-rp_logs/issues/76
