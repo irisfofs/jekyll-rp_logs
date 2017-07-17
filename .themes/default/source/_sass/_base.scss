@@ -202,3 +202,98 @@ pre {
         }
     }
 }
+
+
+
+/**
+ * Tag Cloud Stuff
+ */
+/** 
+ * Tag Cloud Stuff
+ */ 
+.tag_group_1 {
+    font-size: 100%;
+    font-weight: lighter;
+    color: darken($brand-color,15%);
+    &:visited {
+        color: darken($link-visited,15%);
+    }
+}
+.tag_group_2 {
+    font-size: 125%;
+    font-weight: bold;
+}       
+.tag_group_3 {
+    font-size: 150%;
+    font-weight: lighter;
+    color: desaturate(darken($brand-color,10%),10%);
+    &:visited {
+        color: darken(desaturate($link-visited,10%),10%);
+    }
+}       
+.tag_group_4 {
+    font-size: 175%;
+    font-weight: bold;
+    color: saturate(lighten($brand-color,10%),10%);
+    &:visited {
+        color: saturate(lighten($link-visited,10%),10%);
+    }
+}
+.tag_group_5 {
+    font-size: 200%;
+    font-weight: lighter;
+    color: saturate($brand-color,10%);
+    &:visited {
+        color: saturate($link-visited,10%);
+    }
+}   
+.tag_group_6 {
+    font-size: 225%;
+    font-weight: bold;
+    color: desaturate($brand-color,10%);
+    &:visited {
+        color: desaturate($link-visited,10%);
+    }
+}   
+.tag_group_7 {
+    font-size: 250%;
+    font-weight: lighter;
+    color: saturate(darken($brand-color,10%),10%);
+    &:visited {
+        color: saturate(darken($link-visited,10%),10%);
+    }
+}   
+.tag_group_8 {
+    font-size: 275%;
+    font-weight: bold;
+    color: desaturate(lighten($brand-color,10%),10%);
+    &:visited {
+        color: desaturate(lighten($link-visited,10%),10%);
+    }
+}
+.tag_group_9 {
+    font-size: 300%;
+    font-weight: lighter;
+    color: darken($brand-color,10%);
+    &:visited {
+        color: darken($link-visited,10%);
+    }
+}   
+.tag_group_10 {
+    font-size: 325%;
+    font-weight: bold;
+    color: lighten($brand-color,10%);
+    &:visited {
+        color: lighten($link-visited,10%);
+    }
+}  .tagwrapper {
+    max-width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 30px;
+    padding-left: 30px;
+    text-align: center
+}
+.tag-list {
+   line-height: .85;
+}

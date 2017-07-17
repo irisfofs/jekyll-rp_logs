@@ -1,0 +1,35 @@
+---
+layout: tagcloud
+title: Tag Cloud
+tag_cloud: true
+---
+{% include base.html %}
+<div class="post">
+    
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+  </header>
+        
+  <article class="post-content">
+{% if page['tags']['character'].size > 0 then %}
+<h2 class="arc-title"><a name="Character Tags" href="#character">Character Tags</a></h2>
+<ul class="tag-list">
+{% for tag in page['tags']['character'] %}
+  <a href="{{ base }}{{ site.rp_tag_dir }}/{{ tag[0].dir }}" class="{{tag[1]}}">{{ tag[0].name }} </a>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if page['tags']['general'].size > 0 then %}
+
+<br /><br />
+<h2 class="arc-title"><a name="Other Tags" href="#other">Other Tags</a></h2>
+<ul class="tag-list">
+{% for tag in page['tags']['general'] %}
+  <a href="{{ base }}{{ site.rp_tag_dir }}/{{ tag[0].dir }}" class="{{tag[1]}}">{{ tag[0].name }} </a>
+{% endfor %}
+</ul>
+{% endif %}   
+  </article>
+  
+</div>
