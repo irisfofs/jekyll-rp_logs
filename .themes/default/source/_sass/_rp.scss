@@ -55,11 +55,9 @@ li {
 //     }
 // }
 
-/* Undo normal pre styles */
 .post-description {
-    color: #a0a090;
+    color: $dark-text-color;
 }
-
 
 #log {
     p {

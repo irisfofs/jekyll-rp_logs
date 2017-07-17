@@ -63,9 +63,9 @@ module Jekyll
       def canon
         self[:canon] ? "canon" : "noncanon"
       end
- 
+
       def description
-         self[:description]
+        self[:description]
       end
 
       def convert_rp(parsers)

@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.6.0] - 2017-07-16
 ### Added
+- `description` property for RPs that's displayed on the RP page and on hover in lists of RPs. ([#54], [#78])
 - Lines split separated by ellipses (`Lorem...`, `...ipsum`) are now merged and the ellipses removed. ([#74]).
 
 ### Changed
@@ -142,3 +143,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [#61]: https://github.com/xiagu/jekyll-rp_logs/issues/61
 [#76]: https://github.com/xiagu/jekyll-rp_logs/issues/76
 [#53]: https://github.com/xiagu/jekyll-rp_logs/issues/53
+[#54]: https://github.com/xiagu/jekyll-rp_logs/issues/54
+[#78]: https://github.com/xiagu/jekyll-rp_logs/issues/78

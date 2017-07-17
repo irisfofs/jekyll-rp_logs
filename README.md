@@ -123,7 +123,7 @@ These are all optional (they have default values, configurable in `_config.yml`)
 * `rp_tags` - comma separated list - A list of tags that describe the contents, such as characters involved or events that occur.
 * `start_date` - Any valid YAML date, such as `YYYY-MM-DD` - Displayed on the RP page, and used to sort in the index. If left blank, will be inferred from the first timestamp.
 * `time_line` - Any valid YAML date, such as `YYYY-MM-DD` - Used to change the order an RP in an Arc is stored in while keeping the displayed `start_date` correct. Useful if story RPs were done out of order.
-* `description` - THe description of the RP, shown on its page.
+* `description` - A short description shown on the RP's page and while hovering on links to it.
 
 There are also some more options you can toggle. Some are needed for giving the parser more information about oddities in posts, so that it can merge split posts correctly.
 
