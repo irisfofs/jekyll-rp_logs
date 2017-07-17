@@ -70,15 +70,11 @@ li {
         color: $dark-text-color;
         & a { color: darken($dark-text-color, 20%); }
 
-        vertical-align: top;
         padding-top: 5px;
         padding-bottom: 5px;
 
         font-family: monospace;
         font-size: 80%;
-
-        display:none;
-
     }
 
     /* timestamps */
