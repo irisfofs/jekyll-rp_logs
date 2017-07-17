@@ -1,22 +1,22 @@
 ---
 layout: page
 ---
-{% include base.html %}
+
 <p class="tag-description">{{ page["description"] }}
 {% if page["description"] %}<br />{% endif %}
 There are {{ page["count"] }} {{ page["title"]}}.
 {% if page['implies'].size > 0 %}
-<br />Tag implies: 
+<br />Tag implies:
       {% for t in page["implies"] %}
-         {% if t.name  %}                                                    
-           <a href="{{ base }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>                                                                            
-         {% else %}                                                                                                                                                                       
+         {% if t.name  %}
+           <a href="{{ base }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
+         {% else %}
            <a class="rp-tag general">{{ t }}</a>
-         {% endif %}     
+         {% endif %}
       {% endfor %}
 {% endif %}
 {% if page['implied_by'].size > 0 %}
-<br />Tag is implied by: 
+<br />Tag is implied by:
       {% for t in page["implied_by"] %}
          {% if t.name  %}
            <a href="{{ base }}{{ site.rp_tag_dir }}/{{ t.dir }}" class="rp-tag {{t.classes}}">{{ t.name }}</a>
@@ -26,11 +26,11 @@ There are {{ page["count"] }} {{ page["title"]}}.
       {% endfor %}
 {% endif %}
 {% if page['aliased_by'].size > 0 %}
-<br />Tag is aliased by: 
+<br />Tag is aliased by:
       {% for t in page["aliased_by"] %}
         <a class="rp-tag general">{{ t }}</a>
       {% endfor %}
-{% endif %} 
+{% endif %}
 </p>
 {% if page["tag"].stats.lines > 0 %}
   <p class="stats">
