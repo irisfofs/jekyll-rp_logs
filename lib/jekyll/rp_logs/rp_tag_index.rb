@@ -23,16 +23,16 @@ module Jekyll
         tag_title_prefix = site.config["rp_tag_title_prefix"] || "Tag: "
         data["title"] = "#{tag_title_prefix}#{tag.name}"
       end
-    end
 
-    # TODO(xiagu): Make this not be defined here and in rp_page (DRY)
-    private def tag_config(config)
-      return config unless config["source"] && config["tag_file"]
+      # TODO(xiagu): Make this not be defined here and in rp_page (DRY)
+      private def tag_config(config)
+        return config unless config["source"] && config["tag_file"]
 
-      tag_filename = File.join(config["source"], config["tag_file"])
-      return config unless File.exist?(tag_filename)
+        tag_filename = File.join(config["source"], config["tag_file"])
+        return config unless File.exist?(tag_filename)
 
-      YAML.load_file(File.join(tag_filename))
+        YAML.load_file(File.join(tag_filename))
+      end
     end
 
     class TagIndexGenerator < Jekyll::Generator
