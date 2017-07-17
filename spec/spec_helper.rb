@@ -1,7 +1,4 @@
-# Must be in the very top, before application code loaded
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-# This is useful for local coverage testing too
+# Get us test coverage.
 require "simplecov"
 SimpleCov.start do
   add_filter "/spec/"

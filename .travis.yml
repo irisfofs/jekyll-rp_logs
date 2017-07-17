@@ -7,3 +7,6 @@ addons:
     repo_token: 581494fc227ee2896caed3f9fa42eb5a86aaba66ce9f51a9838114888f97d3b1
 
 script: bundle exec rspec spec
+
+after_success:
+  - bundle exec codeclimate-test-reporter
