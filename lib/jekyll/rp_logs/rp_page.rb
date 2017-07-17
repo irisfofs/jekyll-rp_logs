@@ -1,3 +1,4 @@
+require "yaml"
 require "forwardable"
 require_relative "rp_tags"
 require_relative "rp_tag_implication_handler"
@@ -19,7 +20,16 @@ module Jekyll
         attr_reader :tag_implication_handler
 
         def extract_settings(config)
-          @tag_implication_handler = TagImplicationHandler.new(config)
+          @tag_implication_handler = TagImplicationHandler.new(tag_config(config))
+        end
+
+        def tag_config(config)
+          return config unless config["source"] && config["tag_file"]
+
+          tag_filename = File.join(config["source"], config["tag_file"])
+          return config unless File.exist?(tag_filename)
+
+          YAML.load_file(File.join(tag_filename))
         end
       end
 

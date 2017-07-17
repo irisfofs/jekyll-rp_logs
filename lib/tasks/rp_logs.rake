@@ -67,6 +67,7 @@ namespace :rp_logs do
     gem_root = Gem::Specification.find_by_name("jekyll-rp_logs").gem_dir
     cp_r Dir["#{gem_root}/.themes/default/source/*"], "./"
     copy_unless_exist("_config.yml.default", "_config.yml")
+    copy_unless_exist("_tags.yml.default", "_tags.yml")
     touch "_sass/_custom-vars.scss"
     touch "_sass/_custom-rules.scss"
   end

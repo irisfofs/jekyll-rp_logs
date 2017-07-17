@@ -21,7 +21,7 @@ module Jekyll
             end
           end
           it "doesn't affect the tag name" do
-            unsafe_tags.each do |tag, _|
+            unsafe_tags.each_key do |tag|
               expect(Tag.new(tag).name).to eql(tag)
             end
           end
@@ -74,33 +74,29 @@ module Jekyll
       end
 
       context "when sorted" do
-        def to_tags(list)
-          list.map { |tag| Tag.new(tag) }
-        end
-
         it "character tags are before regular tags" do
-          tag_list = to_tags %w(banana aardvark wet water char:Eve)
-          sorted   = to_tags %w(char:Eve aardvark banana water wet)
+          tag_list = Tag[%w(banana aardvark wet water char:Eve)]
+          sorted   = Tag[%w(char:Eve aardvark banana water wet)]
           expect(tag_list.sort).to eql(sorted)
         end
 
         it "meta tags are before regular tags" do
-          tag_list = to_tags %w(a questionable horse doing safe things)
-          sorted   = to_tags %w(questionable safe a doing horse things)
+          tag_list = Tag[%w(a questionable horse doing safe things)]
+          sorted   = Tag[%w(questionable safe a doing horse things)]
           expect(tag_list.sort).to eql(sorted)
         end
 
         it "character tags are before meta tags" do
-          tag_list = to_tags %w(incomplete char:Alice char:Wilfred complete)
-          sorted   = to_tags %w(char:Alice char:Wilfred complete incomplete)
+          tag_list = Tag[%w(incomplete char:Alice char:Wilfred complete)]
+          sorted   = Tag[%w(char:Alice char:Wilfred complete incomplete)]
           expect(tag_list.sort).to eql(sorted)
         end
 
         it "character tags, then meta tags, then regular tags" do
-          tag_list = to_tags %w(while char:Bob buys safe things char:Alice finds them
-                                incomplete but char:Watson likes the explicit stuff)
-          sorted   = to_tags %w(char:Alice char:Bob char:Watson explicit incomplete safe
-                                but buys finds likes stuff the them things while)
+          tag_list = Tag[%w(while char:Bob buys safe things char:Alice finds them
+                            incomplete but char:Watson likes the explicit stuff)]
+          sorted   = Tag[%w(char:Alice char:Bob char:Watson explicit incomplete safe
+                            but buys finds likes stuff the them things while)]
           expect(tag_list.sort).to eql(sorted)
         end
       end

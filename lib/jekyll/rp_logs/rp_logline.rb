@@ -144,7 +144,13 @@ module Jekyll
           (next_line.rp? || next_line.possible_split_to_normal_text?)
       end
 
+      ##
+      # TODO(xiagu): there's no non-! version of this so consider removing !
       def merge!(next_line)
+        if /\.\.\.$/.match(@contents) && /^\.\.\./.match(next_line.contents)
+          @contents.sub!(/\.\.\.$/, "")
+          next_line.contents.sub!(/^\.\.\./, "")
+        end
         @contents += "#{space_between_lines}#{next_line.contents}"
         @last_merged_timestamp = next_line.timestamp
         self
