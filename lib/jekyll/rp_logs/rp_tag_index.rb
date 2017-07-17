@@ -16,24 +16,23 @@ module Jekyll
         tag_index = (site.config["rp_tag_index_layout"] || "tag_index") + ".html"
         read_yaml(File.join(base, "_layouts"), tag_index)
         data["tag"] = tag # Set which tag this index is for
-        def self.tag_config(config)
-          if config['source'] && config["tag_file"]
-             if File.exists?(File.join(config['source'],config["tag_file"]))
-                @tag_config = YAML.load_file(File.join(config['source'],config["tag_file"]))
-             else
-                @tag_config = config
-             end
-          else
-             @tag_config = config
-          end
-        end
-        data["description"] = self.tag_config(site.config)["tag_descriptions"][tag.to_s]
+        data["description"] = tag_config(site.config)["tag_descriptions"][tag.to_s]
 
         # Sort tagged RPs by their start date
         data["pages"] = pages.sort_by { |p| p.data["start_date"] }
         tag_title_prefix = site.config["rp_tag_title_prefix"] || "Tag: "
         data["title"] = "#{tag_title_prefix}#{tag.name}"
       end
+    end
+
+    # TODO(xiagu): Make this not be defined here and in rp_page (DRY)
+    private def tag_config(config)
+      return config unless config["source"] && config["tag_file"]
+
+      tag_filename = File.join(config["source"], config["tag_file"])
+      return config unless File.exist?(tag_filename)
+
+      YAML.load_file(File.join(tag_filename))
     end
 
     class TagIndexGenerator < Jekyll::Generator

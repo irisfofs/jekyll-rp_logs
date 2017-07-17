@@ -162,7 +162,7 @@ Optionally, add the `--watch` flag to automatically rebuild if you add more logs
 ### Tag implications and aliases
 This feature allows you to set up implications, where something tagged with one tag will automatically be tagged with a list of other tags. The implied tags need to be a list, even if there's only one.
 
-Example syntax (for your `_config.yml`):
+Example syntax (for your `_tags.yml`):
 
 ```yaml
 tag_implications:
@@ -172,7 +172,7 @@ tag_implications:
 
 Tag aliases function just like implications, except the original tag is removed. So they effectively convert one tag into another tag. Or tags.
 
-Example syntax (for your `_config.yml`):
+Example syntax (for your `_tags.yml`):
 
 ```yaml
 tag_aliases:
@@ -181,12 +181,12 @@ tag_aliases:
   etaoin: [etaoin shrdlu]
 ```
 
-The [default config file](https://github.com/xiagu/jekyll-rp_logs/blob/1247e4d2cacd7a1cb658828d286bbae049ce2e13/.themes/default/source/_config.yml.default#L41) has these same examples, demonstrating how and where they should be set.
+The [default tags file](https://github.com/xiagu/jekyll-rp_logs/blob/master/.themes/default/source/_tags.yml.default) has these same examples, demonstrating how and where they should be set.
 
 ### Tag descriptions
 This feature lets you add a blurb of text on the page for a tag (the one that lists all RPs with that tag).
 
-Example syntax (for your `_config.yml`):
+Example syntax (for your `_tags.yml`):
 
 ```yaml
 tag_descriptions:
