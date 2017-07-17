@@ -166,6 +166,14 @@ a.rp-tag {
     color: inherit;
 }
 
+.arc-title {
+    margin-bottom: 5px;
+}
+
+.arc-description {
+    color: $dark-text-color;
+}
+
 /* Display for the tags on an RP page */
 #tag-and-date {
     display: flex;

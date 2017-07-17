@@ -60,6 +60,10 @@ module Jekyll
         tags.map(&:to_s)
       end
 
+      def arc_description
+        self[:arc_description]
+      end
+
       def canon
         self[:canon] ? "canon" : "noncanon"
       end
