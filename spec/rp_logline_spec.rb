@@ -156,6 +156,11 @@ module Jekyll
             expect(sbc_1.merge!(sbc_2).contents).to eql("Regolith")
           end
         end
+
+        it "merges two lines separated by ellipses" do
+          merged_line = log_line(contents: "Abcd...").merge!(log_line(contents: "...efgh"))
+          expect(merged_line.contents).to eql("Abcd efgh")
+        end
       end
 
       describe "#mergeable_with?" do
