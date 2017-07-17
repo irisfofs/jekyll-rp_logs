@@ -27,10 +27,10 @@ module Jekyll
       end
 
       let(:alias_imply_loop) do
-        { "tag_implications" => { "B" => ["C"] },
+        { "tag_implications" => { "b" => ["c"] },
           "tag_aliases" =>
-          { "A" => ["B"],
-            "C" => ["A"]
+          { "a" => ["b"],
+            "c" => ["a"]
           }
         }
       end

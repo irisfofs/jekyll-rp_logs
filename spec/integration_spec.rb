@@ -35,7 +35,7 @@ module Jekyll
       end
 
       describe "the tag descriptions" do
-        desc_map = { "Alice" => "Have some words", "test" => "More words" }
+        desc_map = { "char-Alice" => "Have some words", "test" => "More words" }
 
         desc_map.each_pair do |tag, desc|
           context "for tag #{tag}" do
@@ -104,18 +104,20 @@ module Jekyll
       end
 
       describe "the existing rp pages" do
-        subject { Dir.glob("dev_site/_site/*") }
-
         Util::VALID_TEST_NAMES.map { |n| "dev_site/_site/#{n}" }.each do |name|
-          it { is_expected.to include(name) }
+          it "exist" do
+            rp_pages = Dir.glob(File.join("dev_site", "_site", "*"))
+            expect(rp_pages).to include(name)
+          end
         end
       end
 
       describe "the existing tag pages" do
-        subject { Dir.glob("dev_site/_site/tags/*") }
-
         Util::EXISTING_TAGS.map { |t| "dev_site/_site/tags/#{t}" }.each do |tag|
-          it { is_expected.to include(tag) }
+          it "exist" do
+            tag_files = Dir.glob(File.join("dev_site", "_site", "tags", "*"))
+            expect(tag_files).to include(tag)
+          end
         end
       end
     end

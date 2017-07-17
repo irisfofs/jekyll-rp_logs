@@ -24,11 +24,19 @@ module Jekyll
         end
       end
 
+      ##
+      # Instantiate a RpLogGenerator with the proper chdir to the dev_site dir
+      def createRpLogGenerator(config)
+        Dir.chdir("dev_site") do
+          RpLogGenerator.new(config)
+        end
+      end
+
       # this needs to happen first just so that the log level is overridable
       let!(:generator) do
         # Hide the plugin loaded message
         Jekyll.logger.log_level = :warn
-        RpLogGenerator.new(DEFAULT_CONFIGURATION)
+        createRpLogGenerator(DEFAULT_CONFIGURATION)
       end
 
       let(:rp_basenames) do
@@ -199,7 +207,7 @@ module Jekyll
                 "max_seconds_between_posts" => 5
               )
               Jekyll.logger.log_level = :warn
-              RpLogGenerator.new(logline_config)
+              createRpLogGenerator(logline_config)
             end
 
             it "gets max_seconds_between_posts from config file" do
@@ -211,7 +219,7 @@ module Jekyll
 
             after do
               # Restore the default configuration. Very important
-              RpLogGenerator.new(DEFAULT_CONFIGURATION)
+              generator
             end
           end
 
@@ -221,18 +229,17 @@ module Jekyll
                 "collections" => { "lorem" => { "output" => true } }
               )
               Jekyll.logger.log_level = :warn
-              RpLogGenerator.new(logline_config)
+              createRpLogGenerator(logline_config)
             end
 
             it "gets default rp_key from default config file" do
               expect(generator.class.rp_key).to eql("rps")
             end
-            it "gets rp_key from config file" do
-              expect(diff_key_generator.class.rp_key).to eql("lorem")
-            end
+            # TODO(xiagu): think if there's any other test to do
 
             after do
-              RpLogGenerator.new(DEFAULT_CONFIGURATION)
+              # Restore the default configuration. Very important
+              generator
             end
           end
         end

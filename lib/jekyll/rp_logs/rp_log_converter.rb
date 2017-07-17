@@ -48,11 +48,12 @@ module Jekyll
       end
 
       def tag_config(config)
-        if config['source'] && config["tag_file"]
-           if File.exists?(File.join(config['source'],config["tag_file"]))
-              @tag_config = YAML.load_file(File.join(config['source'],config["tag_file"]))
-           end 
-        end
+        return config unless config["source"] && config["tag_file"]
+
+        tag_filename = File.join(config["source"], config["tag_file"])
+        return config unless File.exist?(tag_filename)
+
+        YAML.load_file(File.join(tag_filename))
       end
 
       def generate(site)
@@ -72,7 +73,7 @@ module Jekyll
         rp_pages = extract_valid_rps(site)
 
         convert_all_pages(site, main_index, arc_index, rp_pages, tag_cloud_index)
-        rp_pages.each{|page| page.tags.each{|tag| 
+        rp_pages.each{|page| page.tags.each{|tag|
         }}
       end
 
@@ -232,28 +233,28 @@ module Jekyll
       ##
       # Creates the tag cloud logic
       def convert_tag_cloud(rp_pages, tag_cloud_index)
-        tag_cloud = Hash.new(0).tap { |h| rp_pages.each { 
-          |rp_page| rp_page[:rp_tags].each { 
-            |tag| h[tag] += 1 
-          } 
-        }}        
-       
+        tag_cloud = Hash.new(0).tap { |h| rp_pages.each {
+          |rp_page| rp_page[:rp_tags].each {
+            |tag| h[tag] += 1
+          }
+        }}
+
         tag_cloud.each do |tag|
           key = tag[0].tag_type
           tag_cloud_index.data["tags"][key] << tag
         end
         sort_tags! tag_cloud_index["tags"]["character"]
-        sort_tags! tag_cloud_index["tags"]["general"] 
+        sort_tags! tag_cloud_index["tags"]["general"]
         tag_size! tag_cloud_index["tags"]["character"]
         tag_size! tag_cloud_index["tags"]["general"]
       end
 
       ##
-      # Sorts tags in Alphabetical Order 
+      # Sorts tags in Alphabetical Order
       def sort_tags!(tags)
         tags.sort_by! { |tag_pair| tag_pair[0].to_s.downcase }
       end
-      
+
       ##
       # Sets Tag Size in tag cloud pate
       def tag_size!(tags)
@@ -261,10 +262,10 @@ module Jekyll
         tag_div = tag_size_array.length / 10.0
 
         # Get each dectile for tag cloud
-        tag_groups = [1,2,3,4,5,6,7,8,9].map{ |val| 
+        tag_groups = [1,2,3,4,5,6,7,8,9].map{ |val|
           tag_size_array[(val*tag_div).floor]
         }
-  
+
 
         # If one group equals another then further fine tune ranges
         begin
@@ -290,9 +291,9 @@ module Jekyll
         # In this case, tag_groups will be fully defined when it type errors
         rescue TypeError
         end
-   
+
         tags = tags.each{ |tag_pair|
-          case tag_pair[1] 
+          case tag_pair[1]
             when 0..tag_groups[0]; group = 1
             when 0..tag_groups[1]; group = 3
             when 0..tag_groups[2]; group = 4
@@ -303,12 +304,12 @@ module Jekyll
             when 0..tag_groups[7]; group = 8
             when 0..tag_groups[8]; group = 9
             else group = 10
-          end      
+          end
           tag_pair[1] = "tag_group_#{group}"
         }
-      end 
-    
-       ## 
+      end
+
+       ##
        # Generate all the info from the tag file
        def tag_info(config)
         config.merge! self.tag_config(config)
@@ -323,11 +324,11 @@ module Jekyll
         end
 
         config["tag_aliases"].each_with_object({}) do |(key,values),out|
-          values.each{|value|                                                                                                                                                             
-            config["tag_aliased_by"][value] ||= []                                                                                                                                        
-            config["tag_aliased_by"][value] << key                                                                                                                                        
-          }    
-        end    
+          values.each{|value|
+            config["tag_aliased_by"][value] ||= []
+            config["tag_aliased_by"][value] << key
+          }
+        end
       end
 
     end

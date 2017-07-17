@@ -23,9 +23,10 @@ module Jekyll
            test_disable_liquid test_tag_implication
            test_mirc test_skype12 test_skype24 test_ellipsis test_description).freeze
 
+      # TODO(xiagu): Move this definition into integration_spec
       EXISTING_TAGS =
-        %w(_developer_s_quote_test_ test John dolor lorem_ipsum noncanon Eve
-           Alice Bob).freeze
+        %w(_developer_s_quote_test_ test char-John dolor lorem_ipsum noncanon
+           char-Eve char-Alice char-Bob char-alice).freeze
 
       private_class_method def self.deploy
         # Rake will eat the ARGV otherwise
